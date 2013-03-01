@@ -28,7 +28,8 @@ district.codes.2013 <- read.spss("Data/Base_Files/2013 dcodes-dnames.sav", to.da
 
 names(tmp.data) <- toupper(names(tmp.data))
 tmp.variables <- c("RPTSTUDID", "LNAME", "FNAME", "GRADE", "DISCODE", "SCHCODE", "SPRDISCODE", "SPRSCHCODE",
-                   "GENDER", "ETHNIC", "LEP", "IEP", "SES", "REASCALEDSCORE", "REAAL", "MATSCALEDSCORE", "MATAL", "SENDDISCODE", "REATESTSTATUS", "MATTESTSTATUS")
+                   "GENDER", "ETHNIC", "LEP", "IEP", "SES", "REASCALEDSCORE", "REAAL", "MATSCALEDSCORE", "MATAL", "SENDDISCODE", 
+		   "REATESTSTATUS", "MATTESTSTATUS", "SPRCONTSCH", "SPRCONTDIS", "STUSTATUS", "IEPEXITSTATUS")
 tmp.data <- subset(tmp.data, select=tmp.variables)
 
 attach(tmp.data)
@@ -46,12 +47,16 @@ read_1213 <- data.frame(ID=RPTSTUDID,
                         GENDER=GENDER,
                         ETHNICITY=ETHNIC,
                         IEP_STATUS=IEP,
+                        IEP_EXIT_STATUS=IEPEXITSTATUS,
                         ELL_STATUS=LEP,
                         FREE_REDUCED_LUNCH_STATUS=SES,
                         SCALE_SCORE=REASCALEDSCORE,
                         ACHIEVEMENT_LEVEL=REAAL,
 			SENDDISCODE=SENDDISCODE,
-			TEST_STATUS=REATESTSTATUS)
+			TEST_STATUS=REATESTSTATUS,
+			STUDENT_STATUS=STUSTATUS,
+			CONTINUOUS_SCHOOL_SPRING=SPRCONTSCH,
+			CONTINUOUS_DISTRICT_SPRING=SPRCONTDIS)
 
 math_1213 <- data.frame(ID=RPTSTUDID,
                         YEAR="2012_2013",
@@ -66,12 +71,16 @@ math_1213 <- data.frame(ID=RPTSTUDID,
                         GENDER=GENDER,
                         ETHNICITY=ETHNIC,
                         IEP_STATUS=IEP,
+                        IEP_EXIT_STATUS=IEPEXITSTATUS,
                         ELL_STATUS=LEP,
                         FREE_REDUCED_LUNCH_STATUS=SES,
                         SCALE_SCORE=MATSCALEDSCORE,
                         ACHIEVEMENT_LEVEL=MATAL,
 			SENDDISCODE=SENDDISCODE,
-			TEST_STATUS=MATTESTSTATUS)
+			TEST_STATUS=MATTESTSTATUS,
+			STUDENT_STATUS=STUSTATUS,
+			CONTINUOUS_SCHOOL_SPRING=SPRCONTSCH,
+			CONTINUOUS_DISTRICT_SPRING=SPRCONTDIS)
 
 detach(tmp.data)
 
@@ -203,12 +212,16 @@ Rhode_Island_Data_LONG_2012_2013$DISTRICT_NUMBER[which(Rhode_Island_Data_LONG_20
 
 Rhode_Island_Data_LONG_2012_2013$SENDDISCODE <- NULL
 
+Rhode_Island_Data_LONG_2012_2013$SCHOOL_ENROLLMENT_STATUS[Rhode_Island_Data_LONG_2012_2013$CONTINUOUS_SCHOOL_SPRING==0] <- "Enrolled School: No"
+Rhode_Island_Data_LONG_2012_2013$DISTRICT_ENROLLMENT_STATUS[Rhode_Island_Data_LONG_2012_2013$CONTINUOUS_DISTRICT_SPRING==0] <- "Enrolled District: No"
+
 
 ### VALIDATE cases
 
 Rhode_Island_Data_LONG_2012_2013$VALID_CASE[Rhode_Island_Data_LONG_2012_2013$GRADE==11] <- "INVALID_CASE"
 Rhode_Island_Data_LONG_2012_2013$VALID_CASE[is.na(Rhode_Island_Data_LONG_2012_2013$ID)] <- "INVALID_CASE"
 Rhode_Island_Data_LONG_2012_2013$VALID_CASE[Rhode_Island_Data_LONG_2012_2013$TEST_STATUS!="A"] <- "INVALID_CASE"
+Rhode_Island_Data_LONG_2012_2013$VALID_CASE[Rhode_Island_Data_LONG_2012_2013$STUDENT_STATUS!=0] <- "INVALID_CASE"
 
 # Convert to data.table
 
