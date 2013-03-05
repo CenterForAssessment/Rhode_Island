@@ -19,7 +19,7 @@ district.codes.2013 <- read.spss("Data/Base_Files/2013 dcodes-dnames.sav", to.da
 
 ### Load Rhode_Island_SGP for name ordering
 
-#load("Data/Rhode_Island_SGP.Rdata")
+load("Data/Rhode_Island_SGP.Rdata")
 
 
 ##########################################################
@@ -30,7 +30,7 @@ names(tmp.data) <- toupper(names(tmp.data))
 tmp.variables <- c("RPTSTUDID", "LNAME", "FNAME", "GRADE", "DISCODE", "SCHCODE", "SPRDISCODE", "SPRSCHCODE",
                    "GENDER", "ETHNIC", "LEP", "IEP", "SES", "REASCALEDSCORE", "REAAL", "MATSCALEDSCORE", "MATAL", "SENDDISCODE", 
 		   "REATESTSTATUS", "MATTESTSTATUS", "SPRCONTSCH", "SPRCONTDIS", "STUSTATUS", "IEPEXITSTATUS")
-tmp.data <- subset(tmp.data, select=tmp.variables)
+tmp.data <- subset(tmp.data, select=intersect(tmp.variables, names(tmp.data)))
 
 attach(tmp.data)
 
@@ -47,7 +47,7 @@ read_1213 <- data.frame(ID=RPTSTUDID,
                         GENDER=GENDER,
                         ETHNICITY=ETHNIC,
                         IEP_STATUS=IEP,
-                        IEP_EXIT_STATUS=IEPEXITSTATUS,
+#                        IEP_EXIT_STATUS=IEPEXITSTATUS,
                         ELL_STATUS=LEP,
                         FREE_REDUCED_LUNCH_STATUS=SES,
                         SCALE_SCORE=REASCALEDSCORE,
@@ -71,7 +71,7 @@ math_1213 <- data.frame(ID=RPTSTUDID,
                         GENDER=GENDER,
                         ETHNICITY=ETHNIC,
                         IEP_STATUS=IEP,
-                        IEP_EXIT_STATUS=IEPEXITSTATUS,
+#                        IEP_EXIT_STATUS=IEPEXITSTATUS,
                         ELL_STATUS=LEP,
                         FREE_REDUCED_LUNCH_STATUS=SES,
                         SCALE_SCORE=MATSCALEDSCORE,
