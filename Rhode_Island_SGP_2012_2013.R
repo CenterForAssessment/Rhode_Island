@@ -27,4 +27,4 @@ Rhode_Island_SGP <- updateSGP(
 
 ### Save results
 
-#save(Rhode_Island_SGP, file="Data/Rhode_Island_SGP.Rdata")
+save(Rhode_Island_SGP, file="Data/Rhode_Island_SGP.Rdata")
