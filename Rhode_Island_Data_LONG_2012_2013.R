@@ -259,6 +259,15 @@ Rhode_Island_Data_LONG_2012_2013[['SCHOOL_NUMBER']][is.na(Rhode_Island_Data_LONG
 Rhode_Island_Data_LONG_2012_2013[['DISTRICT_NUMBER']][is.na(Rhode_Island_Data_LONG_2012_2013[['DISTRICT_NUMBER']]) & Rhode_Island_Data_LONG_2012_2013[['YEAR']]=="2012_2013"] <- "88"
 
 
+### Create School/District/State Enrollment Status variable
+
+Rhode_Island_Data_LONG_2012_2013[['VALID_CASE']][substr(Rhode_Island_Data_LONG_2012_2013[['SCHOOL_NUMBER']], 3, 3) %in% c("2", "3", "9")] <- "INVALID_CASE"
+Rhode_Island_Data_LONG_2012_2013[['STATE_ENROLLMENT_STATUS']][substr(Rhode_Island_Data_LONG_2012_2013[['SCHOOL_NUMBER']], 3, 3) %in% c("2", "3", "9")] <- "Enrolled State: No"
+Rhode_Island_Data_LONG_2012_2013[['DISTRICT_ENROLLMENT_STATUS']][substr(Rhode_Island_Data_LONG_2012_2013[['SCHOOL_NUMBER']], 3, 3) %in% c("2", "3", "9")] <- "Enrolled District: No"
+Rhode_Island_Data_LONG_2012_2013[['SCHOOL_ENROLLMENT_STATUS']][substr(Rhode_Island_Data_LONG_2012_2013[['SCHOOL_NUMBER']], 3, 3) %in% c("2", "3", "9")] <- "Enrolled School: No"
+Rhode_Island_Data_LONG_2012_2013[['SCHOOL_ENROLLMENT_STATUS']][is.na(Rhode_Island_Data_LONG_2012_2013[['SCHOOL_NUMBER']])] <- "Enrolled School: No"
+
+
 #############################################################################
 ###
 ### Create Long file and save result
