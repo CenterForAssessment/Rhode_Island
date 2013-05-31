@@ -245,9 +245,9 @@ names(school.codes.2013)[1:5] <- c("EMH_LEVEL", "DISTRICT_NUMBER", "DISTRICT_NAM
 school.codes.2013 <- school.codes.2013[,1:5]
 levels(school.codes.2013$EMH_LEVEL) <- c("Elementary", "High", "Middle")
 school.codes.2013$DISTRICT_NUMBER <- as.character(school.codes.2013$DISTRICT_NUMBER)
-levels(school.codes.2013$DISTRICT_NAME) <- sapply(school.codes.2013$DISTRICT_NAME, capwords)
+levels(school.codes.2013$DISTRICT_NAME) <- sapply(levels(school.codes.2013$DISTRICT_NAME), capwords)
 school.codes.2013$SCHOOL_NUMBER <- as.character(school.codes.2013$SCHOOL_NUMBER)
-levels(school.codes.2013$SCHOOL_NAME) <- sapply(school.codes.2013$SCHOOL_NAME, capwords)
+levels(school.codes.2013$SCHOOL_NAME) <- sapply(levels(school.codes.2013$SCHOOL_NAME), capwords)
 school.codes.2013 <- as.data.table(school.codes.2013)
 setkey(school.codes.2013, DISTRICT_NUMBER, SCHOOL_NUMBER)
 Rhode_Island_District_and_School_Names <- school.codes.2013
