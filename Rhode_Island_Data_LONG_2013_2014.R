@@ -205,7 +205,7 @@ Rhode_Island_Data_LONG_2013_2014$SCHOOL_ENROLLMENT_STATUS <- factor(2, levels=1:
 
 Rhode_Island_Data_LONG_2013_2014$ELL_MULTI_CATEGORY_STATUS <- Rhode_Island_Data_LONG_2013_2014$ELL_STATUS
 Rhode_Island_Data_LONG_2013_2014$ELL_STATUS <- NULL
-Rhode_Island_Data_LONG_2013_2014$ELL_STATUS <- factor(1, levels=1:2, labels=c("Non-English Language Learners (ELL)", "English Language Learners (ELL)"))
+Rhode_Island_Data_LONG_2013_2014$ELL_STATUS <- factor(1, levels=1:2, labels=c("English Language Learners (ELL)", "Non-English Language Learners (ELL)"))
 Rhode_Island_Data_LONG_2013_2014$ELL_STATUS[Rhode_Island_Data_LONG_2013_2014$ELL_MULTI_CATEGORY_STATUS != "Non-English Language Learners (ELL)"] <- "English Language Learners (ELL)"
 
 Rhode_Island_Data_LONG_2013_2014$CONSOLIDATED_PROGRAM_SUBGROUP <- factor(1, levels=1:2, labels=c("Consolidated Program Subgroup: No", "Consolidated Program Subgroup: Yes"))
