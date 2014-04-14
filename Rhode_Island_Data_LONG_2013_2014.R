@@ -178,7 +178,7 @@ Rhode_Island_Data_LONG_2013_2014$ELL_STATUS <- factor(as.character(Rhode_Island_
 
 # FREE_REDUCED_LUNCH_STATUS
 
-levels(Rhode_Island_Data_LONG_2013_2014$FREE_REDUCED_LUNCH_STATUS) <- c("Not Economically Disadvanted", "Economically Disadvantaged")
+levels(Rhode_Island_Data_LONG_2013_2014$FREE_REDUCED_LUNCH_STATUS) <- c("Not Economically Disadvantaged", "Economically Disadvantaged")
 Rhode_Island_Data_LONG_2013_2014$FREE_REDUCED_LUNCH_STATUS <- as.character(Rhode_Island_Data_LONG_2013_2014$FREE_REDUCED_LUNCH_STATUS)
 Rhode_Island_Data_LONG_2013_2014$FREE_REDUCED_LUNCH_STATUS <- factor(Rhode_Island_Data_LONG_2013_2014$FREE_REDUCED_LUNCH_STATUS)
 
@@ -217,7 +217,7 @@ Rhode_Island_Data_LONG_2013_2014$CONSOLIDATED_PROGRAM_SUBGROUP[
 Rhode_Island_Data_LONG_2013_2014$CONSOLIDATED_MINORITY_POVERTY_SUBGROUP <- factor(1, levels=1:2, labels=c("Consolidated Minority/Poverty Subgroup: No", "Consolidated Minority/Poverty Subgroup: Yes"))
 Rhode_Island_Data_LONG_2013_2014$CONSOLIDATED_MINORITY_POVERTY_SUBGROUP[
 	Rhode_Island_Data_LONG_2013_2014$ETHNICITY!="White" &
-	Rhode_Island_Data_LONG_2013_2014$FREE_REDUCED_LUNCH_STATUS!="Not Economically Disadvanted"] <- "Consolidated Minority/Poverty Subgroup: Yes"
+	Rhode_Island_Data_LONG_2013_2014$FREE_REDUCED_LUNCH_STATUS!="Not Economically Disadvantaged"] <- "Consolidated Minority/Poverty Subgroup: Yes"
 
 Rhode_Island_Data_LONG_2013_2014$SCHOOL_ENROLLMENT_STATUS[Rhode_Island_Data_LONG_2013_2014$DISTRICT_NUMBER==88] <- "Enrolled School: No"
 Rhode_Island_Data_LONG_2013_2014$DISTRICT_NUMBER[which(Rhode_Island_Data_LONG_2013_2014$DISTRICT_NUMBER==88)] <- Rhode_Island_Data_LONG_2013_2014$SENDDISCODE[which(Rhode_Island_Data_LONG_2013_2014$DISTRICT_NUMBER==88)]
