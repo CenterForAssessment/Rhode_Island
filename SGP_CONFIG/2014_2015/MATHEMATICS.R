@@ -7,7 +7,7 @@ MATHEMATICS_2014_2015.config <- list(
                 sgp.content.areas=c(rep('MATHEMATICS', 5), 'GEOMETRY'),
                 sgp.panel.years=paste(2009:2014, 2010:2015, sep="_"),
                 sgp.grade.sequences=list(c('3', '4', '5', '6', '8', 'EOCT')),
-                sgp.projection.grade.sequences="NO_PROJECTIONS"),
+                sgp.projection.grade.sequences=as.list("NO_PROJECTIONS")),
 	ALGEBRA_I.2015 = list(
                 sgp.content.areas=c(rep('MATHEMATICS', 5), 'ALGEBRA_I'),
                 sgp.panel.years=paste(2009:2014, 2010:2015, sep="_"),
