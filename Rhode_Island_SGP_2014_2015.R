@@ -40,6 +40,7 @@ Rhode_Island_SGP <- updateSGP(
 			sgp.percentiles.equating.method=c("identity", "mean", "linear", "equipercentile"),
 			sgp.config=RI_CONFIG,
 			sgp.target.scale.scores=TRUE,
+			plot.types="studentGrowthPlot",
 			sgPlot.demo.report=TRUE,
 			save.intermediate.results=FALSE,
 			parallel.config=list(BACKEND="PARALLEL", WORKERS=list(PERCENTILES=2, PROJECTIONS=2, LAGGED_PROJECTIONS=2, SGP_SCALE_SCORE_TARGETS=2, SG_PLOTS=1)))

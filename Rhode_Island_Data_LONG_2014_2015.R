@@ -110,6 +110,10 @@ Rhode_Island_Data_LONG_2014_2015[,ACHIEVEMENT_LEVEL:=factor(ACHIEVEMENT_LEVEL)]
 levels(Rhode_Island_Data_LONG_2014_2015$ACHIEVEMENT_LEVEL) <- paste("Level", levels(Rhode_Island_Data_LONG_2014_2015$ACHIEVEMENT_LEVEL))
 Rhode_Island_Data_LONG_2014_2015[,ACHIEVEMENT_LEVEL:=as.character(ACHIEVEMENT_LEVEL)]
 
+Rhode_Island_Data_LONG_2014_2015[,STATE_ENROLLMENT_STATUS:=factor(2, levels=1:2, labels=c("Enrolled State: No", "Enrolled State: Yes"))]
+Rhode_Island_Data_LONG_2014_2015[,DISTRICT_ENROLLMENT_STATUS:=factor(2, levels=1:2, labels=c("Enrolled District: No", "Enrolled District: Yes"))]
+Rhode_Island_Data_LONG_2014_2015[,SCHOOL_ENROLLMENT_STATUS:=factor(2, levels=1:2, labels=c("Enrolled School: No", "Enrolled School: Yes"))]
+
 Rhode_Island_Data_LONG_2014_2015[,VALID_CASE:="VALID_CASE"]
 
 
