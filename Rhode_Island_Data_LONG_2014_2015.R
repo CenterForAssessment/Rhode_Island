@@ -14,7 +14,7 @@ require(foreign)
 ### Load data
 
 Rhode_Island_Data_LONG_2014_2015 <- as.data.table(read.spss("Data/Base_Files/2015_PARCC.sav", to.data.frame=TRUE, use.value.labels=FALSE))
-
+Rhode_Island_Test_Format <- as.data.table(read.spss("Data/Base_Files/2015 Summative File with Test Format.sav", to.data.frame=TRUE, use.value.labels=FALSE))
 
 ##########################################################
 ### Clean up 2014-2015 data
@@ -119,10 +119,31 @@ Rhode_Island_Data_LONG_2014_2015[,VALID_CASE:="VALID_CASE"]
 
 ### Resolve duplicates
 
-Rhode_Island_Data_LONG_2014_2015[!is.na(SCALE_SCORE)]
 setkey(Rhode_Island_Data_LONG_2014_2015, VALID_CASE, CONTENT_AREA, YEAR, ID, GRADE, SCALE_SCORE)
 setkey(Rhode_Island_Data_LONG_2014_2015, VALID_CASE, CONTENT_AREA, YEAR, ID)
 Rhode_Island_Data_LONG_2014_2015[which(duplicated(Rhode_Island_Data_LONG_2014_2015))-1, VALID_CASE:="INVALID_CASE"]
+Rhode_Island_Data_LONG_2014_2015[is.na(SCALE_SCORE), VALID_CASE:="INVALID_CASE"]
+
+
+### Add in TestFormat Variable
+
+variables.to.keep <- c("stateStudentIdentifier", "subject", "TestFormat")
+Rhode_Island_Test_Format <- Rhode_Island_Test_Format[,variables.to.keep,with=FALSE]
+setnames(Rhode_Island_Test_Format, c("ID", "CONTENT_AREA", "TEST_FORMAT"))
+
+Rhode_Island_Test_Format[,VALID_CASE:="VALID_CASE"]
+levels(Rhode_Island_Test_Format$ID) <- as.character(sapply(levels(Rhode_Island_Test_Format$ID), capwords))
+Rhode_Island_Test_Format[,ID:=as.character(ID)]
+levels(Rhode_Island_Test_Format$CONTENT_AREA) <- c("ALGEBRA_I", "ALGEBRA_II", "READING", "GEOMETRY", "INTEGRATED_MATHEMATICS_I", "MATHEMATICS")
+Rhode_Island_Test_Format[,CONTENT_AREA:=as.character(CONTENT_AREA)]
+levels(Rhode_Island_Test_Format$TEST_FORMAT) <- c("Online", "Paper")
+setkey(Rhode_Island_Test_Format, VALID_CASE, CONTENT_AREA, ID)
+Rhode_Island_Test_Format[which(duplicated(Rhode_Island_Test_Format))-1, VALID_CASE:="INVALID_CASE"]
+Rhode_Island_Test_Format <- Rhode_Island_Test_Format[VALID_CASE=="VALID_CASE"]
+setkey(Rhode_Island_Test_Format, VALID_CASE, CONTENT_AREA, ID)
+setkey(Rhode_Island_Data_LONG_2014_2015, VALID_CASE, CONTENT_AREA, ID)
+Rhode_Island_Data_LONG_2014_2015 <- Rhode_Island_Test_Format[Rhode_Island_Data_LONG_2014_2015]
+setkey(Rhode_Island_Data_LONG_2014_2015, VALID_CASE, CONTENT_AREA, YEAR, ID)
 
 
 ### Save results
