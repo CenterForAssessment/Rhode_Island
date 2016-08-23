@@ -21,7 +21,7 @@ Rhode_Island_Test_Format <- as.data.table(read.spss("Data/Base_Files/2015 Summat
 ##########################################################
 
 variables.to.keep <- c("assessmentYear", "responsibleDistrictIdentifier", "responsibleDistrictName", "responsibleSchoolInstitutionIdentifier",
-        "responsibleSchoolInstitutionName", "stateStudentIdentifier", "firstName", "lastName", "sex", "gradeLevelWhenAssessed",
+        "responsibleSchoolInstitutionName", "parccStudentIdentifier", "stateStudentIdentifier", "firstName", "lastName", "sex", "gradeLevelWhenAssessed",
         "hispanicOrLatinoEthnicity", "americanIndianOrAlaskaNative", "asian", "blackOrAfricanAmerican", "nativeHawaiianOrOtherPacificIslander", "white", "twoOrMoreRaces",
         "federalRaceEthnicity", "englishLearner", "giftedAndTalented", "migrantStatus", "economicDisadvantageStatus", "studentWithDisabilities", "primaryDisabilityType",
         "testCode", "assessmentGrade", "subject", "summativeScaleScore", "summativeCsem", "summativePerformanceLevel")
@@ -31,10 +31,10 @@ Rhode_Island_Data_LONG_2014_2015 <- Rhode_Island_Data_LONG_2014_2015[,variables.
 
 ### Tidy Up data
 
-variable.names.new <- c("YEAR", "DISTRICT_NUMBER", "DISTRICT_NAME", "SCHOOL_NUMBER", "SCHOOL_NAME", "ID", "FIRST_NAME", "LAST_NAME", "GENDER", "GRADE_ENROLLED",
+variable.names.new <- c("YEAR", "DISTRICT_NUMBER", "DISTRICT_NAME", "SCHOOL_NUMBER", "SCHOOL_NAME", "ID_PARCC", "ID", "FIRST_NAME", "LAST_NAME", "GENDER", "GRADE_ENROLLED",
     "hispanicOrLatinoEthnicity", "americanIndianOrAlaskaNative", "asian", "blackOrAfricanAmerican", "nativeHawaiianOrOtherPacificIslander", "white", "twoOrMoreRaces",
     "ETHNICITY", "ELL_STATUS", "GIFTED_AND_TALENTED_STATUS", "MIGRANT_STATUS", "FREE_REDUCED_LUNCH_STATUS", "IEP_STATUS", "DISABILITY_TYPE", "testCode", "GRADE",
-    "CONTENT_AREA", "SCALE_SCORE", "CSEM", "ACHIEVEMENT_LEVEL")
+    "CONTENT_AREA", "SCALE_SCORE_ACTUAL", "CSEM", "ACHIEVEMENT_LEVEL")
 
 setnames(Rhode_Island_Data_LONG_2014_2015, variable.names.new)
 
@@ -50,6 +50,8 @@ levels(Rhode_Island_Data_LONG_2014_2015$SCHOOL_NUMBER) <- as.character(sapply(le
 Rhode_Island_Data_LONG_2014_2015[,SCHOOL_NUMBER:=as.character(SCHOOL_NUMBER)]
 
 levels(Rhode_Island_Data_LONG_2014_2015$SCHOOL_NAME) <- as.character(sapply(levels(Rhode_Island_Data_LONG_2014_2015$SCHOOL_NAME), capwords))
+
+Rhode_Island_Data_LONG_2014_2015[,ID_PARCC:=as.character(ID_PARCC)]
 
 levels(Rhode_Island_Data_LONG_2014_2015$ID) <- as.character(sapply(levels(Rhode_Island_Data_LONG_2014_2015$ID), capwords))
 Rhode_Island_Data_LONG_2014_2015[,ID:=as.character(ID)]
@@ -99,9 +101,9 @@ Rhode_Island_Data_LONG_2014_2015[,testCode:=NULL]
 levels(Rhode_Island_Data_LONG_2014_2015$CONTENT_AREA) <- toupper(as.character(sapply(levels(Rhode_Island_Data_LONG_2014_2015$CONTENT_AREA), capwords)))
 levels(Rhode_Island_Data_LONG_2014_2015$CONTENT_AREA) <- gsub(" ", "_", levels(Rhode_Island_Data_LONG_2014_2015$CONTENT_AREA))
 Rhode_Island_Data_LONG_2014_2015[,CONTENT_AREA:=as.character(CONTENT_AREA)]
-Rhode_Island_Data_LONG_2014_2015[CONTENT_AREA=="ENGLISH_LANGUAGE_ARTS/LITERACY", CONTENT_AREA:="READING"]
+Rhode_Island_Data_LONG_2014_2015[CONTENT_AREA=="ENGLISH_LANGUAGE_ARTS/LITERACY", CONTENT_AREA:="ELA"]
 
-Rhode_Island_Data_LONG_2014_2015[,SCALE_SCORE:=as.numeric(as.character(SCALE_SCORE))]
+Rhode_Island_Data_LONG_2014_2015[,SCALE_SCORE_ACTUAL:=as.numeric(as.character(SCALE_SCORE_ACTUAL))]
 
 Rhode_Island_Data_LONG_2014_2015[,CSEM:=as.numeric(as.character(CSEM))]
 
@@ -119,10 +121,10 @@ Rhode_Island_Data_LONG_2014_2015[,VALID_CASE:="VALID_CASE"]
 
 ### Resolve duplicates
 
-setkey(Rhode_Island_Data_LONG_2014_2015, VALID_CASE, CONTENT_AREA, YEAR, ID, GRADE, SCALE_SCORE)
+setkey(Rhode_Island_Data_LONG_2014_2015, VALID_CASE, CONTENT_AREA, YEAR, ID, GRADE, SCALE_SCORE_ACTUAL)
 setkey(Rhode_Island_Data_LONG_2014_2015, VALID_CASE, CONTENT_AREA, YEAR, ID)
 Rhode_Island_Data_LONG_2014_2015[which(duplicated(Rhode_Island_Data_LONG_2014_2015))-1, VALID_CASE:="INVALID_CASE"]
-Rhode_Island_Data_LONG_2014_2015[is.na(SCALE_SCORE), VALID_CASE:="INVALID_CASE"]
+Rhode_Island_Data_LONG_2014_2015[is.na(SCALE_SCORE_ACTUAL), VALID_CASE:="INVALID_CASE"]
 
 
 ### Add in TestFormat Variable
@@ -134,7 +136,7 @@ setnames(Rhode_Island_Test_Format, c("ID", "CONTENT_AREA", "TEST_FORMAT"))
 Rhode_Island_Test_Format[,VALID_CASE:="VALID_CASE"]
 levels(Rhode_Island_Test_Format$ID) <- as.character(sapply(levels(Rhode_Island_Test_Format$ID), capwords))
 Rhode_Island_Test_Format[,ID:=as.character(ID)]
-levels(Rhode_Island_Test_Format$CONTENT_AREA) <- c("ALGEBRA_I", "ALGEBRA_II", "READING", "GEOMETRY", "INTEGRATED_MATHEMATICS_I", "MATHEMATICS")
+levels(Rhode_Island_Test_Format$CONTENT_AREA) <- c("ALGEBRA_I", "ALGEBRA_II", "ELA", "GEOMETRY", "INTEGRATED_MATHEMATICS_I", "MATHEMATICS")
 Rhode_Island_Test_Format[,CONTENT_AREA:=as.character(CONTENT_AREA)]
 levels(Rhode_Island_Test_Format$TEST_FORMAT) <- c("Online", "Paper")
 setkey(Rhode_Island_Test_Format, VALID_CASE, CONTENT_AREA, ID)
@@ -144,6 +146,33 @@ setkey(Rhode_Island_Test_Format, VALID_CASE, CONTENT_AREA, ID)
 setkey(Rhode_Island_Data_LONG_2014_2015, VALID_CASE, CONTENT_AREA, ID)
 Rhode_Island_Data_LONG_2014_2015 <- Rhode_Island_Test_Format[Rhode_Island_Data_LONG_2014_2015]
 setkey(Rhode_Island_Data_LONG_2014_2015, VALID_CASE, CONTENT_AREA, YEAR, ID)
+
+
+### ADD IN THETA
+
+tmp.PARCC <- as.data.table(read.csv("Data/Base_Files/PARCC_RI_2014-2015_SGPO_D20160513.csv", stringsAsFactors=FALSE))
+tmp.PARCC.subset <- tmp.PARCC[Period=="Spring", c("PARCCStudentIdentifier", "TestCode", "IRTTheta"), with=FALSE]
+setnames(tmp.PARCC.subset, c("ID_PARCC", "CONTENT_AREA", "SCALE_SCORE"))
+tmp.PARCC.subset[,CONTENT_AREA:=as.factor(CONTENT_AREA)]
+levels(tmp.PARCC.subset$CONTENT_AREA) <- c("ALGEBRA_I", "ALGEBRA_II", rep("ELA", 9), "GEOMETRY", rep("MATHEMATICS", 6), "INTEGRATED_MATHEMATICS_1")
+tmp.PARCC.subset[,CONTENT_AREA:=as.character(CONTENT_AREA)]
+tmp.PARCC.subset[,YEAR:="2014_2015"]
+tmp.PARCC.subset[,VALID_CASE:="VALID_CASE"]
+setkey(tmp.PARCC.subset, VALID_CASE, CONTENT_AREA, YEAR, ID_PARCC)
+setkey(Rhode_Island_Data_LONG_2014_2015, VALID_CASE, CONTENT_AREA, YEAR, ID_PARCC)
+
+Rhode_Island_Data_LONG_2014_2015 <- tmp.PARCC.subset[Rhode_Island_Data_LONG_2014_2015]
+setkey(Rhode_Island_Data_LONG_2014_2015, VALID_CASE, CONTENT_AREA, YEAR, ID)
+Rhode_Island_Data_LONG_2014_2015[,ID_PARCC:=NULL]
+
+### TEMPORARY CREATION of EMH_LEVEL
+
+Rhode_Island_Data_LONG_2014_2015[GRADE_ENROLLED %in% as.character(c(3,4,5)), EMH_LEVEL:="Elementary"]
+Rhode_Island_Data_LONG_2014_2015[GRADE_ENROLLED %in% as.character(c(6,7,8)), EMH_LEVEL:="Middle"]
+Rhode_Island_Data_LONG_2014_2015[GRADE_ENROLLED %in% as.character(c(9,10,11,12)), EMH_LEVEL:="High"]
+Rhode_Island_Data_LONG_2014_2015[,EMH_LEVEL:=as.factor(EMH_LEVEL)]
+
+
 
 
 ### Save results

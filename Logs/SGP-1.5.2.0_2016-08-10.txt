@@ -1,0 +1,29 @@
+
+Started outputSGP Wednesday August 10 08:53:14 2016: Files produced from outputSGP saved in 'Data'
+
+
+
+	outputSGP(
+		 sgp_object = Rhode_Island_SGP )
+
+	Started LONG data production in outputSGP Wednesday August 10 08:53:14 2016
+	Finished LONG data production in outputSGP Wednesday August 10 08:53:29 2016 in 14.735 Seconds 
+
+	Started LONG FINAL YEAR data production in outputSGP Wednesday August 10 08:53:29 2016
+	Finished LONG FINAL YEAR data production in outputSGP Wednesday August 10 08:53:40 2016 in 10.815 Seconds 
+
+	Started WIDE data production in outputSGP Wednesday August 10 08:53:40 2016
+	Finished WIDE data production in outputSGP Wednesday August 10 08:54:17 2016 in 37.068 Seconds 
+
+Finished outputSGP Wednesday August 10 08:54:17 2016 in 1 Minute, 3 Seconds 
+
+
+Started outputSGP Wednesday August 10 08:55:00 2016: Files produced from outputSGP saved in 'Data'
+
+
+
+	outputSGP(
+		 sgp_object = Rhode_Island_SGP
+		output.type = SchoolView )
+
+	Started SchoolView STUDENT_GROWTH data production in outputSGP Wednesday August 10 08:55:02 2016

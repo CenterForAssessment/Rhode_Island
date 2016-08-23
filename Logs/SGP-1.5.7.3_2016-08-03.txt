@@ -1,0 +1,149 @@
+
+Started abcSGP Wednesday August 03 07:12:24 2016
+
+
+	abcSGP(
+		 sgp_object = Rhode_Island_Data_LONG
+		steps = c("prepareSGP", "analyzeSGP")
+		sgp.percentiles = TRUE
+		sgp.projections = TRUE
+		sgp.projections.lagged = TRUE
+		sgp.percentiles.baseline = FALSE
+		sgp.projections.baseline = FALSE
+		sgp.projections.lagged.baseline = FALSE
+		sgp.target.scale.scores = TRUE
+		simulate.sgps = FALSE
+		sgp.config = RI_CONFIG )
+
+
+Started prepareSGP Wednesday August 03 07:12:24 2016
+
+
+	prepareSGP(
+		 data = sgp_object
+		data_supplementary = data_supplementary
+		state = state
+		var.names = prepareSGP.var.names
+		create.additional.variables = prepareSGP.create.additional.variables )
+
+Finished prepareSGP Wednesday August 03 07:12:25 2016 in 0.951 Seconds 
+
+
+Started analyzeSGP Wednesday August 03 07:12:25 2016
+
+
+	analyzeSGP(
+		 sgp_object = sgp_object
+		state = state
+		years = years
+		content_areas = content_areas
+		grades = grades
+		sgp.percentiles = sgp.percentiles
+		sgp.projections = sgp.projections
+		sgp.projections.lagged = sgp.projections.lagged
+		sgp.percentiles.baseline = sgp.percentiles.baseline
+		sgp.projections.baseline = sgp.projections.baseline
+		sgp.projections.lagged.baseline = sgp.projections.lagged.baseline
+		sgp.minimum.default.panel.years = sgp.minimum.default.panel.years
+		sgp.use.my.coefficient.matrices = sgp.use.my.coefficient.matrices
+		sgp.test.cohort.size = sgp.test.cohort.size
+		return.sgp.test.results = return.sgp.test.results
+		simulate.sgps = simulate.sgps
+		calculate.simex = calculate.simex
+		calculate.simex.baseline = calculate.simex.baseline
+		goodness.of.fit.print = goodness.of.fit.print
+		sgp.config = sgp.config
+		parallel.config = parallel.config
+		verbose.output = verbose.output
+		get.cohort.data.info = get.cohort.data.info
+		sgp.sqlite = sgp.sqlite
+		sgp.percentiles.equated = sgp.percentiles.equated
+		sgp.percentiles.equating.method = sgp.percentiles.equating.method
+		sgp.percentiles.calculate.sgps = sgp.percentiles.calculate.sgps
+		SGPt = SGPt )
+
+	Started studentGrowthPercentiles: Wednesday August 03 07:12:25 2016
+		Content Area: ALGEBRA_I, Year: 2015_2016, Grade Progression: 8, EOCT  (N=5,718)
+	Finished studentGrowthPercentiles: Wednesday August 03 07:12:28 2016 in 2.348 Seconds
+
+	Started studentGrowthPercentiles: Wednesday August 03 07:12:28 2016
+		Content Area: ALGEBRA_I, Year: 2015_2016, Grade Progression: 7, EOCT  (N=2,469)
+	Finished studentGrowthPercentiles: Wednesday August 03 07:12:29 2016 in 0.859 Seconds
+
+	Started studentGrowthPercentiles: Wednesday August 03 07:12:29 2016
+		Content Area: GEOMETRY, Year: 2015_2016, Grade Progression: EOCT, EOCT  (N=6,881)
+	Finished studentGrowthPercentiles: Wednesday August 03 07:12:31 2016 in 2.675 Seconds
+
+	Started studentGrowthPercentiles: Wednesday August 03 07:12:31 2016
+		Content Area: MATHEMATICS, Year: 2015_2016, Grade Progression: 7, 8  (N=6,742)
+	Finished studentGrowthPercentiles: Wednesday August 03 07:12:34 2016 in 2.655 Seconds
+
+	Started studentGrowthPercentiles: Wednesday August 03 07:12:34 2016
+		Content Area: MATHEMATICS, Year: 2015_2016, Grade Progression: 6, 7  (N=9,210)
+	Finished studentGrowthPercentiles: Wednesday August 03 07:12:38 2016 in 3.803 Seconds
+
+	Started studentGrowthPercentiles: Wednesday August 03 07:12:38 2016
+		Content Area: MATHEMATICS, Year: 2015_2016, Grade Progression: 5, 6  (N=9,724)
+	Finished studentGrowthPercentiles: Wednesday August 03 07:12:45 2016 in 6.96 Seconds
+
+	Started studentGrowthPercentiles: Wednesday August 03 07:12:45 2016
+		Content Area: MATHEMATICS, Year: 2015_2016, Grade Progression: 4, 5  (N=9,769)
+	Finished studentGrowthPercentiles: Wednesday August 03 07:12:53 2016 in 8.456 Seconds
+
+	Started studentGrowthPercentiles: Wednesday August 03 07:12:53 2016
+		Content Area: MATHEMATICS, Year: 2015_2016, Grade Progression: 3, 4  (N=9,852)
+	Finished studentGrowthPercentiles: Wednesday August 03 07:12:59 2016 in 5.239 Seconds
+
+	Started studentGrowthPercentiles: Wednesday August 03 07:12:59 2016
+		Content Area: ELA, Year: 2015_2016, Grade Progression: 8, 9  (N=8,417)
+	Finished studentGrowthPercentiles: Wednesday August 03 07:13:02 2016 in 3.207 Seconds
+
+	Started studentGrowthPercentiles: Wednesday August 03 07:13:02 2016
+		Content Area: ELA, Year: 2015_2016, Grade Progression: 7, 8  (N=9,146)
+	Finished studentGrowthPercentiles: Wednesday August 03 07:13:08 2016 in 6.599 Seconds
+
+	Started studentGrowthPercentiles: Wednesday August 03 07:13:09 2016
+		Content Area: ELA, Year: 2015_2016, Grade Progression: 6, 7  (N=9,159)
+	Finished studentGrowthPercentiles: Wednesday August 03 07:13:14 2016 in 5.011 Seconds
+
+	Started studentGrowthPercentiles: Wednesday August 03 07:13:14 2016
+		Content Area: ELA, Year: 2015_2016, Grade Progression: 5, 6  (N=9,636)
+	Finished studentGrowthPercentiles: Wednesday August 03 07:13:21 2016 in 7.376 Seconds
+
+	Started studentGrowthPercentiles: Wednesday August 03 07:13:21 2016
+		Content Area: ELA, Year: 2015_2016, Grade Progression: 4, 5  (N=9,661)
+	Finished studentGrowthPercentiles: Wednesday August 03 07:13:25 2016 in 3.923 Seconds
+
+	Started studentGrowthPercentiles: Wednesday August 03 07:13:25 2016
+		Content Area: ELA, Year: 2015_2016, Grade Progression: 3, 4  (N=9,762)
+	Finished studentGrowthPercentiles: Wednesday August 03 07:13:29 2016 in 3.877 Seconds
+
+	Started studentGrowthProjections: Wednesday August 03 07:13:37 2016
+		Content Area: ELA, Year: 2015_2016, Grade Progression: 3  (N=10,673)
+	Finished studentGrowthProjections: Wednesday August 03 07:15:37 2016 in 1 Minute, 60 Seconds
+
+	Started studentGrowthProjections: Wednesday August 03 07:15:41 2016
+		Content Area: ELA, Year: 2015_2016, Grade Progression: 4  (N=10,515)
+	Finished studentGrowthProjections: Wednesday August 03 07:15:48 2016 in 7.651 Seconds
+
+	Started studentGrowthProjections: Wednesday August 03 07:15:51 2016
+		Content Area: ELA, Year: 2015_2016, Grade Progression: 5  (N=10,379)
+	Finished studentGrowthProjections: Wednesday August 03 07:15:57 2016 in 5.922 Seconds
+
+	Started studentGrowthProjections: Wednesday August 03 07:15:59 2016
+		Content Area: ELA, Year: 2015_2016, Grade Progression: 6  (N=10,478)
+	Finished studentGrowthProjections: Wednesday August 03 07:16:04 2016 in 5.221 Seconds
+
+	Started studentGrowthProjections: Wednesday August 03 07:16:06 2016
+		Content Area: ELA, Year: 2015_2016, Grade Progression: 7  (N=10,179)
+	Finished studentGrowthProjections: Wednesday August 03 07:16:09 2016 in 3.132 Seconds
+
+	Started studentGrowthProjections: Wednesday August 03 07:16:10 2016
+		Content Area: ELA, Year: 2015_2016, Grade Progression: 8  (N=10,340)
+	Finished studentGrowthProjections: Wednesday August 03 07:16:12 2016 in 1.941 Seconds
+
+	Started studentGrowthProjections: Wednesday August 03 07:16:23 2016
+		Content Area: MATHEMATICS, Year: 2015_2016, Grade Progression: 3  (N=10,784)
+NOTE: Not all CONTENT_AREA values in content_area.progression have associated COHORT referenced coefficient matrices:
+	 ALGEBRA_II.2015_2016	Finished studentGrowthProjections: Wednesday August 03 07:36:23 2016 in 19 Minutes, 60 Seconds
+
