@@ -26,10 +26,6 @@ setkey(slot.data, VALID_CASE, CONTENT_AREA, YEAR, ID, GRADE, SGP)
 setkey(slot.data, VALID_CASE, CONTENT_AREA, YEAR, ID)
 slot.data[which(duplicated(slot.data, by=key(slot.data)))-1, VALID_CASE:="INVALID_CASE"]
 
-### Remove students from schools not suitable for reporting
-
-slot.data[SCHOOL_NUMBER %in% bad_schools$SCHOOL_NUMBER, VALID_CASE:="INVALID_CASE"]
-
 
 ### Put slot.data bad into @Data
 
@@ -42,6 +38,11 @@ setkey(Rhode_Island_SGP@Data, VALID_CASE, CONTENT_AREA, YEAR, ID)
 Rhode_Island_SGP <- summarizeSGP(
 			Rhode_Island_SGP,
 			parallel.config=list(BACKEND="PARALLEL", WORKERS=list(SUMMARY=4)))
+
+
+### Remove students from schools not suitable for reporting
+
+slot.data[SCHOOL_NUMBER %in% bad_schools$SCHOOL_NUMBER, VALID_CASE:="INVALID_CASE"]
 
 
 ### outputSGP
