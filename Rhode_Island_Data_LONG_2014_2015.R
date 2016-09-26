@@ -15,6 +15,8 @@ require(foreign)
 
 Rhode_Island_Data_LONG_2014_2015 <- as.data.table(read.spss("Data/Base_Files/2015_PARCC.sav", to.data.frame=TRUE, use.value.labels=FALSE))
 Rhode_Island_Test_Format <- as.data.table(read.spss("Data/Base_Files/2015 Summative File with Test Format.sav", to.data.frame=TRUE, use.value.labels=FALSE))
+load("Data/Base_Files/bad_schools.Rdata")
+
 
 ##########################################################
 ### Clean up 2014-2015 data
@@ -116,6 +118,8 @@ Rhode_Island_Data_LONG_2014_2015[,STATE_ENROLLMENT_STATUS:=factor(2, levels=1:2,
 Rhode_Island_Data_LONG_2014_2015[,DISTRICT_ENROLLMENT_STATUS:=factor(2, levels=1:2, labels=c("Enrolled District: No", "Enrolled District: Yes"))]
 Rhode_Island_Data_LONG_2014_2015[,SCHOOL_ENROLLMENT_STATUS:=factor(2, levels=1:2, labels=c("Enrolled School: No", "Enrolled School: Yes"))]
 
+Rhode_Island_Data_LONG_2014_2015[SCHOOL_NUMBER %in% bad_schools$SCHOOL_NUMBER,SCHOOL_ENROLLMENT_STATUS:="Enrolled School: No"]
+
 Rhode_Island_Data_LONG_2014_2015[,VALID_CASE:="VALID_CASE"]
 
 
@@ -171,8 +175,6 @@ Rhode_Island_Data_LONG_2014_2015[GRADE_ENROLLED %in% as.character(c(3,4,5)), EMH
 Rhode_Island_Data_LONG_2014_2015[GRADE_ENROLLED %in% as.character(c(6,7,8)), EMH_LEVEL:="Middle"]
 Rhode_Island_Data_LONG_2014_2015[GRADE_ENROLLED %in% as.character(c(9,10,11,12)), EMH_LEVEL:="High"]
 Rhode_Island_Data_LONG_2014_2015[,EMH_LEVEL:=as.factor(EMH_LEVEL)]
-
-
 
 
 ### Save results

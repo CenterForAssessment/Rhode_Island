@@ -13,6 +13,7 @@ require(data.table)
 ### Load data
 
 Rhode_Island_Data_LONG_2015_2016 <- fread("Data/Base_Files/2016_PARCC_070816.csv")
+load("Data/Base_Files/bad_schools.Rdata")
 
 
 ##########################################################
@@ -112,6 +113,8 @@ levels(Rhode_Island_Data_LONG_2015_2016$TEST_FORMAT) <- c("Online", "Paper")
 Rhode_Island_Data_LONG_2015_2016[,STATE_ENROLLMENT_STATUS:=factor(2, levels=1:2, labels=c("Enrolled State: No", "Enrolled State: Yes"))]
 Rhode_Island_Data_LONG_2015_2016[,DISTRICT_ENROLLMENT_STATUS:=factor(2, levels=1:2, labels=c("Enrolled District: No", "Enrolled District: Yes"))]
 Rhode_Island_Data_LONG_2015_2016[,SCHOOL_ENROLLMENT_STATUS:=factor(2, levels=1:2, labels=c("Enrolled School: No", "Enrolled School: Yes"))]
+
+Rhode_Island_Data_LONG_2015_2016[SCHOOL_NUMBER %in% bad_schools$SCHOOL_NUMBER,SCHOOL_ENROLLMENT_STATUS:="Enrolled School: No"]
 
 Rhode_Island_Data_LONG_2015_2016[,VALID_CASE:="VALID_CASE"]
 
