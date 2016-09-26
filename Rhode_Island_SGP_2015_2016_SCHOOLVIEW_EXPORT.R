@@ -13,6 +13,7 @@ require(data.table)
 ### Load data
 
 load("Data/Rhode_Island_SGP.Rdata")
+load("Data/Base_Files/bad_schools.Rdata")
 
 
 ### Recode CONTENT_AREA and GRADE variables for ALGEBRA_I and GEOMETRY
@@ -24,6 +25,14 @@ slot.data[!CONTENT_AREA %in% c("ELA", "MATHEMATICS"), VALID_CASE:="INVALID_CASE"
 setkey(slot.data, VALID_CASE, CONTENT_AREA, YEAR, ID, GRADE, SGP)
 setkey(slot.data, VALID_CASE, CONTENT_AREA, YEAR, ID)
 slot.data[which(duplicated(slot.data, by=key(slot.data)))-1, VALID_CASE:="INVALID_CASE"]
+
+### Remove students from schools not suitable for reporting
+
+slot.data[SCHOOL_NUMBER %in% bad_schools$SCHOOL_NUMBER, VALID_CASE:="INVALID_CASE"]
+
+
+### Put slot.data bad into @Data
+
 Rhode_Island_SGP@Data <- slot.data
 setkey(Rhode_Island_SGP@Data, VALID_CASE, CONTENT_AREA, YEAR, ID)
 
