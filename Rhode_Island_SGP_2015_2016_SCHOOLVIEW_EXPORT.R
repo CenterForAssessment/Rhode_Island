@@ -43,6 +43,8 @@ Rhode_Island_SGP <- summarizeSGP(
 ### Remove students from schools not suitable for reporting
 
 slot.data[SCHOOL_NUMBER %in% bad_schools$SCHOOL_NUMBER, VALID_CASE:="INVALID_CASE"]
+Rhode_Island_SGP@Data <- slot.data
+setkey(Rhode_Island_SGP@Data, VALID_CASE, CONTENT_AREA, YEAR, ID)
 
 
 ### outputSGP
