@@ -64,7 +64,7 @@ Rhode_Island_Data_LONG_2015_2016[,GRADE:=as.character(GRADE)]
 Rhode_Island_Data_LONG_2015_2016[,ETHNICITY:=as.factor(ETHNICITY)]
 levels(Rhode_Island_Data_LONG_2015_2016$ETHNICITY) <- c("No Primary Race/Ethnicity Reported", "American Indian or Alaskan Native", "Asian", "Black or African American", "Hispanic or Latino", "White", "Native Hawaiian or Pacific Islander", "Multiple Ethnicities Reported")
 
-Rhode_Island_Data_LONG_2015_2016[,c("hispanicOrLatinoEthnicity", "americanIndianOrAlaskaNative", "asian", "blackOrAfricanAmerican", "nativeHawaiianOrOtherPacificIslander", "white", "twoOrMoreRaces"):=NULL,with=FALSE]
+Rhode_Island_Data_LONG_2015_2016[,c("hispanicOrLatinoEthnicity", "americanIndianOrAlaskaNative", "asian", "blackOrAfricanAmerican", "nativeHawaiianOrOtherPacificIslander", "white", "twoOrMoreRaces"):=NULL]
 
 Rhode_Island_Data_LONG_2015_2016[ELL_STATUS=="",ELL_STATUS:=NA]
 Rhode_Island_Data_LONG_2015_2016[,ELL_STATUS:=as.factor(ELL_STATUS)]
@@ -114,7 +114,9 @@ Rhode_Island_Data_LONG_2015_2016[,STATE_ENROLLMENT_STATUS:=factor(2, levels=1:2,
 Rhode_Island_Data_LONG_2015_2016[,DISTRICT_ENROLLMENT_STATUS:=factor(2, levels=1:2, labels=c("Enrolled District: No", "Enrolled District: Yes"))]
 Rhode_Island_Data_LONG_2015_2016[,SCHOOL_ENROLLMENT_STATUS:=factor(2, levels=1:2, labels=c("Enrolled School: No", "Enrolled School: Yes"))]
 
-Rhode_Island_Data_LONG_2015_2016[SCHOOL_NUMBER %in% bad_schools$SCHOOL_NUMBER,SCHOOL_ENROLLMENT_STATUS:="Enrolled School: No"]
+setkey(bad_schools, DISTRICT_NUMBER, SCHOOL_NUMBER)
+setkey(Rhode_Island_Data_LONG_2015_2016, DISTRICT_NUMBER, SCHOOL_NUMBER)
+Rhode_Island_Data_LONG_2015_2016[bad_schools, SCHOOL_ENROLLMENT_STATUS:="Enrolled School: No"]
 
 Rhode_Island_Data_LONG_2015_2016[,VALID_CASE:="VALID_CASE"]
 
