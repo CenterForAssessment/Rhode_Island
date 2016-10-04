@@ -53,6 +53,24 @@ setkey(Rhode_Island_SGP@Data, VALID_CASE, CONTENT_AREA, YEAR, ID)
 
 outputSGP(Rhode_Island_SGP, output.type="SchoolView")
 
+
+### Clean up SCHOOL_NUMBER
+
+tmp.files <- c("SCHOOL.dat", "SCHOOL_ETHNICITY.dat", "SCHOOL_GRADE.dat", "SCHOOL_STUDENTGROUP.dat")
+for (tmp.iter in tmp.files) {
+	tmp <- fread(file.path("Data/SchoolView/TEXT", tmp.iter), colClasses="character")
+	tmp[,SCHOOL_NUMBER:=strtail(SCHOOL_NUMBER, -3)]
+	write.table(tmp, file=file.path("Data/SchoolView/TEXT", tmp.iter), sep="|", row.names=FALSE, quote=FALSE)
+}
+
+load("Data/SchoolView/RDATA/STUDENT_GROWTH.Rdata")
+STUDENT_GROWTH[,SCHOOL_NUMBER:=strtail(SCHOOL_NUMBER, -3)]
+save(STUDENT_GROWTH, file="Data/SchoolView/RDATA/STUDENT_GROWTH.Rdata")
+unlink("Data/SchoolView/TEXT/STUDENT_GROWTH.dat.zip")
+write.table(STUDENT_GROWTH, file="Data/SchoolView/TEXT/STUDENT_GROWTH.dat", sep="|", row.names=FALSE, quote=FALSE)
+
+
+###
 ### Save results
 
 save(Rhode_Island_SGP, file="Data/SchoolView/Rhode_Island_SGP_2015_2016_SCHOOLVIEW.Rdata")
