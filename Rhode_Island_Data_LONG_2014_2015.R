@@ -50,6 +50,7 @@ levels(Rhode_Island_Data_LONG_2014_2015$DISTRICT_NAME) <- as.character(sapply(le
 
 levels(Rhode_Island_Data_LONG_2014_2015$SCHOOL_NUMBER) <- as.character(sapply(levels(Rhode_Island_Data_LONG_2014_2015$SCHOOL_NUMBER), capwords))
 Rhode_Island_Data_LONG_2014_2015[,SCHOOL_NUMBER:=as.character(SCHOOL_NUMBER)]
+Rhode_Island_Data_LONG_2014_2015[,SCHOOL_NUMBER:=paste(DISTRICT_NUMBER, SCHOOL_NUMBER, sep="_")]
 
 levels(Rhode_Island_Data_LONG_2014_2015$SCHOOL_NAME) <- as.character(sapply(levels(Rhode_Island_Data_LONG_2014_2015$SCHOOL_NAME), capwords))
 
@@ -72,7 +73,7 @@ Rhode_Island_Data_LONG_2014_2015[,GRADE:=as.character(GRADE)]
 
 levels(Rhode_Island_Data_LONG_2014_2015$ETHNICITY) <- c("No Primary Race/Ethnicity Reported", "American Indian or Alaskan Native", "Asian", "Black or African American", "Hispanic or Latino", "White", "Native Hawaiian or Pacific Islander", "Multiple Ethnicities Reported")
 
-Rhode_Island_Data_LONG_2014_2015[,c("hispanicOrLatinoEthnicity", "americanIndianOrAlaskaNative", "asian", "blackOrAfricanAmerican", "nativeHawaiianOrOtherPacificIslander", "white", "twoOrMoreRaces"):=NULL,with=FALSE]
+Rhode_Island_Data_LONG_2014_2015[,c("hispanicOrLatinoEthnicity", "americanIndianOrAlaskaNative", "asian", "blackOrAfricanAmerican", "nativeHawaiianOrOtherPacificIslander", "white", "twoOrMoreRaces"):=NULL]
 
 Rhode_Island_Data_LONG_2014_2015[ELL_STATUS==" ",ELL_STATUS:=factor(NA)]
 Rhode_Island_Data_LONG_2014_2015[,ELL_STATUS:=factor(ELL_STATUS)]
@@ -118,7 +119,9 @@ Rhode_Island_Data_LONG_2014_2015[,STATE_ENROLLMENT_STATUS:=factor(2, levels=1:2,
 Rhode_Island_Data_LONG_2014_2015[,DISTRICT_ENROLLMENT_STATUS:=factor(2, levels=1:2, labels=c("Enrolled District: No", "Enrolled District: Yes"))]
 Rhode_Island_Data_LONG_2014_2015[,SCHOOL_ENROLLMENT_STATUS:=factor(2, levels=1:2, labels=c("Enrolled School: No", "Enrolled School: Yes"))]
 
-Rhode_Island_Data_LONG_2014_2015[SCHOOL_NUMBER %in% bad_schools$SCHOOL_NUMBER,SCHOOL_ENROLLMENT_STATUS:="Enrolled School: No"]
+setkey(bad_schools, DISTRICT_NUMBER, SCHOOL_NUMBER)
+setkey(Rhode_Island_Data_LONG_2014_2015, DISTRICT_NUMBER, SCHOOL_NUMBER)
+Rhode_Island_Data_LONG_2014_2015[bad_schools, SCHOOL_ENROLLMENT_STATUS:="Enrolled School: No"]
 
 Rhode_Island_Data_LONG_2014_2015[,VALID_CASE:="VALID_CASE"]
 

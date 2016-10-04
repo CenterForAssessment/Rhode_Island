@@ -12,7 +12,7 @@ require(data.table)
 
 ### Load data
 
-Rhode_Island_Data_LONG_2015_2016 <- fread("Data/Base_Files/2016_PARCC_070816.csv")
+Rhode_Island_Data_LONG_2015_2016 <- fread("Data/Base_Files/2016_PARCC_071416.csv")
 load("Data/Base_Files/bad_schools.Rdata")
 
 
@@ -45,6 +45,8 @@ levels(Rhode_Island_Data_LONG_2015_2016$DISTRICT_NAME) <- as.character(sapply(le
 
 Rhode_Island_Data_LONG_2015_2016[,SCHOOL_NAME:=as.factor(SCHOOL_NAME)]
 levels(Rhode_Island_Data_LONG_2015_2016$SCHOOL_NAME) <- as.character(sapply(levels(Rhode_Island_Data_LONG_2015_2016$SCHOOL_NAME), capwords))
+
+Rhode_Island_Data_LONG_2015_2016[,SCHOOL_NUMBER:=paste(DISTRICT_NUMBER, SCHOOL_NUMBER, sep="_")]
 
 Rhode_Island_Data_LONG_2015_2016[,FIRST_NAME:=as.factor(FIRST_NAME)]
 levels(Rhode_Island_Data_LONG_2015_2016$FIRST_NAME) <- as.character(sapply(levels(Rhode_Island_Data_LONG_2015_2016$FIRST_NAME), capwords))
