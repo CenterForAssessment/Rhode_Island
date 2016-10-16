@@ -89,7 +89,8 @@ levels(Rhode_Island_Data_LONG_2014_2015$MIGRANT_STATUS) <- c("Migrant Status: No
 
 Rhode_Island_Data_LONG_2014_2015[FREE_REDUCED_LUNCH_STATUS==" ",FREE_REDUCED_LUNCH_STATUS:=factor(NA)]
 Rhode_Island_Data_LONG_2014_2015[,FREE_REDUCED_LUNCH_STATUS:=factor(FREE_REDUCED_LUNCH_STATUS)]
-levels(Rhode_Island_Data_LONG_2014_2015$FREE_REDUCED_LUNCH_STATUS) <- c("Economically Disadvantaged", "Not Economically Disadvantaged")
+levels(Rhode_Island_Data_LONG_2014_2015$FREE_REDUCED_LUNCH_STATUS) <- c("Not Economically Disadvantaged", "Economically Disadvantaged")
+Rhode_Island_Data_LONG_2014_2015[,FREE_REDUCED_LUNCH_STATUS:=as.factor(as.character(FREE_REDUCED_LUNCH_STATUS))]
 
 Rhode_Island_Data_LONG_2014_2015[IEP_STATUS==" ",IEP_STATUS:=factor(NA)]
 Rhode_Island_Data_LONG_2014_2015[,IEP_STATUS:=factor(IEP_STATUS)]

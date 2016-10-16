@@ -72,17 +72,21 @@ Rhode_Island_Data_LONG_2015_2016[ELL_STATUS=="",ELL_STATUS:=NA]
 Rhode_Island_Data_LONG_2015_2016[,ELL_STATUS:=as.factor(ELL_STATUS)]
 levels(Rhode_Island_Data_LONG_2015_2016$ELL_STATUS) <- c("Non-English Language Learners (ELL)", "English Language Learners (ELL)")
 
-Rhode_Island_Data_LONG_2015_2016[GIFTED_AND_TALENTED_STATUS=="",GIFTED_AND_TALENTED_STATUS:=NA]
+Rhode_Island_Data_LONG_2015_2016[GIFTED_AND_TALENTED_STATUS=="N",GIFTED_AND_TALENTED_STATUS:="Y"]
+Rhode_Island_Data_LONG_2015_2016[GIFTED_AND_TALENTED_STATUS=="",GIFTED_AND_TALENTED_STATUS:="N"]
 Rhode_Island_Data_LONG_2015_2016[,GIFTED_AND_TALENTED_STATUS:=factor(GIFTED_AND_TALENTED_STATUS)]
 levels(Rhode_Island_Data_LONG_2015_2016$GIFTED_AND_TALENTED_STATUS) <- c("Gifted and Talented Status: No", "Gifted and Talented Status: Yes")
 
-Rhode_Island_Data_LONG_2015_2016[MIGRANT_STATUS=="",MIGRANT_STATUS:=NA]
+Rhode_Island_Data_LONG_2015_2016[MIGRANT_STATUS=="N",MIGRANT_STATUS:="Y"]
+Rhode_Island_Data_LONG_2015_2016[MIGRANT_STATUS=="",MIGRANT_STATUS:="N"]
 Rhode_Island_Data_LONG_2015_2016[,MIGRANT_STATUS:=factor(MIGRANT_STATUS)]
 levels(Rhode_Island_Data_LONG_2015_2016$MIGRANT_STATUS) <- c("Migrant Status: No", "Migrant Status: Yes")
 
-Rhode_Island_Data_LONG_2015_2016[FREE_REDUCED_LUNCH_STATUS=="",FREE_REDUCED_LUNCH_STATUS:=NA]
+Rhode_Island_Data_LONG_2015_2016[FREE_REDUCED_LUNCH_STATUS=="N",FREE_REDUCED_LUNCH_STATUS:=NA]
+Rhode_Island_Data_LONG_2015_2016[FREE_REDUCED_LUNCH_STATUS=="",FREE_REDUCED_LUNCH_STATUS:="N"]
 Rhode_Island_Data_LONG_2015_2016[,FREE_REDUCED_LUNCH_STATUS:=factor(FREE_REDUCED_LUNCH_STATUS)]
-levels(Rhode_Island_Data_LONG_2015_2016$FREE_REDUCED_LUNCH_STATUS) <- c("Economically Disadvantaged", "Not Economically Disadvantaged")
+levels(Rhode_Island_Data_LONG_2015_2016$FREE_REDUCED_LUNCH_STATUS) <- c("Not Economically Disadvantaged", "Economically Disadvantaged")
+Rhode_Island_Data_LONG_2015_2016[,FREE_REDUCED_LUNCH_STATUS:=as.factor(as.character(FREE_REDUCED_LUNCH_STATUS))]
 
 Rhode_Island_Data_LONG_2015_2016[IEP_STATUS=="",IEP_STATUS:=NA]
 Rhode_Island_Data_LONG_2015_2016[,IEP_STATUS:=factor(IEP_STATUS)]
