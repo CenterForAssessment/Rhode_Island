@@ -19,6 +19,7 @@ load("Data/Base_Files/bad_schools.Rdata")
 ### Recode CONTENT_AREA and GRADE variables for ALGEBRA_I and GEOMETRY
 
 slot.data <- copy(Rhode_Island_SGP@Data)
+slot.data[,CONTENT_AREA_ORIGINAL:=CONTENT_AREA]
 slot.data[CONTENT_AREA=="ALGEBRA_I", c("CONTENT_AREA", "GRADE"):=list("MATHEMATICS", "9")]
 slot.data[CONTENT_AREA=="GEOMETRY", c("CONTENT_AREA", "GRADE"):=list("MATHEMATICS", "10")]
 slot.data[!CONTENT_AREA %in% c("ELA", "MATHEMATICS"), VALID_CASE:="INVALID_CASE"]
