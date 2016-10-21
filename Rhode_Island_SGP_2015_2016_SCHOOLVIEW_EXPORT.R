@@ -38,7 +38,7 @@ setkey(Rhode_Island_SGP@Data, VALID_CASE, CONTENT_AREA, YEAR, ID)
 
 Rhode_Island_SGP <- summarizeSGP(
 			Rhode_Island_SGP,
-			parallel.config=list(BACKEND="PARALLEL", WORKERS=list(SUMMARY=4)))
+			parallel.config=list(BACKEND="PARALLEL", WORKERS=list(SUMMARY=6)))
 
 
 ### Remove students from schools not suitable for reporting
@@ -46,6 +46,9 @@ Rhode_Island_SGP <- summarizeSGP(
 setkey(bad_schools, YEAR, DISTRICT_NUMBER, SCHOOL_NUMBER)
 setkey(slot.data, YEAR, DISTRICT_NUMBER, SCHOOL_NUMBER)
 slot.data[bad_schools, VALID_CASE:="INVALID_CASE"]
+slot.data[,CONTENT_AREA:=CONTENT_AREA_ORIGINAL]
+slot.data[,CONTENT_AREA_ORIGINAL:=NULL]
+slot.data[CONTENT_AREA %in% c("ALGEBRA_I", "GEOMETRY"), GRADE:="EOCT"]
 Rhode_Island_SGP@Data <- slot.data
 setkey(Rhode_Island_SGP@Data, VALID_CASE, CONTENT_AREA, YEAR, ID)
 
