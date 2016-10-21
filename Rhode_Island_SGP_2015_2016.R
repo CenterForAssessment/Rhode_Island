@@ -29,7 +29,8 @@ RI_CONFIG <- c(ELA_2015_2016.config, MATHEMATICS_2015_2016.config)
 
 Rhode_Island_SGP <- abcSGP(
 			Rhode_Island_Data_LONG,
-			steps=c("prepareSGP", "analyzeSGP", "combineSGP", "summarizeSGP"),
+			steps=c("prepareSGP", "analyzeSGP", "combineSGP", "summarizeSGP", "outputSGP"),
+#			steps=c("prepareSGP", "analyzeSGP", "combineSGP", "summarizeSGP", "visualizeSGP", "outputSGP"),
 			sgp.percentiles=TRUE,
 			sgp.projections=TRUE,
 			sgp.projections.lagged=TRUE,
@@ -38,10 +39,11 @@ Rhode_Island_SGP <- abcSGP(
 			sgp.projections.lagged.baseline=FALSE,
 			simulate.sgps=FALSE,
 			sgp.config=RI_CONFIG,
-			sgp.target.scale.scores=TRUE)#,
-#			parallel.config=list(BACKEND="PARALLEL", WORKERS=list(PERCENTILES=2, PROJECTIONS=2)))
+			sgp.target.scale.scores=TRUE,
+			sgPlot.demo.report=TRUE,
+			parallel.config=list(BACKEND="PARALLEL", WORKERS=list(PERCENTILES=2, PROJECTIONS=2, LAGGED_PROJECTIONS=2, SGP_SCALE_SCORE_TARGETS=2, SG_PLOTS=1)))
 
 
 ### Save results
 
-#save(Rhode_Island_SGP, file="Data/Rhode_Island_SGP.Rdata")
+save(Rhode_Island_SGP, file="Data/Rhode_Island_SGP.Rdata")

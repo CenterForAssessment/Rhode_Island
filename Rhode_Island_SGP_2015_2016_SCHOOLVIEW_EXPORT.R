@@ -53,7 +53,16 @@ Rhode_Island_SGP@Data <- slot.data
 setkey(Rhode_Island_SGP@Data, VALID_CASE, CONTENT_AREA, YEAR, ID)
 
 
+###
+### Save results
+###
+
+save(Rhode_Island_SGP, file="Data/SchoolView/Rhode_Island_SGP_2015_2016_SCHOOLVIEW.Rdata")
+
+
+###
 ### outputSGP
+###
 
 outputSGP(Rhode_Island_SGP, output.type="SchoolView")
 
@@ -72,10 +81,3 @@ STUDENT_GROWTH[,SCHOOL_NUMBER:=strtail(SCHOOL_NUMBER, -3)]
 save(STUDENT_GROWTH, file="Data/SchoolView/RDATA/STUDENT_GROWTH.Rdata")
 unlink("Data/SchoolView/TEXT/STUDENT_GROWTH.dat.zip")
 write.table(STUDENT_GROWTH, file="Data/SchoolView/TEXT/STUDENT_GROWTH.dat", sep="|", row.names=FALSE, quote=FALSE)
-
-
-###
-### Save results
-###
-
-save(Rhode_Island_SGP, file="Data/SchoolView/Rhode_Island_SGP_2015_2016_SCHOOLVIEW.Rdata")
