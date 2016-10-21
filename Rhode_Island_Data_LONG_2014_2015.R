@@ -131,7 +131,7 @@ Rhode_Island_Data_LONG_2014_2015[,VALID_CASE:="VALID_CASE"]
 
 setkey(Rhode_Island_Data_LONG_2014_2015, VALID_CASE, CONTENT_AREA, YEAR, ID, GRADE, SCALE_SCORE_ACTUAL)
 setkey(Rhode_Island_Data_LONG_2014_2015, VALID_CASE, CONTENT_AREA, YEAR, ID)
-Rhode_Island_Data_LONG_2014_2015[which(duplicated(Rhode_Island_Data_LONG_2014_2015))-1, VALID_CASE:="INVALID_CASE"]
+Rhode_Island_Data_LONG_2014_2015[which(duplicated(Rhode_Island_Data_LONG_2014_2015, by=key(Rhode_Island_Data_LONG_2014_2015)))-1, VALID_CASE:="INVALID_CASE"]
 Rhode_Island_Data_LONG_2014_2015[is.na(SCALE_SCORE_ACTUAL), VALID_CASE:="INVALID_CASE"]
 Rhode_Island_Data_LONG_2014_2015[GRADE=="11", VALID_CASE:="INVALID_CASE"]
 
@@ -149,7 +149,7 @@ levels(Rhode_Island_Test_Format$CONTENT_AREA) <- c("ALGEBRA_I", "ALGEBRA_II", "E
 Rhode_Island_Test_Format[,CONTENT_AREA:=as.character(CONTENT_AREA)]
 levels(Rhode_Island_Test_Format$TEST_FORMAT) <- c("Online", "Paper")
 setkey(Rhode_Island_Test_Format, VALID_CASE, CONTENT_AREA, ID)
-Rhode_Island_Test_Format[which(duplicated(Rhode_Island_Test_Format))-1, VALID_CASE:="INVALID_CASE"]
+Rhode_Island_Test_Format[which(duplicated(Rhode_Island_Test_Format, by=key(Rhode_Island_Test_Format)))-1, VALID_CASE:="INVALID_CASE"]
 Rhode_Island_Test_Format <- Rhode_Island_Test_Format[VALID_CASE=="VALID_CASE"]
 setkey(Rhode_Island_Test_Format, VALID_CASE, CONTENT_AREA, ID)
 setkey(Rhode_Island_Data_LONG_2014_2015, VALID_CASE, CONTENT_AREA, ID)

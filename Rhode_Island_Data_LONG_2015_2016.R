@@ -138,7 +138,7 @@ Rhode_Island_Data_LONG_2015_2016[,EMH_LEVEL:=as.factor(EMH_LEVEL)]
 
 setkey(Rhode_Island_Data_LONG_2015_2016, VALID_CASE, CONTENT_AREA, YEAR, ID, GRADE, SCALE_SCORE)
 setkey(Rhode_Island_Data_LONG_2015_2016, VALID_CASE, CONTENT_AREA, YEAR, ID)
-Rhode_Island_Data_LONG_2015_2016[which(duplicated(Rhode_Island_Data_LONG_2015_2016))-1, VALID_CASE:="INVALID_CASE"]
+Rhode_Island_Data_LONG_2015_2016[which(duplicated(Rhode_Island_Data_LONG_2015_2016, by=key(Rhode_Island_Data_LONG_2015_2016)))-1, VALID_CASE:="INVALID_CASE"]
 Rhode_Island_Data_LONG_2015_2016[is.na(SCALE_SCORE), VALID_CASE:="INVALID_CASE"]
 Rhode_Island_Data_LONG_2015_2016[GRADE=="11", VALID_CASE:="INVALID_CASE"]
 setkey(Rhode_Island_Data_LONG_2015_2016, VALID_CASE, CONTENT_AREA, YEAR, ID)
