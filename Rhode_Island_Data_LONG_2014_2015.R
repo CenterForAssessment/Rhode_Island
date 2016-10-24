@@ -134,6 +134,7 @@ setkey(Rhode_Island_Data_LONG_2014_2015, VALID_CASE, CONTENT_AREA, YEAR, ID)
 Rhode_Island_Data_LONG_2014_2015[which(duplicated(Rhode_Island_Data_LONG_2014_2015, by=key(Rhode_Island_Data_LONG_2014_2015)))-1, VALID_CASE:="INVALID_CASE"]
 Rhode_Island_Data_LONG_2014_2015[is.na(SCALE_SCORE_ACTUAL), VALID_CASE:="INVALID_CASE"]
 Rhode_Island_Data_LONG_2014_2015[GRADE=="11", VALID_CASE:="INVALID_CASE"]
+Rhode_Island_Data_LONG_2014_2015[CONTENT_AREA=="ALGEBRA_II", VALID_CASE:="INVALID_CASE"]
 
 
 ### Add in TestFormat Variable
