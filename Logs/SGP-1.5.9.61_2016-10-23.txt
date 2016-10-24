@@ -1,0 +1,15 @@
+
+Started outputSGP Sunday October 23 04:42:43 2016: Files produced from outputSGP saved in 'Data'
+
+
+
+	outputSGP(
+		 sgp_object = Rhode_Island_SGP
+		output.type = SchoolView )
+
+	Started SchoolView STUDENT_GROWTH data production in outputSGP Sunday October 23 04:42:45 2016
+	NOTE: Projections for cuts not available for content areas: GEOMETRY.2015_2016.
+	Finished SchoolView STUDENT_GROWTH data production in outputSGP Sunday October 23 04:43:29 2016 in 43.9 Seconds 
+
+Finished outputSGP Sunday October 23 04:43:29 2016 in 45.9 Seconds 
+
