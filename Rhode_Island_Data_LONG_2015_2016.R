@@ -128,11 +128,17 @@ Rhode_Island_Data_LONG_2015_2016[,VALID_CASE:="VALID_CASE"]
 
 ### TEMPORARY CREATION of EMH_LEVEL
 
-Rhode_Island_Data_LONG_2015_2016[GRADE_ENROLLED %in% as.character(c(3,4,5)), EMH_LEVEL:="Elementary"]
-Rhode_Island_Data_LONG_2015_2016[GRADE_ENROLLED %in% as.character(c(6,7,8)), EMH_LEVEL:="Middle"]
-Rhode_Island_Data_LONG_2015_2016[GRADE_ENROLLED %in% as.character(c(9,10,11,12)), EMH_LEVEL:="High"]
-Rhode_Island_Data_LONG_2015_2016[,EMH_LEVEL:=as.factor(EMH_LEVEL)]
+### CREATION of EMH_LEVEL
 
+Rhode_Island_Data_LONG_2015_2016[,TEMP_GRADE:=GRADE_ENROLLED]
+Rhode_Island_Data_LONG_2015_2016[GRADE_ENROLLED=="Other",TEMP_GRADE:="10"]
+Rhode_Island_Data_LONG_2015_2016[,TEMP_GRADE:=as.numeric(TEMP_GRADE)]
+Rhode_Island_Data_LONG_2015_2016[,MAX_SCHOOL_GRADE:=max(TEMP_GRADE, na.rm=TRUE), keyby=SCHOOL_NUMBER]
+Rhode_Island_Data_LONG_2015_2016[MAX_SCHOOL_GRADE %in% as.character(c(3,4,5,6)), EMH_LEVEL:="Elementary"]
+Rhode_Island_Data_LONG_2015_2016[MAX_SCHOOL_GRADE %in% as.character(c(7,8)), EMH_LEVEL:="Middle"]
+Rhode_Island_Data_LONG_2015_2016[MAX_SCHOOL_GRADE %in% as.character(c(9,10,11,12)), EMH_LEVEL:="High"]
+Rhode_Island_Data_LONG_2015_2016[,EMH_LEVEL:=as.factor(EMH_LEVEL)]
+Rhode_Island_Data_LONG_2015_2016[,c("TEMP_GRADE", "MAX_SCHOOL_GRADE"):=NULL]
 
 ### Resolve duplicates
 
