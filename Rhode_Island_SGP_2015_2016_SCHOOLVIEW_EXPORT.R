@@ -73,11 +73,11 @@ tmp.files <- c("SCHOOL.dat", "SCHOOL_ETHNICITY.dat", "SCHOOL_GRADE.dat", "SCHOOL
 for (tmp.iter in tmp.files) {
 	tmp <- fread(file.path("Data/SchoolView/TEXT", tmp.iter), colClasses="character")
 	tmp[,SCHOOL_NUMBER:=strtail(SCHOOL_NUMBER, -3)]
-	write.table(tmp, file=file.path("Data/SchoolView/TEXT", tmp.iter), sep="|", row.names=FALSE, quote=FALSE)
+	write.table(tmp, file=file.path("Data/SchoolView/TEXT", tmp.iter), sep="|", row.names=FALSE, quote=FALSE, na="")
 }
 
 load("Data/SchoolView/RDATA/STUDENT_GROWTH.Rdata")
 STUDENT_GROWTH[,SCHOOL_NUMBER:=strtail(SCHOOL_NUMBER, -3)]
 save(STUDENT_GROWTH, file="Data/SchoolView/RDATA/STUDENT_GROWTH.Rdata")
 unlink("Data/SchoolView/TEXT/STUDENT_GROWTH.dat.zip")
-write.table(STUDENT_GROWTH, file="Data/SchoolView/TEXT/STUDENT_GROWTH.dat", sep="|", row.names=FALSE, quote=FALSE)
+write.table(STUDENT_GROWTH, file="Data/SchoolView/TEXT/STUDENT_GROWTH.dat", sep="|", row.names=FALSE, quote=FALSE, na="")
