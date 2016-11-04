@@ -190,4 +190,5 @@ Rhode_Island_Data_LONG_2014_2015[,c("TEMP_GRADE", "MAX_SCHOOL_GRADE"):=NULL]
 
 ### Save results
 
+setkey(Rhode_Island_Data_LONG_2014_2015, VALID_CASE, CONTENT_AREA, YEAR, ID)
 save(Rhode_Island_Data_LONG_2014_2015, file="Data/Rhode_Island_Data_LONG_2014_2015.Rdata")

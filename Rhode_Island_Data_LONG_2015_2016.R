@@ -153,4 +153,5 @@ setkey(Rhode_Island_Data_LONG_2015_2016, VALID_CASE, CONTENT_AREA, YEAR, ID)
 
 ### Save results
 
+setkey(Rhode_Island_Data_LONG_2015_2016, VALID_CASE, CONTENT_AREA, YEAR, ID)
 save(Rhode_Island_Data_LONG_2015_2016, file="Data/Rhode_Island_Data_LONG_2015_2016.Rdata")
