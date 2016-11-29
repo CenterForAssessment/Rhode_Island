@@ -64,8 +64,7 @@ levels(Rhode_Island_Data_LONG_2015_2016$GRADE) <- c("EOCT", c("10", "11", as.cha
 Rhode_Island_Data_LONG_2015_2016[,GRADE:=as.character(GRADE)]
 
 Rhode_Island_Data_LONG_2015_2016[,ETHNICITY:=as.factor(ETHNICITY)]
-levels(Rhode_Island_Data_LONG_2015_2016$ETHNICITY) <- c("No Primary Race/Ethnicity Reported", "American Indian or Alaskan Native", "Asian", "Black or African American", "Hispanic or Latino", "White", "Native Hawaiian or Pacific Islander", "Multiple Ethnicities Reported")
-
+levels(Rhode_Island_Data_LONG_2015_2016$ETHNICITY) <- c("American Indian or Alaskan Native", "Asian", "Black or African American", "Hispanic or Latino", "Native Hawaiian or Pacific Islander", "White", "Multiple Ethnicities Reported", "No Primary Race/Ethnicity Reported")
 Rhode_Island_Data_LONG_2015_2016[,c("hispanicOrLatinoEthnicity", "americanIndianOrAlaskaNative", "asian", "blackOrAfricanAmerican", "nativeHawaiianOrOtherPacificIslander", "white", "twoOrMoreRaces"):=NULL]
 
 Rhode_Island_Data_LONG_2015_2016[ELL_STATUS=="",ELL_STATUS:=NA]
