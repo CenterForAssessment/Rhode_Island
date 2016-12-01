@@ -16,6 +16,18 @@ load("Data/Rhode_Island_SGP.Rdata")
 load("Data/Base_Files/bad_schools.Rdata")
 
 
+### Change SGPstateData for MATHEMATICS adding ALGEBRA_I & GEOMETRY as MATHEMATICS GRADE 9 and GRADE 10
+
+SGPstateData[['RI']][['Achievement']][['Cutscores']][['MATHEMATICS']][['GRADE_9']] <- SGPstateData[['RI']][['Achievement']][['Cutscores']][['ALGEBRA_I']][['GRADE_EOCT']]
+SGPstateData[['RI']][['Achievement']][['Cutscores']][['MATHEMATICS']][['GRADE_10']] <- SGPstateData[['RI']][['Achievement']][['Cutscores']][['GEOMETRY']][['GRADE_EOCT']]
+SGPstateData[['RI']][['Achievement']][['Knots_Boundaries']][['MATHEMATICS']][['knots_9']] <- SGPstateData[['RI']][['Achievement']][['Knots_Boundaries']][['ALGEBRA_I']][['knots_EOCT']]
+SGPstateData[['RI']][['Achievement']][['Knots_Boundaries']][['MATHEMATICS']][['boundaries_9']] <- SGPstateData[['RI']][['Achievement']][['Knots_Boundaries']][['ALGEBRA_I']][['boundaries_EOCT']]
+SGPstateData[['RI']][['Achievement']][['Knots_Boundaries']][['MATHEMATICS']][['loss.hoss_9']] <- SGPstateData[['RI']][['Achievement']][['Knots_Boundaries']][['ALGEBRA_I']][['loss.hoss_EOCT']]
+SGPstateData[['RI']][['Achievement']][['Knots_Boundaries']][['MATHEMATICS']][['knots_10']] <- SGPstateData[['RI']][['Achievement']][['Knots_Boundaries']][['GEOMETRY']][['knots_EOCT']]
+SGPstateData[['RI']][['Achievement']][['Knots_Boundaries']][['MATHEMATICS']][['boundaries_10']] <- SGPstateData[['RI']][['Achievement']][['Knots_Boundaries']][['GEOMETRY']][['boundaries_EOCT']]
+SGPstateData[['RI']][['Achievement']][['Knots_Boundaries']][['MATHEMATICS']][['loss.hoss_10']] <- SGPstateData[['RI']][['Achievement']][['Knots_Boundaries']][['GEOMETRY']][['loss.hoss_EOCT']]
+
+
 ### Recode CONTENT_AREA and GRADE variables for ALGEBRA_I and GEOMETRY
 
 slot.data <- copy(Rhode_Island_SGP@Data)
@@ -26,9 +38,12 @@ slot.data[!CONTENT_AREA %in% c("ELA", "MATHEMATICS"), VALID_CASE:="INVALID_CASE"
 setkey(slot.data, VALID_CASE, CONTENT_AREA, YEAR, ID, GRADE, SGP)
 setkey(slot.data, VALID_CASE, CONTENT_AREA, YEAR, ID)
 slot.data[which(duplicated(slot.data, by=key(slot.data)))-1, VALID_CASE:="INVALID_CASE"]
+setkey(bad_schools, YEAR, DISTRICT_NUMBER, SCHOOL_NUMBER)
+setkey(slot.data, YEAR, DISTRICT_NUMBER, SCHOOL_NUMBER)
+slot.data[bad_schools, VALID_CASE:="INVALID_CASE"]
 
 
-### Put slot.data bad into @Data
+### Put slot.data into @Data
 
 Rhode_Island_SGP@Data <- slot.data
 setkey(Rhode_Island_SGP@Data, VALID_CASE, CONTENT_AREA, YEAR, ID)
@@ -43,14 +58,14 @@ Rhode_Island_SGP <- summarizeSGP(
 
 ### Remove students from schools not suitable for reporting
 
-setkey(bad_schools, YEAR, DISTRICT_NUMBER, SCHOOL_NUMBER)
-setkey(slot.data, YEAR, DISTRICT_NUMBER, SCHOOL_NUMBER)
-slot.data[bad_schools, VALID_CASE:="INVALID_CASE"]
-slot.data[,CONTENT_AREA:=CONTENT_AREA_ORIGINAL]
-slot.data[,CONTENT_AREA_ORIGINAL:=NULL]
-slot.data[CONTENT_AREA %in% c("ALGEBRA_I", "GEOMETRY"), GRADE:="EOCT"]
-Rhode_Island_SGP@Data <- slot.data
-setkey(Rhode_Island_SGP@Data, VALID_CASE, CONTENT_AREA, YEAR, ID)
+#setkey(bad_schools, YEAR, DISTRICT_NUMBER, SCHOOL_NUMBER)
+#setkey(slot.data, YEAR, DISTRICT_NUMBER, SCHOOL_NUMBER)
+#slot.data[bad_schools, VALID_CASE:="INVALID_CASE"]
+#slot.data[,CONTENT_AREA:=CONTENT_AREA_ORIGINAL]
+#slot.data[,CONTENT_AREA_ORIGINAL:=NULL]
+#slot.data[CONTENT_AREA %in% c("ALGEBRA_I", "GEOMETRY"), GRADE:="EOCT"]
+#Rhode_Island_SGP@Data <- slot.data
+#setkey(Rhode_Island_SGP@Data, VALID_CASE, CONTENT_AREA, YEAR, ID)
 
 
 ###
