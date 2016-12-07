@@ -82,6 +82,7 @@ for (tmp.iter in tmp.files) {
 
 load("Data/SchoolView/RDATA/STUDENT_GROWTH.Rdata")
 STUDENT_GROWTH[,SCHOOL_NUMBER:=strtail(SCHOOL_NUMBER, -3)]
+STUDENT_GROWTH <- STUDENT_GROWTH[!is.na(as.numeric(STATE_ASSIGNED_ID))]
 save(STUDENT_GROWTH, file="Data/SchoolView/RDATA/STUDENT_GROWTH.Rdata")
 unlink("Data/SchoolView/TEXT/STUDENT_GROWTH.dat.zip")
 write.table(STUDENT_GROWTH, file="Data/SchoolView/TEXT/STUDENT_GROWTH.dat", sep="|", row.names=FALSE, quote=FALSE, na="")
