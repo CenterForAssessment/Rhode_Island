@@ -49,6 +49,7 @@ slot.data <- copy(Rhode_Island_SGP@Data)
 slot.data[,CONTENT_AREA_ORIGINAL:=CONTENT_AREA]
 slot.data[CONTENT_AREA=="ALGEBRA_I" & GRADE_ENROLLED=="8", c("CONTENT_AREA", "GRADE"):=list("MATHEMATICS", "8")]
 slot.data[!CONTENT_AREA %in% c("ELA", "MATHEMATICS"), VALID_CASE:="INVALID_CASE"]
+slot.data[!GRADE %in% 3:8, VALID_CASE:="INVALID_CASE"]
 setkey(slot.data, VALID_CASE, CONTENT_AREA, YEAR, ID, GRADE, SGP)
 setkey(slot.data, VALID_CASE, CONTENT_AREA, YEAR, ID)
 slot.data[which(duplicated(slot.data, by=key(slot.data)))-1, VALID_CASE:="INVALID_CASE"]
