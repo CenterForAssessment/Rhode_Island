@@ -329,3 +329,19 @@ Started outputSGP Wednesday December 14 18:39:21 2016: Files produced from outpu
 
 Finished outputSGP Wednesday December 14 18:39:44 2016 in 23.1 Seconds 
 
+
+Started outputSGP Wednesday December 14 20:33:10 2016: Files produced from outputSGP saved in 'Data'
+
+
+
+	outputSGP(
+		 sgp_object = Rhode_Island_SGP
+		output.type = SchoolView )
+
+	Started SchoolView STUDENT_GROWTH data production in outputSGP Wednesday December 14 20:33:11 2016
+	NAs are present in variable: FREE_REDUCED_LUNCH_STATUS of the 'STUDENT_GROWTH' table. NAs being changed to 'Unknown' to avoid data loading problems.
+	NAs are present in variable: IEP_STATUS of the 'STUDENT_GROWTH' table. NAs being changed to 'Unknown' to avoid data loading problems.
+	Finished SchoolView STUDENT_GROWTH data production in outputSGP Wednesday December 14 20:33:37 2016 in 25.5 Seconds 
+
+Finished outputSGP Wednesday December 14 20:33:37 2016 in 27.1 Seconds 
+
