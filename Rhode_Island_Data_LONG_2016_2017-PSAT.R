@@ -22,19 +22,21 @@ Rhode_Island_Data_LONG_2016_2017 <- as.data.table(read.spss("Data/Base_Files/201
 ##########################################################
 
 variables.to.keep <- c("CB_ID", "NAME_FIRST", "NAME_LAST", "SEX", "DERIVED_AGGREGATE_RACE_ETH",
-        "LATEST_PSAT_TOTAL", "LATEST_PSAT_EBRW", "LATEST_PSAT_MATH_SECTION")#, "LATEST_PSAT_DATE")
+        "LATEST_PSAT_TOTAL", "LATEST_PSAT_EBRW", "LATEST_PSAT_MATH_SECTION", "COHORT_YEAR") #, "LATEST_PSAT_DATE")
 
 Rhode_Island_Data_PSAT_2017 <- Rhode_Island_Data_PSAT_2017[, variables.to.keep, with=FALSE]
 
 
 ### Tidy Up data
 
-variable.names.new <- c("CB_ID", "FIRST_NAME", "LAST_NAME", "GENDER", "ETHNICITY", "PSAT_TOTAL", "PSAT_EBRW", "PSAT_MATH")
+variable.names.new <- c("CB_ID", "FIRST_NAME", "LAST_NAME", "GENDER", "ETHNICITY", "PSAT_TOTAL", "PSAT_EBRW", "PSAT_MATH", "COHORT_YEAR") # , "LATEST_PSAT_DATE")
 setnames(Rhode_Island_Data_PSAT_2017, variable.names.new)
 
 Rhode_Island_Data_PSAT_2017[, YEAR := "2016_2017"]
 Rhode_Island_Data_PSAT_2017[, GRADE := "EOCT"]
 Rhode_Island_Data_PSAT_2017[, VALID_CASE := "VALID_CASE"]
+
+Rhode_Island_Data_PSAT_2017[COHORT_YEAR != "2019", VALID_CASE := "INVALID_CASE"]
 
 levels(Rhode_Island_Data_PSAT_2017$FIRST_NAME) <- as.character(sapply(levels(Rhode_Island_Data_PSAT_2017$FIRST_NAME), capwords))
 levels(Rhode_Island_Data_PSAT_2017$LAST_NAME) <- as.character(sapply(levels(Rhode_Island_Data_PSAT_2017$LAST_NAME), capwords))
@@ -64,6 +66,8 @@ Rhode_Island_Data_LONG_PSAT_2017 <- rbindlist(list(
 
 Rhode_Island_Data_LONG_PSAT_2017 <- Rhode_Island_Data_LONG_PSAT_2017[!is.na(ID)]
 
+# cohort <- Rhode_Island_Data_PSAT_2017[!is.na(ID), list(ID, LATEST_PSAT_DATE, COHORT_YEAR)]
+# setkey(cohort, ID)
 
 ##########################################################
 ###   Clean up 2016-2017 PARCC data
@@ -126,6 +130,10 @@ levels(Rhode_Island_Data_LONG_2016_2017$TEST_FORMAT) <- c(NA, "Online", "Paper")
 ###
 ###  Combine PSAT and PARCC data and add in vars for all 2017 data
 ###
+
+# setkey(cohort, ID)
+# setkey(Rhode_Island_Data_LONG_2016_2017, ID)
+# Rhode_Island_Data_LONG_2016_2017 <- cohort[, list(ID, LATEST_PSAT_DATE, COHORT_YEAR)][Rhode_Island_Data_LONG_2016_2017]
 
 Rhode_Island_Data_LONG_2016_2017 <- rbindlist(list(Rhode_Island_Data_LONG_2016_2017, Rhode_Island_Data_LONG_PSAT_2017), fill=TRUE)
 

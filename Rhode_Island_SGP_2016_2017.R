@@ -47,7 +47,7 @@ Rhode_Island_SGP <- updateSGP(
 			simulate.sgps=FALSE,
 			save.intermediate.results=FALSE,
 			sgp.config=RI_CONFIG,
-			sgp.target.scale.scores=TRUE,
+			sgp.target.scale.scores=FALSE,
 			sgPlot.demo.report=TRUE,
 			parallel.config=list(BACKEND="PARALLEL", WORKERS=list(PERCENTILES=2, PROJECTIONS=2, LAGGED_PROJECTIONS=2, SGP_SCALE_SCORE_TARGETS=2, SUMMARY=2, SG_PLOTS=1)))
 
