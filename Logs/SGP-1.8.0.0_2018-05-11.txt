@@ -1,0 +1,433 @@
+
+Started updateSGP Friday May 11 17:17:17 2018
+
+
+	updateSGP(
+		 what_sgp_object = Rhode_Island_SGP
+		with_sgp_data_LONG = Rhode_Island_Data_LONG_2016_2017
+		steps = c("prepareSGP", "analyzeSGP", "combineSGP", "outputSGP")
+		sgp.percentiles = TRUE
+		sgp.projections = TRUE
+		sgp.projections.lagged = TRUE
+		sgp.percentiles.baseline = FALSE
+		sgp.projections.baseline = FALSE
+		sgp.projections.lagged.baseline = FALSE
+		simulate.sgps = FALSE
+		save.intermediate.results = FALSE
+		sgp.target.scale.scores = TRUE
+		sgPlot.demo.report = TRUE
+		sgp.config = RI_CONFIG
+		parallel.config = list(BACKEND = "PARALLEL", WORKERS = list(PERCENTILES = 2, PROJECTIONS = 2, LAGGED_PROJECTIONS = 2, SGP_SCALE_SCORE_TARGETS = 2, SUMMARY = 2, SG_PLOTS = 1)) )
+
+
+Started prepareSGP Friday May 11 17:17:17 2018
+
+
+	prepareSGP(
+		 data = with_sgp_data_LONG
+		state = state
+		create.additional.variables = FALSE
+		fix.duplicates = NULL )
+
+	NOTE: The 'fix.duplicates' argument has been requested, but NO duplicate cases are found in the data...
+Finished prepareSGP Friday May 11 17:17:18 2018 in 0.344 Seconds 
+
+
+Started abcSGP Friday May 11 17:17:19 2018
+
+
+	abcSGP(
+		 sgp_object = what_sgp_object
+		state = state
+		steps = steps
+		years = update.years
+		content_areas = update.content_areas
+		grades = update.grades
+		sgp.percentiles = sgp.percentiles
+		sgp.projections = sgp.projections
+		sgp.projections.lagged = sgp.projections.lagged
+		sgp.percentiles.baseline = sgp.percentiles.baseline
+		sgp.projections.baseline = sgp.projections.baseline
+		sgp.projections.lagged.baseline = sgp.projections.lagged.baseline
+		sgp.use.my.coefficient.matrices = sgp.use.my.coefficient.matrices
+		sgp.target.scale.scores = sgp.target.scale.scores
+		sgp.target.scale.scores.only = sgp.target.scale.scores.only
+		sgp.test.cohort.size = sgp.test.cohort.size
+		return.sgp.test.results = return.sgp.test.results
+		simulate.sgps = simulate.sgps
+		calculate.simex = calculate.simex
+		calculate.simex.baseline = calculate.simex.baseline
+		goodness.of.fit.print = goodness.of.fit.print
+		parallel.config = parallel.config
+		save.intermediate.results = save.intermediate.results
+		save.old.summaries = FALSE
+		sgPlot.demo.report = sgPlot.demo.report
+		sgp.config = sgp.config
+		plot.types = plot.types
+		outputSGP.output.type = outputSGP.output.type
+		outputSGP.directory = outputSGP.directory
+		sgp.percentiles.equated = sgp.percentiles.equated
+		sgp.percentiles.equating.method = sgp.percentiles.equating.method
+		sgp.percentiles.calculate.sgps = sgp.percentiles.calculate.sgps
+		SGPt = SGPt
+		fix.duplicates = fix.duplicates )
+
+
+Started prepareSGP Friday May 11 17:17:19 2018
+
+
+	prepareSGP(
+		 data = sgp_object
+		data_supplementary = data_supplementary
+		state = state
+		var.names = prepareSGP.var.names
+		create.additional.variables = prepareSGP.create.additional.variables
+		fix.duplicates = fix.duplicates )
+
+	NOTE: Adding 'GRADE' variable to @SGP$SGPercentiles tables based on 'VALID_CASE', 'CONTENT_AREA', 'YEAR' and 'ID' variables.
+	NOTE: Adding 'GRADE' variable to @SGP$SGProjections tables based on 'VALID_CASE', 'CONTENT_AREA', 'YEAR' and 'ID' variables.
+	NOTE: Changing name 'CATCH_UP_KEEP_UP_STATUS' to 'CATCH_UP_KEEP_UP_STATUS_3_YEAR' in @Data
+	NOTE: Changing name 'MOVE_UP_STAY_UP_STATUS' to 'MOVE_UP_STAY_UP_STATUS_3_YEAR' in @Data
+	NOTE: The 'fix.duplicates' argument has been requested, but NO duplicate cases are found in the data...
+Finished prepareSGP Friday May 11 17:17:22 2018 in 3.066 Seconds 
+
+
+Started analyzeSGP Friday May 11 17:17:22 2018
+
+
+	analyzeSGP(
+		 sgp_object = sgp_object
+		state = state
+		years = years
+		content_areas = content_areas
+		grades = grades
+		sgp.percentiles = sgp.percentiles
+		sgp.projections = sgp.projections
+		sgp.projections.lagged = sgp.projections.lagged
+		sgp.percentiles.baseline = sgp.percentiles.baseline
+		sgp.projections.baseline = sgp.projections.baseline
+		sgp.projections.lagged.baseline = sgp.projections.lagged.baseline
+		sgp.minimum.default.panel.years = sgp.minimum.default.panel.years
+		sgp.use.my.coefficient.matrices = sgp.use.my.coefficient.matrices
+		sgp.test.cohort.size = sgp.test.cohort.size
+		return.sgp.test.results = return.sgp.test.results
+		simulate.sgps = simulate.sgps
+		calculate.simex = calculate.simex
+		calculate.simex.baseline = calculate.simex.baseline
+		goodness.of.fit.print = goodness.of.fit.print
+		sgp.config = sgp.config
+		parallel.config = parallel.config
+		verbose.output = verbose.output
+		get.cohort.data.info = get.cohort.data.info
+		sgp.sqlite = sgp.sqlite
+		sgp.percentiles.equated = sgp.percentiles.equated
+		sgp.percentiles.equating.method = sgp.percentiles.equating.method
+		sgp.percentiles.calculate.sgps = sgp.percentiles.calculate.sgps
+		SGPt = SGPt
+		fix.duplicates = fix.duplicates )
+
+	Started studentGrowthPercentiles: Friday May 11 17:17:23 2018
+		Content Area: PSAT_MATH, Year: 2016_2017, Grade Progression: EOCT, EOCT  (N=5,643)
+	Finished studentGrowthPercentiles: Friday May 11 17:17:26 2018 in 3.24 Seconds
+
+	Started studentGrowthPercentiles: Friday May 11 17:17:23 2018
+		Content Area: PSAT_MATH, Year: 2016_2017, Grade Progression: 8, EOCT, EOCT  (N=4,334)
+	Finished studentGrowthPercentiles: Friday May 11 17:17:27 2018 in 4.552 Seconds
+
+	Started studentGrowthPercentiles: Friday May 11 17:17:26 2018
+		Content Area: PSAT_MATH, Year: 2016_2017, Grade Progression: EOCT, EOCT  (N=5,070)
+	Finished studentGrowthPercentiles: Friday May 11 17:17:29 2018 in 3.01 Seconds
+
+	Started studentGrowthPercentiles: Friday May 11 17:17:29 2018
+		Content Area: GEOMETRY, Year: 2016_2017, Grade Progression: 7, EOCT, EOCT  (N=1,971)
+	Finished studentGrowthPercentiles: Friday May 11 17:17:31 2018 in 2.331 Seconds
+
+	Started studentGrowthPercentiles: Friday May 11 17:17:27 2018
+		Content Area: PSAT_MATH, Year: 2016_2017, Grade Progression: EOCT, EOCT, EOCT  (N=4,138)
+	Finished studentGrowthPercentiles: Friday May 11 17:17:33 2018 in 5.95 Seconds
+
+	Started studentGrowthPercentiles: Friday May 11 17:17:33 2018
+		Content Area: ALGEBRA_I, Year: 2016_2017, Grade Progression: 6, 7, EOCT  (N=2,796)
+	Finished studentGrowthPercentiles: Friday May 11 17:17:37 2018 in 3.298 Seconds
+
+	Started studentGrowthPercentiles: Friday May 11 17:17:31 2018
+		Content Area: ALGEBRA_I, Year: 2016_2017, Grade Progression: 7, 8, EOCT  (N=6,088)
+	Finished studentGrowthPercentiles: Friday May 11 17:17:38 2018 in 6.505 Seconds
+
+	Started studentGrowthPercentiles: Friday May 11 17:17:37 2018
+		Content Area: MATHEMATICS, Year: 2016_2017, Grade Progression: 6, 7, 8  (N=6,813)
+	Finished studentGrowthPercentiles: Friday May 11 17:17:44 2018 in 7.563 Seconds
+
+	Started studentGrowthPercentiles: Friday May 11 17:17:38 2018
+		Content Area: MATHEMATICS, Year: 2016_2017, Grade Progression: 5, 6, 7  (N=9,945)
+	Finished studentGrowthPercentiles: Friday May 11 17:17:53 2018 in 14.5 Seconds
+
+	Started studentGrowthPercentiles: Friday May 11 17:17:44 2018
+		Content Area: MATHEMATICS, Year: 2016_2017, Grade Progression: 4, 5, 6  (N=9,842)
+	Finished studentGrowthPercentiles: Friday May 11 17:18:02 2018 in 17.7 Seconds
+
+	Started studentGrowthPercentiles: Friday May 11 17:18:02 2018
+		Content Area: MATHEMATICS, Year: 2016_2017, Grade Progression: 3, 4  (N=10,249)
+	Finished studentGrowthPercentiles: Friday May 11 17:18:08 2018 in 5.437 Seconds
+
+	Started studentGrowthPercentiles: Friday May 11 17:18:08 2018
+		Content Area: PSAT_EBRW, Year: 2016_2017, Grade Progression: 8, EOCT  (N=6,840)
+	Finished studentGrowthPercentiles: Friday May 11 17:18:12 2018 in 3.979 Seconds
+
+	Started studentGrowthPercentiles: Friday May 11 17:17:53 2018
+		Content Area: MATHEMATICS, Year: 2016_2017, Grade Progression: 3, 4, 5  (N=10,070)
+	Finished studentGrowthPercentiles: Friday May 11 17:18:12 2018 in 19.4 Seconds
+
+	Started studentGrowthPercentiles: Friday May 11 17:18:12 2018
+		Content Area: PSAT_EBRW, Year: 2016_2017, Grade Progression: 9, EOCT  (N=7,824)
+	Finished studentGrowthPercentiles: Friday May 11 17:18:16 2018 in 4.18 Seconds
+
+	Started studentGrowthPercentiles: Friday May 11 17:18:16 2018
+		Content Area: PSAT_EBRW, Year: 2016_2017, Grade Progression: 10, EOCT  (N=4,867)
+	Finished studentGrowthPercentiles: Friday May 11 17:18:19 2018 in 2.916 Seconds
+
+	Started studentGrowthPercentiles: Friday May 11 17:18:12 2018
+		Content Area: PSAT_EBRW, Year: 2016_2017, Grade Progression: 8, 9, EOCT  (N=6,624)
+	Finished studentGrowthPercentiles: Friday May 11 17:18:22 2018 in 9.348 Seconds
+
+	Started studentGrowthPercentiles: Friday May 11 17:18:19 2018
+		Content Area: PSAT_EBRW, Year: 2016_2017, Grade Progression: 9, 10, EOCT  (N=4,136)
+	Finished studentGrowthPercentiles: Friday May 11 17:18:23 2018 in 3.872 Seconds
+
+	Started studentGrowthPercentiles: Friday May 11 17:18:23 2018
+		Content Area: ELA, Year: 2016_2017, Grade Progression: 6, 7, 8  (N=9,594)
+	Finished studentGrowthPercentiles: Friday May 11 17:18:38 2018 in 15.2 Seconds
+
+	Started studentGrowthPercentiles: Friday May 11 17:18:22 2018
+		Content Area: ELA, Year: 2016_2017, Grade Progression: 7, 8, 9  (N=9,336)
+	Finished studentGrowthPercentiles: Friday May 11 17:18:39 2018 in 17.5 Seconds
+
+	Started studentGrowthPercentiles: Friday May 11 17:18:39 2018
+		Content Area: ELA, Year: 2016_2017, Grade Progression: 4, 5, 6  (N=9,779)
+	Finished studentGrowthPercentiles: Friday May 11 17:18:57 2018 in 18 Seconds
+
+	Started studentGrowthPercentiles: Friday May 11 17:18:38 2018
+		Content Area: ELA, Year: 2016_2017, Grade Progression: 5, 6, 7  (N=9,884)
+	Finished studentGrowthPercentiles: Friday May 11 17:18:58 2018 in 19.5 Seconds
+
+	Started studentGrowthPercentiles: Friday May 11 17:18:58 2018
+		Content Area: ELA, Year: 2016_2017, Grade Progression: 3, 4  (N=10,166)
+	Finished studentGrowthPercentiles: Friday May 11 17:19:06 2018 in 7.905 Seconds
+
+	Started studentGrowthPercentiles: Friday May 11 17:18:57 2018
+		Content Area: ELA, Year: 2016_2017, Grade Progression: 3, 4, 5  (N=9,991)
+	Finished studentGrowthPercentiles: Friday May 11 17:19:08 2018 in 11 Seconds
+
+	Started studentGrowthProjections: Friday May 11 17:19:09 2018
+		Content Area: ELA, Year: 2016_2017, Grade Progression: 3, 4  (N=10,749)
+	Finished studentGrowthProjections: Friday May 11 17:19:27 2018 in 18.3 Seconds
+
+	Started studentGrowthProjections: Friday May 11 17:19:09 2018
+		Content Area: ELA, Year: 2016_2017, Grade Progression: 3  (N=10,528)
+	Finished studentGrowthProjections: Friday May 11 17:19:28 2018 in 19.2 Seconds
+
+	Started studentGrowthProjections: Friday May 11 17:19:28 2018
+		Content Area: ELA, Year: 2016_2017, Grade Progression: 5, 6  (N=10,385)
+	Finished studentGrowthProjections: Friday May 11 17:19:39 2018 in 10.4 Seconds
+
+	Started studentGrowthProjections: Friday May 11 17:19:27 2018
+		Content Area: ELA, Year: 2016_2017, Grade Progression: 4, 5  (N=10,531)
+	Finished studentGrowthProjections: Friday May 11 17:19:41 2018 in 13.8 Seconds
+
+	Started studentGrowthProjections: Friday May 11 17:19:41 2018
+		Content Area: ELA, Year: 2016_2017, Grade Progression: 7, 8  (N=10,326)
+	Finished studentGrowthProjections: Friday May 11 17:19:45 2018 in 4.382 Seconds
+
+	Started studentGrowthProjections: Friday May 11 17:19:39 2018
+		Content Area: ELA, Year: 2016_2017, Grade Progression: 6, 7  (N=10,590)
+	Finished studentGrowthProjections: Friday May 11 17:19:46 2018 in 7.404 Seconds
+
+	Started studentGrowthProjections: Friday May 11 17:19:46 2018
+		Content Area: MATHEMATICS, Year: 2016_2017, Grade Progression: 3, 4  (N=10,890)
+	Finished studentGrowthProjections: Friday May 11 17:20:06 2018 in 19.8 Seconds
+
+	Started studentGrowthProjections: Friday May 11 17:19:45 2018
+		Content Area: MATHEMATICS, Year: 2016_2017, Grade Progression: 3  (N=10,680)
+	Finished studentGrowthProjections: Friday May 11 17:20:06 2018 in 20.4 Seconds
+
+	Started studentGrowthProjections: Friday May 11 17:20:06 2018
+		Content Area: MATHEMATICS, Year: 2016_2017, Grade Progression: 5, 6  (N=10,475)
+	Finished studentGrowthProjections: Friday May 11 17:20:19 2018 in 12.9 Seconds
+
+	Started studentGrowthProjections: Friday May 11 17:20:06 2018
+		Content Area: MATHEMATICS, Year: 2016_2017, Grade Progression: 4, 5  (N=10,644)
+	Finished studentGrowthProjections: Friday May 11 17:20:22 2018 in 16.2 Seconds
+
+	Started studentGrowthProjections: Friday May 11 17:20:20 2018
+		Content Area: MATHEMATICS, Year: 2016_2017, Grade Progression: 6, 7  (N=10,700)
+	Finished studentGrowthProjections: Friday May 11 17:20:28 2018 in 8.662 Seconds
+
+	Started studentGrowthProjections: Friday May 11 17:20:29 2018
+		Content Area: ELA, Year: 2016_2017, Grade Progression: 3, 4 LAGGED (N=9,991)
+	Finished studentGrowthProjections: Friday May 11 17:20:45 2018 in 16.6 Seconds
+
+	Started studentGrowthProjections: Friday May 11 17:20:29 2018
+		Content Area: ELA, Year: 2016_2017, Grade Progression: 3 LAGGED (N=10,166)
+	Finished studentGrowthProjections: Friday May 11 17:20:47 2018 in 18.1 Seconds
+
+	Started studentGrowthProjections: Friday May 11 17:20:47 2018
+		Content Area: ELA, Year: 2016_2017, Grade Progression: 5, 6 LAGGED (N=9,884)
+	Finished studentGrowthProjections: Friday May 11 17:20:57 2018 in 10.2 Seconds
+
+	Started studentGrowthProjections: Friday May 11 17:20:46 2018
+		Content Area: ELA, Year: 2016_2017, Grade Progression: 4, 5 LAGGED (N=9,779)
+	Finished studentGrowthProjections: Friday May 11 17:20:58 2018 in 12.8 Seconds
+
+	Started studentGrowthProjections: Friday May 11 17:20:58 2018
+		Content Area: ELA, Year: 2016_2017, Grade Progression: 7, 8 LAGGED (N=9,336)
+	Finished studentGrowthProjections: Friday May 11 17:21:03 2018 in 4.178 Seconds
+
+	Started studentGrowthProjections: Friday May 11 17:20:57 2018
+		Content Area: ELA, Year: 2016_2017, Grade Progression: 6, 7 LAGGED (N=9,594)
+	Finished studentGrowthProjections: Friday May 11 17:21:05 2018 in 7.258 Seconds
+
+	Started studentGrowthProjections: Friday May 11 17:21:03 2018
+		Content Area: MATHEMATICS, Year: 2016_2017, Grade Progression: 3 LAGGED (N=10,249)
+	Finished studentGrowthProjections: Friday May 11 17:21:23 2018 in 20 Seconds
+
+	Started studentGrowthProjections: Friday May 11 17:21:05 2018
+		Content Area: MATHEMATICS, Year: 2016_2017, Grade Progression: 3, 4 LAGGED (N=10,070)
+	Finished studentGrowthProjections: Friday May 11 17:21:23 2018 in 18.1 Seconds
+
+	Started studentGrowthProjections: Friday May 11 17:21:23 2018
+		Content Area: MATHEMATICS, Year: 2016_2017, Grade Progression: 5, 6 LAGGED (N=9,945)
+	Finished studentGrowthProjections: Friday May 11 17:21:35 2018 in 12 Seconds
+
+	Started studentGrowthProjections: Friday May 11 17:21:23 2018
+		Content Area: MATHEMATICS, Year: 2016_2017, Grade Progression: 4, 5 LAGGED (N=9,842)
+	Finished studentGrowthProjections: Friday May 11 17:21:37 2018 in 14.7 Seconds
+
+	Started studentGrowthProjections: Friday May 11 17:21:35 2018
+		Content Area: MATHEMATICS, Year: 2016_2017, Grade Progression: 6, 7 LAGGED (N=6,813)
+	Finished studentGrowthProjections: Friday May 11 17:21:41 2018 in 6.268 Seconds
+
+Finished analyzeSGP Friday May 11 17:21:56 2018 in 4 Minutes, 33 Seconds 
+
+Started combineSGP Friday May 11 17:21:56 2018
+	Started studentGrowthProjections: Friday May 11 17:22:44 2018
+		Content Area: ELA, Year: 2016_2017, Grade Progression: 3 TARGET_SCALE_SCORES (N=10,528)
+	Finished studentGrowthProjections: Friday May 11 17:22:53 2018 in 9.725 Seconds
+
+	Started studentGrowthProjections: Friday May 11 17:22:44 2018
+		Content Area: ELA, Year: 2016_2017, Grade Progression: 3, 4 TARGET_SCALE_SCORES (N=10,749)
+	Finished studentGrowthProjections: Friday May 11 17:22:55 2018 in 11.3 Seconds
+
+	Started studentGrowthProjections: Friday May 11 17:22:54 2018
+		Content Area: ELA, Year: 2016_2017, Grade Progression: 4, 5 TARGET_SCALE_SCORES (N=10,531)
+	Finished studentGrowthProjections: Friday May 11 17:23:05 2018 in 11.2 Seconds
+
+	Started studentGrowthProjections: Friday May 11 17:22:55 2018
+		Content Area: ELA, Year: 2016_2017, Grade Progression: 5, 6 TARGET_SCALE_SCORES (N=10,385)
+	Finished studentGrowthProjections: Friday May 11 17:23:07 2018 in 11.6 Seconds
+
+	Started studentGrowthProjections: Friday May 11 17:23:07 2018
+		Content Area: ELA, Year: 2016_2017, Grade Progression: 7, 8 TARGET_SCALE_SCORES (N=10,326)
+	Finished studentGrowthProjections: Friday May 11 17:23:12 2018 in 5.227 Seconds
+
+	Started studentGrowthProjections: Friday May 11 17:23:05 2018
+		Content Area: ELA, Year: 2016_2017, Grade Progression: 6, 7 TARGET_SCALE_SCORES (N=10,590)
+	Finished studentGrowthProjections: Friday May 11 17:23:13 2018 in 8.098 Seconds
+
+	Started studentGrowthProjections: Friday May 11 17:23:14 2018
+		Content Area: ELA, Year: 2016_2017, Grade Progression: 3 LAGGED.TARGET_SCALE_SCORES (N=10,166)
+	Finished studentGrowthProjections: Friday May 11 17:23:27 2018 in 12.7 Seconds
+
+	Started studentGrowthProjections: Friday May 11 17:23:14 2018
+		Content Area: ELA, Year: 2016_2017, Grade Progression: 3, 4 LAGGED.TARGET_SCALE_SCORES (N=9,991)
+	Finished studentGrowthProjections: Friday May 11 17:23:28 2018 in 14.1 Seconds
+
+	Started studentGrowthProjections: Friday May 11 17:23:28 2018
+		Content Area: ELA, Year: 2016_2017, Grade Progression: 5, 6 LAGGED.TARGET_SCALE_SCORES (N=9,884)
+	Finished studentGrowthProjections: Friday May 11 17:23:39 2018 in 10.5 Seconds
+
+	Started studentGrowthProjections: Friday May 11 17:23:27 2018
+		Content Area: ELA, Year: 2016_2017, Grade Progression: 4, 5 LAGGED.TARGET_SCALE_SCORES (N=9,779)
+	Finished studentGrowthProjections: Friday May 11 17:23:40 2018 in 13.2 Seconds
+
+	Started studentGrowthProjections: Friday May 11 17:23:40 2018
+		Content Area: ELA, Year: 2016_2017, Grade Progression: 7, 8 LAGGED.TARGET_SCALE_SCORES (N=9,336)
+	Finished studentGrowthProjections: Friday May 11 17:23:45 2018 in 5.008 Seconds
+
+	Started studentGrowthProjections: Friday May 11 17:23:39 2018
+		Content Area: ELA, Year: 2016_2017, Grade Progression: 6, 7 LAGGED.TARGET_SCALE_SCORES (N=9,594)
+	Finished studentGrowthProjections: Friday May 11 17:23:47 2018 in 7.658 Seconds
+
+	Started studentGrowthProjections: Friday May 11 17:23:48 2018
+		Content Area: MATHEMATICS, Year: 2016_2017, Grade Progression: 3 TARGET_SCALE_SCORES (N=10,680)
+	Finished studentGrowthProjections: Friday May 11 17:23:58 2018 in 10 Seconds
+
+	Started studentGrowthProjections: Friday May 11 17:23:48 2018
+		Content Area: MATHEMATICS, Year: 2016_2017, Grade Progression: 3, 4 TARGET_SCALE_SCORES (N=10,890)
+	Finished studentGrowthProjections: Friday May 11 17:23:59 2018 in 11.3 Seconds
+
+	Started studentGrowthProjections: Friday May 11 17:23:58 2018
+		Content Area: MATHEMATICS, Year: 2016_2017, Grade Progression: 4, 5 TARGET_SCALE_SCORES (N=10,644)
+	Finished studentGrowthProjections: Friday May 11 17:24:10 2018 in 12.6 Seconds
+
+	Started studentGrowthProjections: Friday May 11 17:23:59 2018
+		Content Area: MATHEMATICS, Year: 2016_2017, Grade Progression: 5, 6 TARGET_SCALE_SCORES (N=10,475)
+	Finished studentGrowthProjections: Friday May 11 17:24:12 2018 in 12.5 Seconds
+
+	Started studentGrowthProjections: Friday May 11 17:24:10 2018
+		Content Area: MATHEMATICS, Year: 2016_2017, Grade Progression: 6, 7 TARGET_SCALE_SCORES (N=10,700)
+	Finished studentGrowthProjections: Friday May 11 17:24:20 2018 in 9.638 Seconds
+
+	Started studentGrowthProjections: Friday May 11 17:24:21 2018
+		Content Area: MATHEMATICS, Year: 2016_2017, Grade Progression: 3 LAGGED.TARGET_SCALE_SCORES (N=10,249)
+	Finished studentGrowthProjections: Friday May 11 17:24:36 2018 in 14.2 Seconds
+
+	Started studentGrowthProjections: Friday May 11 17:24:21 2018
+		Content Area: MATHEMATICS, Year: 2016_2017, Grade Progression: 3, 4 LAGGED.TARGET_SCALE_SCORES (N=10,070)
+	Finished studentGrowthProjections: Friday May 11 17:24:37 2018 in 16 Seconds
+
+	Started studentGrowthProjections: Friday May 11 17:24:36 2018
+		Content Area: MATHEMATICS, Year: 2016_2017, Grade Progression: 4, 5 LAGGED.TARGET_SCALE_SCORES (N=9,842)
+	Finished studentGrowthProjections: Friday May 11 17:24:52 2018 in 16.2 Seconds
+
+	Started studentGrowthProjections: Friday May 11 17:24:38 2018
+		Content Area: MATHEMATICS, Year: 2016_2017, Grade Progression: 5, 6 LAGGED.TARGET_SCALE_SCORES (N=9,945)
+	Finished studentGrowthProjections: Friday May 11 17:24:53 2018 in 15.1 Seconds
+
+	Started studentGrowthProjections: Friday May 11 17:24:52 2018
+		Content Area: MATHEMATICS, Year: 2016_2017, Grade Progression: 6, 7 LAGGED.TARGET_SCALE_SCORES (N=6,813)
+	Finished studentGrowthProjections: Friday May 11 17:24:59 2018 in 6.811 Seconds
+
+	NOTE: Multiple content areas detected for student growth targets. 'sgp.target.content_areas set to TRUE.
+Finished combineSGP Friday May 11 17:24:59 2018 in 3 Minutes, 3 Seconds 
+
+
+Started outputSGP Friday May 11 17:24:59 2018: Files produced from outputSGP saved in 'Data'
+
+
+
+	outputSGP(
+		 sgp_object = sgp_object
+		state = state
+		output.type = outputSGP.output.type
+		outputSGP_SUMMARY.years = years
+		outputSGP_SUMMARY.content_areas = content_areas
+		outputSGP_INDIVIDUAL.years = years
+		outputSGP_INDIVIDUAL.content_areas = content_areas
+		outputSGP.student.groups = intersect(names(sgp_object@Data), subset(sgp_object@Names, names.type == "demographic" & names.output == TRUE, select = names.provided, drop = TRUE))
+		outputSGP.directory = outputSGP.directory )
+
+	Started LONG data production in outputSGP Friday May 11 17:24:59 2018
+	Finished LONG data production in outputSGP Friday May 11 17:25:11 2018 in 12.2 Seconds 
+
+	Started LONG FINAL YEAR data production in outputSGP Friday May 11 17:25:11 2018
+	Finished LONG FINAL YEAR data production in outputSGP Friday May 11 17:25:16 2018 in 4.989 Seconds 
+
+	Started WIDE data production in outputSGP Friday May 11 17:25:16 2018
+	Finished WIDE data production in outputSGP Friday May 11 17:25:40 2018 in 23.2 Seconds 
+
+Finished outputSGP Friday May 11 17:25:40 2018 in 40.5 Seconds 
+
+Finished abcSGP Friday May 11 17:25:40 2018 in 8 Minutes, 20 Seconds 
+
+Finished updateSGP Friday May 11 17:25:40 2018 in 8 Minutes, 22 Seconds 
+
