@@ -1,0 +1,19 @@
+
+Started outputSGP Sunday April 09 17:20:07 2017: Files produced from outputSGP saved in 'Data'
+
+
+
+	outputSGP(
+		 sgp_object = Rhode_Island_SGP )
+
+	Started LONG data production in outputSGP Sunday April 09 17:20:07 2017
+	Finished LONG data production in outputSGP Sunday April 09 17:20:15 2017 in 7.888 Seconds 
+
+	Started LONG FINAL YEAR data production in outputSGP Sunday April 09 17:20:15 2017
+	Finished LONG FINAL YEAR data production in outputSGP Sunday April 09 17:20:21 2017 in 6.176 Seconds 
+
+	Started WIDE data production in outputSGP Sunday April 09 17:20:21 2017
+	Finished WIDE data production in outputSGP Sunday April 09 17:20:38 2017 in 16.9 Seconds 
+
+Finished outputSGP Sunday April 09 17:20:38 2017 in 31.3 Seconds 
+
