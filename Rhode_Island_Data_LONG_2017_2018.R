@@ -15,12 +15,11 @@ require(data.table)
 
 ### Load data
 
-Rhode_Island_Data_PSAT_2018 <- fread("~/Dropbox (SGP)/SGP/Rhode_Island/Data/Base_Files/PSAT10 Final Student Score File 7.3.2018.csv", stringsAsFactors=FALSE)
+Rhode_Island_Data_PSAT_2018 <- fread("~/Dropbox (SGP)/SGP/Rhode_Island/Data/Base_Files/PSAT Student Data File-07-23-2018.csv", stringsAsFactors=FALSE)
 setnames(Rhode_Island_Data_PSAT_2018, gsub(" ", "_", names(Rhode_Island_Data_PSAT_2018)))
 
-Rhode_Island_Data_SAT_2018 <- fread("~/Dropbox (SGP)/SGP/Rhode_Island/Data/Base_Files/SAT Final Student Score File 7.3.2018.csv", stringsAsFactors=FALSE)
+Rhode_Island_Data_SAT_2018 <- fread("~/Dropbox (SGP)/SGP/Rhode_Island/Data/Base_Files/SAT Student Data File-07-23-2018.csv", stringsAsFactors=FALSE)
 setnames(Rhode_Island_Data_SAT_2018, gsub(" ", "_", names(Rhode_Island_Data_SAT_2018)))
-setnames(Rhode_Island_Data_SAT_2018, "STUDENT_LAST_OR_SURNAME", "STUDENT_LAST")
 
 
 ##########################################################
@@ -108,7 +107,7 @@ save(Rhode_Island_Data_LONG_SAT_2017_2018, file="Data/Rhode_Island_Data_LONG_SAT
 
 
 ##########################################################
-###   Clean up 2017-2018 PARCC data
+###   Clean up 2017-2018 RICAS data
 ##########################################################
 
 variables.to.keep <- c("ResponsibleDistrictCode", "ResponsibleSchoolCode",
