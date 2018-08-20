@@ -55,3 +55,19 @@ Rhode_Island_SGP <- updateSGP(
 ### Save results
 
 save(Rhode_Island_SGP, file="Data/Rhode_Island_SGP.Rdata")
+
+
+### Edit the SGP Long Data for future analyses
+
+load("./Data/ARCHIVE/PARCC 2015 to 2017/Rhode_Island_Data_LONG_2016_2017.Rdata")
+
+Rhode_Island_Data_LONG_2016_2017[CONTENT_AREA == "PSAT_EBRW", CONTENT_AREA := "ELA_PSAT_10"]
+Rhode_Island_Data_LONG_2016_2017[CONTENT_AREA == "PSAT_MATH", CONTENT_AREA := "MATHEMATICS_PSAT_10"]
+
+Rhode_Island_Data_LONG_2016_2017 <- SGP:::getAchievementLevel(
+	Rhode_Island_Data_LONG_2016_2017, state="RI",
+	content_area = c("ELA_PSAT_10", "MATHEMATICS_PSAT_10"),
+	achievement.level.name="ACHIEVEMENT_LEVEL", scale.score.name="SCALE_SCORE")
+# table(Rhode_Island_Data_LONG_2016_2017[, ACHIEVEMENT_LEVEL, CONTENT_AREA], exclude=NULL)
+
+save(Rhode_Island_Data_LONG_2016_2017, file = "./Data/ARCHIVE/PARCC 2015 to 2017/Rhode_Island_Data_LONG_2016_2017.Rdata")

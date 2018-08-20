@@ -8,57 +8,74 @@
 ##    PSAT/SAT Long Data
 ####
 
-### Load required packages
-
+###   Load required packages
 require(SGP)
 require(data.table)
 
-### Load data
-
-Rhode_Island_Data_PSAT_2018 <- fread("~/Dropbox (SGP)/SGP/Rhode_Island/Data/Base_Files/PSAT Student Data File-07-23-2018.csv", stringsAsFactors=FALSE)
+###   Load data
+Rhode_Island_Data_PSAT_2018 <- fread("Data/Base_Files/PSAT Final Student Score File 8-2-2018.csv", stringsAsFactors=FALSE)
 setnames(Rhode_Island_Data_PSAT_2018, gsub(" ", "_", names(Rhode_Island_Data_PSAT_2018)))
 
-Rhode_Island_Data_SAT_2018 <- fread("~/Dropbox (SGP)/SGP/Rhode_Island/Data/Base_Files/SAT Student Data File-07-23-2018.csv", stringsAsFactors=FALSE)
+Rhode_Island_Data_SAT_2018 <- fread("Data/Base_Files/SAT Final Student Score File 8-2-2018.csv", stringsAsFactors=FALSE)
 setnames(Rhode_Island_Data_SAT_2018, gsub(" ", "_", names(Rhode_Island_Data_SAT_2018)))
+setnames(Rhode_Island_Data_SAT_2018, "STUDENT_LAST_OR_SURNAME", "STUDENT_LAST")
+
+##   Establish Valid 'Participants' - adapted from SPSS code sent by Rachel P. 8/16/18
+#    PSAT
+Rhode_Island_Data_PSAT_2018[, participant_ela := "Y"]
+Rhode_Island_Data_PSAT_2018[
+  (is.na(STUDENT_OMITTED_READING_TEST_QUESTIONS) | STUDENT_OMITTED_READING_TEST_QUESTIONS==NUMBER_OF_READING_TEST_QUESTIONS) &
+  (is.na(STUDENT_OMITTED_WRITING_AND_LANGUAGE_TEST_QUESTIONS) | STUDENT_OMITTED_WRITING_AND_LANGUAGE_TEST_QUESTIONS==NUMBER_OF_WRITING_AND_LANGUAGE_TEST_QUESTIONS), participant_ela := "N"]
+
+Rhode_Island_Data_PSAT_2018[, Math_N_1 := sum(NUMBER_OF_MATH_NO_CALC_TEST_MULTIPLE_CHOICE_QUESTIONS, NUMBER_OF_MATH_NO_CALC_TEST_PRODUCED_RESPONSE_QUESTIONS, na.rm=TRUE), by="SECONDARY_SCHOOL_STUDENT_ID"]
+Rhode_Island_Data_PSAT_2018[, Math_N_2 := sum(NUMBER_OF_MATH_CALC_TEST_MULTIPLE_CHOICE_QUESTIONS, NUMBER_OF_MATH_CALC_TEST_PRODUCED_RESPONSE_QUESTIONS, na.rm=TRUE), by="SECONDARY_SCHOOL_STUDENT_ID"]
+Rhode_Island_Data_PSAT_2018[, participant_math := "Y"]
+Rhode_Island_Data_PSAT_2018[
+  (is.na(STUDENT_OMITTED_MATH_NO_CALC_TEST_QUESTIONS) | STUDENT_OMITTED_MATH_NO_CALC_TEST_QUESTIONS==Math_N_1) &
+  (is.na(STUDENT_OMITTED_MATH_CALC_TEST_QUESTIONS) | STUDENT_OMITTED_MATH_CALC_TEST_QUESTIONS==Math_N_2), participant_math := "N"]
+
+#    SAT
+Rhode_Island_Data_SAT_2018[, participant_ela := "Y"]
+Rhode_Island_Data_SAT_2018[
+  (is.na(STUDENT_OMITTED_READING_TEST_QUESTIONS) | STUDENT_OMITTED_READING_TEST_QUESTIONS==NUMBER_OF_READING_TEST_QUESTIONS) &
+  (is.na(STUDENT_OMITTED_WRITING_AND_LANGUAGE_TEST_QUESTIONS) | STUDENT_OMITTED_WRITING_AND_LANGUAGE_TEST_QUESTIONS==NUMBER_OF_WRITING_AND_LANGUAGE_TEST_QUESTIONS), participant_ela := "N"]
+
+Rhode_Island_Data_SAT_2018[, Math_N_1 := sum(NUMBER_OF_MATH_NO_CALC_TEST_MULTIPLE_CHOICE_QUESTIONS, NUMBER_OF_MATH_NO_CALC_TEST_PRODUCED_RESPONSE_QUESTIONS, na.rm=TRUE), by="SECONDARY_SCHOOL_STUDENT_ID"]
+Rhode_Island_Data_SAT_2018[, Math_N_2 := sum(NUMBER_OF_MATH_CALC_TEST_MULTIPLE_CHOICE_QUESTIONS, NUMBER_OF_MATH_CALC_TEST_PRODUCED_RESPONSE_QUESTIONS, na.rm=TRUE), by="SECONDARY_SCHOOL_STUDENT_ID"]
+Rhode_Island_Data_SAT_2018[, participant_math := "Y"]
+Rhode_Island_Data_SAT_2018[
+  (is.na(STUDENT_OMITTED_MATH_NO_CALC_TEST_QUESTIONS) | STUDENT_OMITTED_MATH_NO_CALC_TEST_QUESTIONS==Math_N_1) &
+  (is.na(STUDENT_OMITTED_MATH_CALC_TEST_QUESTIONS) | STUDENT_OMITTED_MATH_CALC_TEST_QUESTIONS==Math_N_2), participant_math := "N"]
 
 
 ##########################################################
-###   Clean up 2018 PSAT data
+###   Clean up 2018 P/SAT data
 ##########################################################
 
-variables.to.keep <- c("SECONDARY_SCHOOL_STUDENT_ID", "STUDENT_FIRST_NAME", "STUDENT_LAST", "SEX", "DERIVED_AGGREGATE_RACE_ETHNICITY", "ACCOMMODATIONS_USED", # "COLLEGE_BOARD_STUDENT_ID",
+variables.to.keep <- c("SECONDARY_SCHOOL_STUDENT_ID", "STUDENT_FIRST_NAME", "STUDENT_LAST", "SEX", "DERIVED_AGGREGATE_RACE_ETHNICITY", "ACCOMMODATIONS_USED",
         "TOTAL_SCORE", "EVIDENCE_BASED_READING_AND_WRITING_SECTION_SCORE", "MATH_SECTION_SCORE", "COHORT_YEAR", "INVALIDATED_SCORE", "STUDENT_PARTICIPATED_INDICATOR",
-        "DISTRICT_CODE", "DISTRICT_NAME", "STATE_ORGANIZATION_CODE", "RESPONSIBLE_ATTENDING_INSTITUTION_NAME") #, "LATEST_PSAT_DATE")
+        "DISTRICT_CODE", "DISTRICT_NAME", "STATE_ORGANIZATION_CODE", "RESPONSIBLE_ATTENDING_INSTITUTION_NAME", "participant_ela", "participant_math")
 
 Rhode_Island_Data_PSAT_2018<- Rhode_Island_Data_PSAT_2018[, variables.to.keep, with=FALSE]
 Rhode_Island_Data_SAT_2018 <- Rhode_Island_Data_SAT_2018[, variables.to.keep, with=FALSE]
 
-
-###  Identify VALID_CASEs and merge PSAT & SAT data sets
-
-##  Ignore COHORT_YEAR per Ana K 7/23 email
-# Rhode_Island_Data_PSAT_2018[, VALID_CASE := "VALID_CASE"]
-# Rhode_Island_Data_PSAT_2018[COHORT_YEAR != "2020", VALID_CASE := "INVALID_CASE"]
-#
-# Rhode_Island_Data_SAT_2018[, VALID_CASE := "VALID_CASE"]
-# Rhode_Island_Data_SAT_2018[COHORT_YEAR != "2019", VALID_CASE := "INVALID_CASE"]
-
-#  Rhode_Island_Data_PSAT_2018[INVALIDATED_SCORE == "Y", VALID_CASE := "INVALID_CASE"]  #  Verify if this is in the Final data.  Ask Ana about it???
-
-
 variable.names.new <- c("ID", "FIRST_NAME", "LAST_NAME", "GENDER", "ETHNICITY", "IEP_STATUS",
         "PSAT_TOTAL", "ELA_PSAT_10", "MATHEMATICS_PSAT_10", "COHORT_YEAR", "INVALIDATED_SCORE", "STUDENT_PARTICIPATED_INDICATOR",
-        "DISTRICT_NUMBER", "DISTRICT_NAME", "SCHOOL_NUMBER", "SCHOOL_NAME", "VALID_CASE")
+        "DISTRICT_NUMBER", "DISTRICT_NAME", "SCHOOL_NUMBER", "SCHOOL_NAME", "participant_ela", "participant_math")
 
 setnames(Rhode_Island_Data_PSAT_2018, variable.names.new)
-setnames(Rhode_Island_Data_SAT_2018, gsub("PSAT", "SAT", variable.names.new))
+setnames(Rhode_Island_Data_SAT_2018, gsub("PSAT|PSAT_10", "SAT", variable.names.new))
 
 Rhode_Island_Data_PSAT_SAT <- rbindlist(list(Rhode_Island_Data_PSAT_2018, Rhode_Island_Data_SAT_2018), fill = TRUE)
 
-### Tidy Up data
+
+###   Create Required SGP Variables
 
 Rhode_Island_Data_PSAT_SAT[, YEAR := "2017_2018"]
 Rhode_Island_Data_PSAT_SAT[, GRADE := "EOCT"]
+
+
+###   Tidy Up RIDE Provided Variables
 
 Rhode_Island_Data_PSAT_SAT[, LAST_NAME := factor(LAST_NAME)]
 levels(Rhode_Island_Data_PSAT_SAT$LAST_NAME) <- as.character(sapply(levels(Rhode_Island_Data_PSAT_SAT$LAST_NAME), capwords))
@@ -79,15 +96,42 @@ levels(Rhode_Island_Data_PSAT_SAT$IEP_STATUS) <- c("Students without Disabilitie
 
 ###  Combine content areas into single LONG file
 
+final.vars.to.keep <- c("ID", "YEAR", "GRADE", "FIRST_NAME", "LAST_NAME", "GENDER", "ETHNICITY", "SCALE_SCORE", "participant_ela", "participant_math")
+
 Rhode_Island_Data_LONG_SAT_2017_2018 <- rbindlist(list(
-      Rhode_Island_Data_PSAT_SAT[, SCALE_SCORE := MATHEMATICS_PSAT_10][!is.na(SCALE_SCORE), list(VALID_CASE, ID, YEAR, GRADE, FIRST_NAME, LAST_NAME, GENDER, ETHNICITY, SCALE_SCORE)][, CONTENT_AREA := "MATHEMATICS_PSAT_10"],
-      Rhode_Island_Data_PSAT_SAT[, SCALE_SCORE := ELA_PSAT_10][!is.na(SCALE_SCORE), list(VALID_CASE, ID, YEAR, GRADE, FIRST_NAME, LAST_NAME, GENDER, ETHNICITY, SCALE_SCORE)][, CONTENT_AREA := "ELA_PSAT_10"],
-      Rhode_Island_Data_PSAT_SAT[, SCALE_SCORE := MATHEMATICS_SAT][!is.na(SCALE_SCORE), list(VALID_CASE, ID, YEAR, GRADE, FIRST_NAME, LAST_NAME, GENDER, ETHNICITY, SCALE_SCORE)][, CONTENT_AREA := "MATHEMATICS_SAT"],
-      Rhode_Island_Data_PSAT_SAT[, SCALE_SCORE := ELA_SAT][!is.na(SCALE_SCORE), list(VALID_CASE, ID, YEAR, GRADE, FIRST_NAME, LAST_NAME, GENDER, ETHNICITY, SCALE_SCORE)][, CONTENT_AREA := "ELA_SAT"]#,
+      Rhode_Island_Data_PSAT_SAT[, SCALE_SCORE := MATHEMATICS_PSAT_10][!is.na(SCALE_SCORE), final.vars.to.keep, with = FALSE][, CONTENT_AREA := "MATHEMATICS_PSAT_10"],
+      Rhode_Island_Data_PSAT_SAT[, SCALE_SCORE := ELA_PSAT_10][!is.na(SCALE_SCORE), final.vars.to.keep, with = FALSE][, CONTENT_AREA := "ELA_PSAT_10"],
+      Rhode_Island_Data_PSAT_SAT[, SCALE_SCORE := MATHEMATICS_SAT][!is.na(SCALE_SCORE), final.vars.to.keep, with = FALSE][, CONTENT_AREA := "MATHEMATICS_SAT"],
+      Rhode_Island_Data_PSAT_SAT[, SCALE_SCORE := ELA_SAT][!is.na(SCALE_SCORE), final.vars.to.keep, with = FALSE][, CONTENT_AREA := "ELA_SAT"]#,
       # Rhode_Island_Data_PSAT_SAT[, SCALE_SCORE := PSAT_TOTAL][,list(ID, YEAR, FIRST_NAME, LAST_NAME, GENDER, ETHNICITY, SCALE_SCORE)][, CONTENT_AREA := "PSAT_TOTAL"]
 ))
 
-Rhode_Island_Data_LONG_SAT_2017_2018 <- Rhode_Island_Data_LONG_SAT_2017_2018[!is.na(ID)]
+
+###  Identify VALID_CASEs by full test participation
+
+Rhode_Island_Data_LONG_SAT_2017_2018[, VALID_CASE := "VALID_CASE"]
+Rhode_Island_Data_LONG_SAT_2017_2018[participant_ela == "N" & CONTENT_AREA %in% c("ELA_PSAT_10", "ELA_SAT"), VALID_CASE := "INVALID_CASE"]
+Rhode_Island_Data_LONG_SAT_2017_2018[participant_math == "N" & CONTENT_AREA %in% c("MATHEMATICS_PSAT_10", "MATHEMATICS_SAT"), VALID_CASE := "INVALID_CASE"]
+
+table(Rhode_Island_Data_LONG_SAT_2017_2018[, VALID_CASE, CONTENT_AREA], exclude=NULL)
+Rhode_Island_Data_LONG_SAT_2017_2018[VALID_CASE == "INVALID_CASE", as.list(summary(SCALE_SCORE)), keyby="CONTENT_AREA"] # All LOSS scores
+
+Rhode_Island_Data_LONG_SAT_2017_2018[, c("participant_ela", "participant_math") := NULL]
+
+
+###  Identify VALID_CASEs
+##   Ignore COHORT_YEAR per Ana K 7/23/18 email
+# Rhode_Island_Data_LONG_SAT_2017_2018[, VALID_CASE := "VALID_CASE"]
+# Rhode_Island_Data_LONG_SAT_2017_2018[COHORT_YEAR != "2020", VALID_CASE := "INVALID_CASE"]
+# Rhode_Island_Data_LONG_SAT_2017_2018[, VALID_CASE := "VALID_CASE"]
+# Rhode_Island_Data_LONG_SAT_2017_2018[COHORT_YEAR != "2019", VALID_CASE := "INVALID_CASE"]
+
+
+###   Create ACHIEVEMENT_LEVEL Variable
+
+Rhode_Island_Data_LONG_SAT_2017_2018 <- SGP:::getAchievementLevel(
+	Rhode_Island_Data_LONG_SAT_2017_2018, state="RI",
+	achievement.level.name="ACHIEVEMENT_LEVEL", scale.score.name="SCALE_SCORE")
 
 
 ###  Duplicates in prelimimary data!

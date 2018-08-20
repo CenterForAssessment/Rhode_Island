@@ -10,10 +10,14 @@ require(SGP)
 require(data.table)
 
 
+####
+##    PSAT/SAT Analyses
+####
+
 ###   Load data
 
-load("Data/Rhode_Island_Data_LONG_2015_2016.Rdata")
-load("Data/Rhode_Island_Data_LONG_2016_2017.Rdata")
+load("Data/ARCHIVE/PARCC 2015 to 2017/Rhode_Island_Data_LONG_2015_2016.Rdata")
+load("Data/ARCHIVE/PARCC 2015 to 2017/Rhode_Island_Data_LONG_2016_2017.Rdata")
 load("Data/Rhode_Island_Data_LONG_SAT_2017_2018.Rdata")
 
 Rhode_Island_Data_LONG <- rbindlist(
@@ -35,31 +39,30 @@ RI_CONFIG <- c(
 	MATHEMATICS_SAT_2017_2018.config)
 
 
-###   Add Knots and Boundaries for PSAT test scores.
-kbs <- createKnotsBoundaries(Rhode_Island_Data_LONG[CONTENT_AREA %in% c("ELA_PSAT_10", "ELA_SAT", "MATHEMATICS_PSAT_10", "MATHEMATICS_SAT")])
-SGPstateData[["RI"]][["Achievement"]][["Knots_Boundaries"]] <- c(SGPstateData[["RI"]][["Achievement"]][["Knots_Boundaries"]], kbs)
-
 ###  abcSGP
 
 Rhode_Island_SGP <- abcSGP(
 		sgp_object = Rhode_Island_Data_LONG,
-		steps=c("prepareSGP", "analyzeSGP", "combineSGP"), # "outputSGP"),
+		steps=c("prepareSGP", "analyzeSGP", "combineSGP", "outputSGP"),
 		sgp.percentiles=TRUE,
 		sgp.projections=FALSE,
 		sgp.projections.lagged=FALSE,
 		sgp.percentiles.baseline=FALSE,
 		sgp.projections.baseline=FALSE,
 		sgp.projections.lagged.baseline=FALSE,
+		sgp.percentiles.equated=FALSE,
 		simulate.sgps=FALSE,
 		save.intermediate.results=FALSE,
 		sgp.config=RI_CONFIG,
 		sgp.target.scale.scores=FALSE,
-		parallel.config=list(
-			BACKEND="PARALLEL",
-			WORKERS=list(PERCENTILES=2))
+		outputSGP.output.type = "LONG_FINAL_YEAR_Data"
 	)
 
 
 ### Save results
-
 save(Rhode_Island_SGP, file="Data/Rhode_Island_SGP.Rdata")
+
+
+####
+##    RICAS Analyses
+####
