@@ -9,7 +9,6 @@
 ####
 
 ###   Load required packages
-require(SGP)
 require(data.table)
 
 ###   Load data
@@ -78,13 +77,13 @@ Rhode_Island_Data_PSAT_SAT[, GRADE := "EOCT"]
 ###   Tidy Up RIDE Provided Variables
 
 Rhode_Island_Data_PSAT_SAT[, LAST_NAME := factor(LAST_NAME)]
-levels(Rhode_Island_Data_PSAT_SAT$LAST_NAME) <- as.character(sapply(levels(Rhode_Island_Data_PSAT_SAT$LAST_NAME), capwords))
+levels(Rhode_Island_Data_PSAT_SAT$LAST_NAME) <- as.character(sapply(levels(Rhode_Island_Data_PSAT_SAT$LAST_NAME), SGP::capwords))
 
 Rhode_Island_Data_PSAT_SAT[, FIRST_NAME := factor(FIRST_NAME)]
-levels(Rhode_Island_Data_PSAT_SAT$FIRST_NAME) <- as.character(sapply(levels(Rhode_Island_Data_PSAT_SAT$FIRST_NAME), capwords))
+levels(Rhode_Island_Data_PSAT_SAT$FIRST_NAME) <- as.character(sapply(levels(Rhode_Island_Data_PSAT_SAT$FIRST_NAME), SGP::capwords))
 
 Rhode_Island_Data_PSAT_SAT[, GENDER := factor(GENDER)]
-levels(Rhode_Island_Data_PSAT_SAT$GENDER) <- c("Female", "Male", NA)
+levels(Rhode_Island_Data_PSAT_SAT$GENDER) <- c("Female", "Male")
 
 # https://secure-media.collegeboard.org/digitalServices/pdf/ap/ap-guide-to-race-ethnicity-reporting-schools-districts-2016.pdf
 Rhode_Island_Data_PSAT_SAT[, ETHNICITY := factor(ETHNICITY)]
@@ -154,100 +153,127 @@ save(Rhode_Island_Data_LONG_SAT_2017_2018, file="Data/Rhode_Island_Data_LONG_SAT
 ###   Clean up 2017-2018 RICAS data
 ##########################################################
 
-variables.to.keep <- c("ResponsibleDistrictCode", "ResponsibleSchoolCode",
-        "StateStudentIdentifier", "TestFormat", "FirstName", "LastOrSurname", "Sex", "GradeLevelWhenAssessed",
-        "FederalRaceEthnicity", "EnglishLearnerEL", "EconomicDisadvantageStatus", "StudentWithDisabilities", "PrimaryDisabilityType",
-        "TestCode", "TestScaleScore", "IRTTheta", "TestPerformanceLevel") # No "GiftedandTalented", "MigrantStatus",  - maybe one of the "StateField*" vars ?
+###   Load required packages
+require(data.table)
+
+###   Load data
+Rhode_Island_Data_LONG_2017_2018 <- fread("~/Dropbox (SGP)/SGP/Rhode_Island/Data/Base_Files/RICAS2018 082318.csv", stringsAsFactors=FALSE)
+
+variables.to.keep <- c( # paste(unlist(names(Rhode_Island_Data_LONG_2017_2018)[c(1:62)]), collapse="', '")
+      "sasid", "lastname", "firstname", "mi", "grade", "stugrade",
+      "resp_discode", "resp_schcode", "resp_disname", "resp_schname", "resp_schlevel",
+      "escaleds", "eperflev", "e_ssSEM", "e_theta", "e_thetaSEM", "emode",
+      "mscaleds", "mperflev", "m_ssSEM", "m_theta", "m_thetaSEM", "mmode",
+      "AIAN", "asian", "BAA", "hispanic", "NHOPI", "white", "tworaces",
+      "gender", "ecodis", "ELL", "IEP", "plan504", "enonacc")
+
+variable.names.new <- c(
+      "ID", "LAST_NAME", "FIRST_NAME", "MIDDLE_INITIAL", "GRADE", "GRADE_ENROLLED",
+      "DISTRICT_NUMBER", "SCHOOL_NUMBER", "DISTRICT_NAME", "SCHOOL_NAME", "EMH_LEVEL",
+      "SCALE_SCORE_ACTUAL", "ACHIEVEMENT_LEVEL", "SCALE_SCORE_ACTUAL_CSEM", "SCALE_SCORE", "SCALE_SCORE_CSEM", "TEST_FORMAT",
+      "GENDER", "FREE_REDUCED_LUNCH_STATUS", "ELL_STATUS", "IEP_STATUS", "enonacc",
+      "ETHNICITY", "CONTENT_AREA") #  These two added later
 
 Rhode_Island_Data_LONG_2017_2018 <- Rhode_Island_Data_LONG_2017_2018[, variables.to.keep, with=FALSE]
 
-variable.names.new <- c("DISTRICT_NUMBER", "SCHOOL_NUMBER", "ID", "TEST_FORMAT", "FIRST_NAME", "LAST_NAME", "GENDER", "GRADE_ENROLLED",
-    "ETHNICITY", "ELL_STATUS", "FREE_REDUCED_LUNCH_STATUS", "IEP_STATUS", "DISABILITY_TYPE", "TestCode",
-    "SCALE_SCORE_ACTUAL", "SCALE_SCORE", "ACHIEVEMENT_LEVEL") # "GIFTED_AND_TALENTED_STATUS", "MIGRANT_STATUS",
+factor.vars <- c("gender", "ecodis", "ELL", "IEP", "lastname", "firstname", "resp_schlevel", "emode", "mmode", "eperflev", "mperflev")
+for(v in factor.vars) Rhode_Island_Data_LONG_2017_2018[, (v) := factor(eval(parse(text=v)))]
 
-setnames(Rhode_Island_Data_LONG_2017_2018, variable.names.new)
+ACHIEVEMENT_LEVEL, TEST_FORMAT, EMH_LEVEL
+###   Create single ETHNICITY variable
+Rhode_Island_Data_LONG_2017_2018[, ETHNICITY := as.character(NA)]
+Rhode_Island_Data_LONG_2017_2018[AIAN == "Y", ETHNICITY := "American Indian or Alaskan Native"]
+Rhode_Island_Data_LONG_2017_2018[asian == "Y", ETHNICITY := "Asian"]
+Rhode_Island_Data_LONG_2017_2018[BAA == "Y", ETHNICITY := "Black or African American"]
+Rhode_Island_Data_LONG_2017_2018[hispanic == "Y", ETHNICITY := "Hispanic or Latino"]
+Rhode_Island_Data_LONG_2017_2018[NHOPI == "Y", ETHNICITY := "Native Hawaiian or Pacific Islander"]
+Rhode_Island_Data_LONG_2017_2018[white == "Y", ETHNICITY := "White"]
+Rhode_Island_Data_LONG_2017_2018[tworaces == "Y", ETHNICITY := "Multiple Ethnicities Reported"]
+Rhode_Island_Data_LONG_2017_2018[is.na(ETHNICITY), ETHNICITY := "No Primary Race/Ethnicity Reported"]
 
-### Tidy Up data
+Rhode_Island_Data_LONG_2017_2018[, c("AIAN", "asian", "BAA", "hispanic", "NHOPI", "white", "tworaces") := NULL] # enonacc
+
+###   Other Demographic Variables
+Rhode_Island_Data_LONG_2017_2018[plan504 == "Y", IEP := "Students with 504 Plan"]
+Rhode_Island_Data_LONG_2017_2018[, plan504 := NULL]
+levels(Rhode_Island_Data_LONG_2017_2018$IEP) <- c("Students without Disabilities (Non-IEP)", "Students with Disabilities (IEP)", "Students with 504 Plan")
+
+levels(Rhode_Island_Data_LONG_2017_2018$gender) <- c(NA, "Female", "Male")
+levels(Rhode_Island_Data_LONG_2017_2018$ecodis) <- c("Not Economically Disadvantaged", "Economically Disadvantaged")
+levels(Rhode_Island_Data_LONG_2017_2018$ELL) <- c("Non-English Language Learners (ELL)", "English Language Learners (ELL)")
+
+###   Student Names
+levels(Rhode_Island_Data_LONG_2017_2018$lastname) <- as.character(sapply(levels(Rhode_Island_Data_LONG_2017_2018$lastname), SGP::capwords))
+levels(Rhode_Island_Data_LONG_2017_2018$firstname) <- as.character(sapply(levels(Rhode_Island_Data_LONG_2017_2018$firstname), SGP::capwords))
+
+
+###   Create LONG file - remove other set of content area scores and establish CONTENT_AREA variable
+ela <- copy(Rhode_Island_Data_LONG_2017_2018)[, c("mscaleds", "mperflev", "m_ssSEM", "m_theta", "m_thetaSEM", "mmode") := NULL][, CONTENT_AREA := "ELA"]
+mat <- copy(Rhode_Island_Data_LONG_2017_2018)[, c("escaleds", "eperflev", "e_ssSEM", "e_theta", "e_thetaSEM", "emode") := NULL][, CONTENT_AREA := "MATHEMATICS"]
+
+setnames(ela, variable.names.new)
+setnames(mat, variable.names.new)
+
+Rhode_Island_Data_LONG_2017_2018 <- rbindlist(list(ela, mat))
+
+
+###   Tidy Up data
 
 Rhode_Island_Data_LONG_2017_2018[, ID := as.character(ID)]
 Rhode_Island_Data_LONG_2017_2018[, YEAR := "2017_2018"]
 Rhode_Island_Data_LONG_2017_2018[, VALID_CASE := "VALID_CASE"]
 
-####  CONTENT_AREA from TestCode
-Rhode_Island_Data_LONG_2017_2018[, CONTENT_AREA := factor(TestCode)]
-levels(Rhode_Island_Data_LONG_2017_2018$CONTENT_AREA) <- c("AAELA", "AAMAT", "ALGEBRA_I", "ALGEBRA_II", rep("ELA", 7), "GEOMETRY", rep("MATHEMATICS", 6))
-Rhode_Island_Data_LONG_2017_2018[, CONTENT_AREA := as.character(CONTENT_AREA)]
+Rhode_Island_Data_LONG_2017_2018[is.na(ID), VALID_CASE:="INVALID_CASE"]
+Rhode_Island_Data_LONG_2017_2018[is.na(SCALE_SCORE), VALID_CASE:="INVALID_CASE"]
+Rhode_Island_Data_LONG_2017_2018[enonacc == 5, VALID_CASE:="INVALID_CASE"]
+Rhode_Island_Data_LONG_2017_2018[,enonacc := NULL]
+# Rhode_Island_Data_LONG_2017_2018[SCHOOL_NUMBER == "23334", VALID_CASE:="INVALID_CASE"]  #  Already INVALID_CASEs - missing sasid/ID
 
-####  GRADE from TestCode
-Rhode_Island_Data_LONG_2017_2018[, GRADE := gsub("ELA|MAT", "", TestCode)]
-Rhode_Island_Data_LONG_2017_2018[, GRADE := as.character(as.numeric(GRADE))]
-Rhode_Island_Data_LONG_2017_2018[which(is.na(GRADE)), GRADE := "EOCT"]
-Rhode_Island_Data_LONG_2017_2018[, GRADE := as.character(GRADE)]
-# table(Rhode_Island_Data_LONG_2017_2018[, GRADE, TestCode])
-
-Rhode_Island_Data_LONG_2017_2018[, TestCode := NULL]
-
-Rhode_Island_Data_LONG_2017_2018[, SCHOOL_NUMBER:=paste(DISTRICT_NUMBER, SCHOOL_NUMBER, sep="_")]
-
-levels(Rhode_Island_Data_LONG_2017_2018$FIRST_NAME) <- as.character(sapply(levels(Rhode_Island_Data_LONG_2017_2018$FIRST_NAME), capwords))
-levels(Rhode_Island_Data_LONG_2017_2018$LAST_NAME) <- as.character(sapply(levels(Rhode_Island_Data_LONG_2017_2018$LAST_NAME), capwords))
-
-levels(Rhode_Island_Data_LONG_2017_2018$GENDER) <- c("Female", "Male")
-levels(Rhode_Island_Data_LONG_2017_2018$ETHNICITY) <- c("American Indian or Alaskan Native", "Asian", "Black or African American", "Hispanic or Latino", "Native Hawaiian or Pacific Islander", "White", "Multiple Ethnicities Reported", "No Primary Race/Ethnicity Reported")
-Rhode_Island_Data_LONG_2017_2018[,ETHNICITY := as.character(ETHNICITY)]
-levels(Rhode_Island_Data_LONG_2017_2018$ELL_STATUS) <- c(NA, "Non-English Language Learners (ELL)", "English Language Learners (ELL)")
-levels(Rhode_Island_Data_LONG_2017_2018$FREE_REDUCED_LUNCH_STATUS) <- c(NA, "Not Economically Disadvantaged", "Economically Disadvantaged")
-levels(Rhode_Island_Data_LONG_2017_2018$IEP_STATUS) <- c(NA, "Students with 504 Plan", "B", "Students with Disabilities (IEP)", "Students without Disabilities (Non-IEP)", "Students without Disabilities (Non-IEP)")
-levels(Rhode_Island_Data_LONG_2017_2018$DISABILITY_TYPE) <- c(NA, Literasee:::trimWhiteSpace(levels(Rhode_Island_Data_LONG_2017_2018$DISABILITY_TYPE)[-1]))
-
-Rhode_Island_Data_LONG_2017_2018[,SCALE_SCORE := as.numeric(SCALE_SCORE)]
-Rhode_Island_Data_LONG_2017_2018[,SCALE_SCORE_ACTUAL := as.numeric(SCALE_SCORE_ACTUAL)]
-
-levels(Rhode_Island_Data_LONG_2017_2018$ACHIEVEMENT_LEVEL) <- c(NA, paste("Level", levels(Rhode_Island_Data_LONG_2017_2018$ACHIEVEMENT_LEVEL)[-1]))
+levels(Rhode_Island_Data_LONG_2017_2018$ACHIEVEMENT_LEVEL) <- c("Not Meeting", "Partially Meeting", "Meeting", "Exceeding")
 Rhode_Island_Data_LONG_2017_2018[,ACHIEVEMENT_LEVEL := as.character(ACHIEVEMENT_LEVEL)]
 
-levels(Rhode_Island_Data_LONG_2017_2018$TEST_FORMAT) <- c(NA, "Online", "Paper")
+levels(Rhode_Island_Data_LONG_2017_2018$TEST_FORMAT) <- c("Online", "Paper", NA, "Online")
+Rhode_Island_Data_LONG_2017_2018[, TEST_FORMAT := as.character(TEST_FORMAT)]
 
-###
-###  Combine PSAT and PARCC data and add in vars for all 2017 data
-###
+levels(Rhode_Island_Data_LONG_2017_2018$EMH_LEVEL) <- c(NA, "Elementary", "Elementary/Middle", "Middle", "Middle/High", "PK-12")
+Rhode_Island_Data_LONG_2017_2018[, EMH_LEVEL := as.character(EMH_LEVEL)]
 
-# setkey(cohort, ID)
-# setkey(Rhode_Island_Data_LONG_2017_2018, ID)
-# Rhode_Island_Data_LONG_2017_2018 <- cohort[, list(ID, LATEST_PSAT_DATE, COHORT_YEAR)][Rhode_Island_Data_LONG_2017_2018]
 
-Rhode_Island_Data_LONG_2017_2018 <- rbindlist(list(Rhode_Island_Data_LONG_2017_2018, Rhode_Island_Data_LONG_SAT_2017_2018), fill=TRUE)
-
+###  Enrollment (FAY) Variables
 Rhode_Island_Data_LONG_2017_2018[,STATE_ENROLLMENT_STATUS := factor(2, levels=1:2, labels=c("Enrolled State: No", "Enrolled State: Yes"))]
 Rhode_Island_Data_LONG_2017_2018[,DISTRICT_ENROLLMENT_STATUS := factor(2, levels=1:2, labels=c("Enrolled District: No", "Enrolled District: Yes"))]
 Rhode_Island_Data_LONG_2017_2018[,SCHOOL_ENROLLMENT_STATUS := factor(2, levels=1:2, labels=c("Enrolled School: No", "Enrolled School: Yes"))]
 
+Rhode_Island_Data_LONG_2017_2018[DISTRICT_NUMBER == "D88888", DISTRICT_ENROLLMENT_STATUS := "Enrolled District: No"]
+Rhode_Island_Data_LONG_2017_2018[SCHOOL_NUMBER == "88888", SCHOOL_ENROLLMENT_STATUS := "Enrolled School: No"]
 
-### CREATION of EMH_LEVEL
-
-Rhode_Island_Data_LONG_2017_2018[,TEMP_GRADE:=GRADE_ENROLLED]
-Rhode_Island_Data_LONG_2017_2018[GRADE_ENROLLED=="Other",TEMP_GRADE:="10"]
-Rhode_Island_Data_LONG_2017_2018[,TEMP_GRADE:=as.numeric(TEMP_GRADE)]
-Rhode_Island_Data_LONG_2017_2018[,MAX_SCHOOL_GRADE:=max(TEMP_GRADE, na.rm=TRUE), keyby=SCHOOL_NUMBER]
-Rhode_Island_Data_LONG_2017_2018[MAX_SCHOOL_GRADE %in% as.character(c(3,4,5,6)), EMH_LEVEL:="Elementary"]
-Rhode_Island_Data_LONG_2017_2018[MAX_SCHOOL_GRADE %in% as.character(c(7,8)), EMH_LEVEL:="Middle"]
-Rhode_Island_Data_LONG_2017_2018[MAX_SCHOOL_GRADE %in% as.character(c(9,10,11,12)), EMH_LEVEL:="High"]
-Rhode_Island_Data_LONG_2017_2018[,EMH_LEVEL:=as.factor(EMH_LEVEL)]
-Rhode_Island_Data_LONG_2017_2018[,c("TEMP_GRADE", "MAX_SCHOOL_GRADE"):=NULL]
 
 ### Resolve duplicates
-
 setkey(Rhode_Island_Data_LONG_2017_2018, VALID_CASE, CONTENT_AREA, YEAR, ID, GRADE, SCALE_SCORE)
 setkey(Rhode_Island_Data_LONG_2017_2018, VALID_CASE, CONTENT_AREA, YEAR, ID)
+# dups <- Rhode_Island_Data_LONG_2017_2018[c(which(duplicated(Rhode_Island_Data_LONG_2017_2018, by=key(Rhode_Island_Data_LONG_2017_2018)))-1, which(duplicated(Rhode_Island_Data_LONG_2017_2018, by=key(Rhode_Island_Data_LONG_2017_2018)))),]
+# setkeyv(dups, key(Rhode_Island_Data_LONG_2017_2018))  #  300 duplicate cases (150) in first RICAS draft 8/23/18
 Rhode_Island_Data_LONG_2017_2018[which(duplicated(Rhode_Island_Data_LONG_2017_2018, by=key(Rhode_Island_Data_LONG_2017_2018)))-1, VALID_CASE:="INVALID_CASE"]
-
-Rhode_Island_Data_LONG_2017_2018[is.na(SCALE_SCORE), VALID_CASE:="INVALID_CASE"]
-Rhode_Island_Data_LONG_2017_2018[GRADE=="11", VALID_CASE:="INVALID_CASE"]
-Rhode_Island_Data_LONG_2017_2018[CONTENT_AREA=="ALGEBRA_II", VALID_CASE:="INVALID_CASE"]
-setkey(Rhode_Island_Data_LONG_2017_2018, VALID_CASE, CONTENT_AREA, YEAR, ID)
 
 
 ### Save results
-
 setkey(Rhode_Island_Data_LONG_2017_2018, VALID_CASE, CONTENT_AREA, YEAR, ID)
 save(Rhode_Island_Data_LONG_2017_2018, file="Data/Rhode_Island_Data_LONG_2017_2018.Rdata")
+
+
+##########################################################
+###   Compile PARCC and RICAS CSEM Data
+##########################################################
+
+###   Merge in CSEM data for PARCC Tests
+load("~/Dropbox (SGP)/SGP/PARCC/PARCC/Data/Base_Files/PARCC_THETA_CSEM_LOOKUP.rda")
+PARCC_THETA_CSEM_LOOKUP <- PARCC_THETA_CSEM_LOOKUP[YEAR %in% c("2015_2016.2", "2016_2017.2")]
+PARCC_THETA_CSEM_LOOKUP[, YEAR := gsub("[.]2", "", YEAR)]
+
+RICAS_CSEM_LOOKUP <- unique(Rhode_Island_Data_LONG_2017_2018[VALID_CASE=="VALID_CASE", list(YEAR, CONTENT_AREA, GRADE, VALID_CASE, SCALE_SCORE, SCALE_SCORE_CSEM)])[,VALID_CASE := NULL]
+setkey(RICAS_CSEM_LOOKUP)
+
+RICAS_PARCC_CSEM <- rbind(PARCC_THETA_CSEM_LOOKUP, RICAS_CSEM_LOOKUP)
+
+save(RICAS_PARCC_CSEM, file="~/Dropbox (SGP)/Github_Repos/Packages/SGPstateData/CSEM/Rhode_Island/RICAS_PARCC_CSEM.Rdata")
+# SGPstateData[["RI"]][["Assessment_Program_Information"]][["CSEM"]] <- RICAS_PARCC_CSEM #  SIMEX and SGP Standard Errors
