@@ -1,0 +1,388 @@
+---
+title: "Appendix C to the 2017-2018 Rhode Island RICAS/SAT Growth Model Report:"
+subtitle: "Investigation of Potential Ceiling and Floor Effects."
+author:
+  - name: Adam R. VanIwaarden
+  - name: Damian W. Betebenner
+  - name: <em>National Center for the Improvement<br></br> of Educational Assessment (NCIEA)</em>
+date: September 2018
+abstract: "DRAFT REPORT - DO NOT CITE!"
+---
+
+<!--SGPreport-->
+
+```{r, echo=FALSE, include=FALSE}
+  require(SGP)
+  require(Gmisc)
+	require(ggplot2)
+	require(data.table)
+
+  ## set a universal Cache path
+  knitr::opts_chunk$set(cache.path = "_cache/Appendix_C_2018", fig.path="../img/Appendices/Appendix_C_2018/")
+
+  ##  Set Table, Figure and Equation Counters
+  options(table_counter=FALSE)
+  options(table_number=0)
+  options(table_counter_str = "<strong>Table C.%s:</strong> ")
+  options("fig_caption_no"=0)
+  options(fig_caption_no_sprintf = "**Fig. C.%s:** %s")
+	options("equation_counter" = 0)
+	
+  subject_order <- c("ELA", "MATHEMATICS", 
+										 "ELA_PSAT_10", "ELA_SAT",
+										 "MATHEMATICS_PSAT_10", "MATHEMATICS_SAT")
+	GL_subjects <- c("ELA", "MATHEMATICS")
+	EOCT_subjects<-c("ELA_PSAT_10", "ELA_SAT",
+									 "MATHEMATICS_PSAT_10", "MATHEMATICS_SAT")
+
+	prior.year <- "2016_2017"
+	current.year <- "2017_2018"
+	state <- "RI"
+
+	###  Set up long data
+	long.data <- copy(Rhode_Island_SGP@Data[, c("ID", "VALID_CASE", "CONTENT_AREA", "GRADE", "Most_Recent_Prior", "YEAR", "SCALE_SCORE", "SGP_SIMEX_RANKED", "SGP", "SCALE_SCORE_PRIOR", "SCALE_SCORE_PRIOR_STANDARDIZED", "SGP_NORM_GROUP"), with=FALSE][VALID_CASE=="VALID_CASE" & YEAR %in% c(prior.year, current.year)])
+	
+	long.data <- long.data[VALID_CASE=="VALID_CASE"]
+	
+	# setnames(long.data, c("SGP_SIMEX_RANKED", "SGP"), c("SGP", "COHORT_SGP")) # Use Ranked SIMEX SGP for all plots
+	# setnames(long.data, c("SGP", "COHORT_SGP"), c("SGP_SIMEX_RANKED", "SGP"))
+	setkeyv(long.data, c("CONTENT_AREA", "YEAR", "GRADE", "Most_Recent_Prior", "SCALE_SCORE"))
+
+	loss.hoss <- long.data[YEAR == current.year & !is.na(SGP)][, list(
+		LOSS_25 = SCALE_SCORE[which.min(SCALE_SCORE)+24], #  Bottom 25 Scores
+		LOSS_1 = min(SCALE_SCORE),   #  LOSS Only
+		HOSS_25 = SCALE_SCORE[length(SCALE_SCORE)-24], #  TOP 25 Scores - use `length` since `which.max` uses the first max value (want the last)
+		HOSS_1 = max(SCALE_SCORE)   #  HOSS Only
+		), keyby=c("CONTENT_AREA", "YEAR", "GRADE", "Most_Recent_Prior")]
+
+	long.data <- unique(long.data)
+	setkeyv(long.data, c("CONTENT_AREA", "YEAR", "GRADE", "Most_Recent_Prior"))
+	long.data <- merge(long.data, loss.hoss, all.x = TRUE)
+	long.data[, Grade := ordered(GRADE, levels=c(3:8, "EOCT"))]
+	long.data[, CA := ordered(CONTENT_AREA, levels=subject_order, labels=sapply(subject_order, capwords, USE.NAMES = FALSE))]
+
+	##  Subset out all students with max score and their historical long data
+
+	max.data <- data.table(long.data[SCALE_SCORE >= HOSS_25 & !is.na(SGP),], key=c("ID", "CONTENT_AREA", "GRADE"))
+	max.data[, CA := ordered(CONTENT_AREA, levels=c(GL_subjects, rev(EOCT_subjects)), labels=sapply(c(GL_subjects, rev(EOCT_subjects)), capwords, USE.NAMES = FALSE))] # rev PSAT/SAT to order top to bottom of boxplot
+	min.data <- data.table(long.data[SCALE_SCORE <= LOSS_25 & !is.na(SGP),], key=c("ID", "CONTENT_AREA", "GRADE"))
+	min.data[, CA := ordered(CONTENT_AREA, levels=c(GL_subjects, rev(EOCT_subjects)), labels=sapply(c(GL_subjects, rev(EOCT_subjects)), capwords, USE.NAMES = FALSE))]
+
+	###
+	###  Utility functions for ggplot (necessary because use of ggplot(...) withing knitr is odd - can't find defined variables in envir/scope, just like data.table)
+	###
+	
+	condDistPlot <- function(ca, g, prior.ca = NULL) {
+		if (g == "EOCT") {
+			tmp.data <- subset(long.data, YEAR==current.year & CONTENT_AREA==ca & Most_Recent_Prior==prior.ca & !is.na(SCALE_SCORE_PRIOR), select=c(ID, SCALE_SCORE, SCALE_SCORE_PRIOR, LOSS_25, HOSS_25, SGP, SGP_NORM_GROUP))
+			y.lab <- paste(gsub("_", "-", current.year), gsub("Sec ", "Secondary ", capwords(ca)))
+			x.lab <- paste(c(sapply(strsplit(gsub(prior.year, gsub("_", "-", prior.year), prior.ca), "/")[[1]], capwords)), collapse = " ") #"First Prior:", 
+			x.lab <- gsub(" Eoct", "", x.lab)
+			x.lab <- gsub(" EOCT", "", x.lab)
+			x.lab <- gsub(" 9", " Grade 9", x.lab)
+			x.lab <- gsub(" 8", " Grade 8", x.lab)
+			x.lab <- gsub(" 7", " Grade 7", x.lab)
+			x.lab <- gsub(" 6", " Grade 6", x.lab)
+			prior.ca <- paste(head(strsplit(strsplit(prior.ca, "/")[[1]][2], "_")[[1]], -1), collapse = "_")
+			tmp.knots<- SGPstateData[[state]][["Achievement"]][["Knots_Boundaries"]][[prior.ca]][[paste0("knots_", gsub(".*Grade ", "", x.lab))]]
+			tmp.bnds <- SGPstateData[[state]][["Achievement"]][["Knots_Boundaries"]][[prior.ca]][[paste0("boundaries_", gsub(".*Grade ", "", x.lab))]]
+			if (is.null(tmp.knots)) tmp.knots<- SGPstateData[[state]][["Achievement"]][["Knots_Boundaries"]][[prior.ca]][["knots_EOCT"]]
+			if (is.null(tmp.bnds))  tmp.bnds <- SGPstateData[[state]][["Achievement"]][["Knots_Boundaries"]][[prior.ca]][["boundaries_EOCT"]]
+		}	else {
+			tmp.data <- subset(long.data, YEAR==current.year & CONTENT_AREA==ca & GRADE==g & !is.na(SCALE_SCORE_PRIOR), select=c(ID, SCALE_SCORE, SCALE_SCORE_PRIOR, LOSS_25, HOSS_25, SGP, SGP_NORM_GROUP))
+			y.lab <- paste(gsub("_", "-", current.year), "Grade", g, capwords(ca))
+			if (is.null(prior.ca)) prior.ca <- ca
+			x.lab <- paste(gsub("_", "-", prior.year), "Grade", g-1, capwords(prior.ca))
+			tmp.knots<- SGPstateData[[state]][["Achievement"]][["Knots_Boundaries"]][[ca]][[paste0("knots_", g-1)]]
+			tmp.bnds <- SGPstateData[[state]][["Achievement"]][["Knots_Boundaries"]][[ca]][[paste0("boundaries_", g-1)]]
+		}
+
+		tmp.pnts <- unique(tmp.data, by=c("SCALE_SCORE", "SCALE_SCORE_PRIOR", "SGP"))
+		# if (length(unique(tmp.pnts$SGP_NORM_GROUP)) > 1) {tmp.h <- 25; tmp.w <- 25} else {tmp.h <- 0; tmp.w <- 0}
+		
+		###  Set Knots and Bounds if they couldn't be located in SGPstateData above 
+		if (is.null(tmp.knots)) tmp.knots<- quantile(tmp.data$SCALE_SCORE_PRIOR, probs = c(0.2, 0.4, 0.6, 0.8))
+		if (is.null(tmp.bnds)) tmp.bnds <- extendrange(tmp.data$SCALE_SCORE_PRIOR, f=0.1)
+		
+		tmp.x.scale <- extendrange(tmp.data$SCALE_SCORE_PRIOR, f=0.05)
+		tmp.y.scale <- extendrange(tmp.data$SCALE_SCORE, f=0.05) # 0.1 if using 1st and 99th percentiles in geom_quantile
+		
+		ggplot(NULL, aes(x=SCALE_SCORE_PRIOR, y=SCALE_SCORE, label=SGP)) + # NULL data to use different data sets below ## , fill=SGP_NORM_GROUP
+			# geom_text(data=tmp.pnts, aes(colour=SGP_NORM_GROUP), size=2.5, position=position_jitter(width = 10, height = 10)) + scale_colour_grey() + theme_bw() + #
+			theme_bw() + xlim(tmp.x.scale) + ylim(tmp.y.scale) +
+			geom_text(data=tmp.pnts, size=2.75, alpha=0.65) + #, position=position_jitter(tmp.w, tmp.h)
+			# geom_smooth(data=tmp.data, aes(x=SCALE_SCORE_PRIOR), colour="magenta", method="gam", formula = y ~ s(x, bs = "cs")) + 
+			geom_quantile(data=tmp.data, aes(x=SCALE_SCORE_PRIOR, y=SCALE_SCORE), quantiles = c(0.05, 0.5, 0.95), colour="magenta", formula = y ~ splines::bs(x, knots=tmp.knots, Boundary.knots = tmp.bnds)) +
+			# geom_quantile(data=tmp.data, aes(x=SCALE_SCORE_PRIOR, y=SCALE_SCORE), quantiles = c(0.01, 0.5, 0.99), colour="red", method = "rqss") + 
+			# geom_quantile(data=tmp.data, aes(x=SCALE_SCORE_PRIOR, y=SCALE_SCORE), quantiles = c(0.01, 0.5, 0.99), colour="red", method = "rqss", lambda = 1.5) + 
+			geom_rug(data=tmp.data, sides="tb", size=0.05, col=rgb(0,0,0.8, alpha=0.1)) + 
+			geom_rug(data=tmp.data, sides="rl", size=0.05, col=rgb(0.8,0,0, alpha=0.1)) +
+			stat_density2d(data=tmp.data, geom="density2d",  aes(alpha = ..level..), colour="green", contour = TRUE) + #, size=1
+			geom_hline(data=tmp.pnts, aes(yintercept=LOSS_25), colour="red", linetype="dotted") +
+			geom_hline(data=tmp.pnts, aes(yintercept=HOSS_25), colour="red", linetype="dotted") +
+			annotate("text", label = paste0("N = ", prettyNum(nrow(tmp.data), preserve.width = "individual", big.mark=",")), 
+							 x = tmp.x.scale[2]*0.9, y = tmp.y.scale[1]*1.1, size = 3.5, colour = "red") +
+			labs(y = y.lab, x = x.lab) + theme(axis.title=element_text(size=10, face="bold"), legend.position="none")
+	}
+
+	boxPlot <- function(tmp.data, y, LOSS=FALSE, facet=NULL) {
+		give.n <- function(x) { return(c(y = y, label = length(x))) }
+		if (is.null(facet)) {
+			if (LOSS) {
+				p <- ggplot(data=tmp.data, aes(x=CA, y=SGP, col=CA, ymax=(min(SGP) +7))) + 
+						 geom_boxplot() + labs(x="Content Area", y="Lowest Scoring Students' Growth Percentiles")
+			} else {
+				p <- ggplot(data=tmp.data, aes(x=CA, y=SGP, col=CA, ymax=(min(SGP) -7))) + 
+						 geom_boxplot() + labs(x="Content Area", y="Highest Scoring Students' Growth Percentiles")
+			}
+			p + stat_summary(fun.data = give.n, geom = "text", position=position_dodge(width = 0.75), size=3, colour="red") + coord_flip() +
+					theme(axis.title=element_text(size=12, face="bold"), strip.text = element_text(size=10,face="bold"), legend.position="none")
+		} else {
+		if (facet=="Grade") {
+			if (LOSS) {
+				p <- ggplot(data=tmp.data, aes(x=Grade, y=SGP, col=Grade, ymax=(min(SGP) +7))) + 
+						 geom_boxplot() + facet_grid(.~CA, scales="free") + labs(x="", y="Lowest Scoring Students' Growth Percentiles") 
+			} else {
+				p <- ggplot(data=tmp.data, aes(x=Grade, y=SGP, col=Grade, ymax=(min(SGP) -7))) + 
+						 geom_boxplot() + facet_grid(.~CA, scales="free") + labs(x="", y="Highest Scoring Students' Growth Percentiles") 
+			}
+			p + stat_summary(fun.data = give.n, geom = "text", position=position_dodge(0.75), size=3, colour="red") +
+					coord_flip() + guides(col = guide_legend(reverse = TRUE)) +
+					theme(axis.title=element_text(size=12,face="bold"), axis.text.y = element_blank(), strip.text = element_text(size=10, face="bold"))
+		} else {
+			###  Facet is Most_Recent_Prior
+			tmp.data[, Most_Recent_Prior := gsub("/", " ", Most_Recent_Prior)]
+			tmp.data[, Most_Recent_Prior := gsub("_EOCT", "", Most_Recent_Prior)]
+			tmp.data[, Most_Recent_Prior := gsub("_8", " Grade 8", Most_Recent_Prior)]
+			tmp.data[, Most_Recent_Prior := gsub("_7", " Grade 7", Most_Recent_Prior)]
+			tmp.data[, Most_Recent_Prior := gsub("_6", " Grade 6", Most_Recent_Prior)]
+			tmp.data[, Most_Recent_Prior := sapply(Most_Recent_Prior, capwords)]
+			tmp.data[, Most_Recent_Prior := gsub("Mathematics", "Math", Most_Recent_Prior)]
+			setnames(tmp.data, "Most_Recent_Prior", "Most Recent Prior")
+			
+			if (LOSS) {
+				p <- ggplot(data=tmp.data, aes(x=`Most Recent Prior`, y=SGP, col=`Most Recent Prior`, ymax=(min(SGP) +7))) + 
+						 geom_boxplot() + facet_grid(.~CA, scales="free") + labs(x="", y="Lowest Scoring Students' Growth Percentiles") 
+			} else {
+				p <- ggplot(data=tmp.data, aes(x=`Most Recent Prior`, y=SGP, col=`Most Recent Prior`, ymax=(min(SGP) -7))) + 
+						 geom_boxplot() + facet_grid(.~CA, scales="free") + labs(x="", y="Highest Scoring Students' Growth Percentiles") 
+			}
+			p + stat_summary(fun.data = give.n, geom = "text", position=position_dodge(0.75), size=3, colour="red") +
+					coord_flip() +  guides(col = guide_legend(reverse = TRUE)) +
+					theme(axis.title=element_text(size=12,face="bold"), axis.text.y = element_blank(), strip.text = element_text(size=10, face="bold"))
+		}}
+	}
+```
+
+
+# Introduction
+In the 2017-2018 academic year Rhode Island transitioned from the [Partnership for Assessment of Readiness for College and Careers (PARCC) consortium](https://parcc-assessment.org/) assessments, to the [Rhode Island Comprehensive Assessment System (RICAS)](http://www.ride.ri.gov/InstructionAssessment/Assessment/RICASAssessments.aspx) in grades 3-8 in English Language Arts and mathematics and the [PSAT10 and the SAT assessments](http://www.ride.ri.gov/InstructionAssessment/Assessment/PSATandSAT.aspx) administered in 10<sup>th</sup> and 11<sup>th</sup> grade.   The transition included numerous changes to the assessment system including the incorporation of new performance standards.  As other states have gone through similar assessment transitions, many have observed ceiling and floor effects in the new assessments (i.e. a relatively large proportion of students scoring at/near the scale extremes).  These assessment ceilings/floors can telegraph onto the Student Growth Percentile (SGP) calculations.
+
+With perfect data and model fit, the expectation is that the majority of SGPs for students scoring at or near the lowest obtainable scale score (LOSS) will be low (preferably less than 5 and not higher than 20), and that SGPs for students with the highest obtainable scale score (HOSS) will be high (higher than 95 and not less than 80).  Ceiling effects in growth measures are somewhat more problematic than floor effects because students that consistently receive the highest scores are given lower than expected growth percentiles and are therefore negatively impacted.  Conversely, the consistently lowest achieving students have higher estimated SGPs than expected.  This could possibly conceal unacceptably low growth that might otherwise be identified and addressed.
+
+In general these problems are caused by the way in which a "percentile" is most typically defined to begin with, and the inability of the assessments (and therefore the SGP model) to make granular distinctions between kids who score at the extremes of the test year after year.  As an example, if a group of students were given a relatively easy test and 20% of them received a perfect score, these students would be defined as being in the 80<sup>th</sup> percentile of achievement because they scored higher than 80% of their peers.  This is somewhat misleading however, because their score was *equal to* or greater than *all* of their peers and so could be also described as achieving at the 99<sup>th</sup> percentile under other equally valid definitions.
+
+To extend this heuristic from achievement to growth, if 50% of those top students also scored perfectly on the next test, we might estimate that they had 50<sup>th</sup> percentile growth.  Although there is nothing *technically* incorrect about this estimate since their growth is fairly typical for their academic peer group, it is an inadequate or unsatisfactory assessment of their growth because they have consistently attained the highest levels.  Furthermore, if it is typical for their peers to maintain perfect scores then even small deviations from a perfect score could produce *low growth* SGP estimates.
+
+Typically only a few students are impacted by ceiling and floor effects, making them difficult to detect using traditional SGP diagnostic tools.  "Ceiling/Test Effects" indicators have been added to the SGP model goodness of fit plots and this Appendix to the annual technical reports provides even more rigorous diagnostic and descriptive analyses.  This report includes:
+
+1. Scatter plots of the current and the most recent prior year's test score distributions to indicate ceilings or floors in the data used in growth calculations.
+2. Box plots showing the range and distribution of SGPs for the highest and lowest achieving students in the current year.
+
+
+```{r, cache=FALSE, results="asis", echo=FALSE}
+	Literasee:::pageBreak()
+```
+
+
+# Prior- and Current-Year Score Distributions
+The marginal and conditional distributions of test scores can serve as a preliminary indicator of potential ceiling or floor effects in the calculation of student growth percentiles.  Some minor problems could occur if these characteristics are present in either the prior- or current-year scores, and are particularly likely when present in both.  
+
+The plots below depict distributions for the current year and the most recent prior year used in the SGP calculations for each content area and grade level.  These plots start with a basic scatter plot of each student's scores to show their conditional (joint) score distributions, and each point is depicted as the estimated SGP value based on their scores^[Note that many SGPs are estimated using more than one prior score, and therefore plots may show SGP results from multiple analyses and/or varying SGPs for identical score combinations.].  On top of this is layered 1) **green contour lines** to provide a better sense of the score distribution density, 2) three **non-linear magenta lines** identifying the bivariate relationship between prior and current scores at the 5<sup>th</sup>, 50<sup>th</sup> and 95<sup>th</sup> percentiles^[Produced using quantile regression similar to, but not the same as, that used in calculation of the SGPs.], 3) **red** dotted lines that represent the cutoff for the highest and lowest 25+ current scale scores (corresponding with the first and last rows of the fit plot table), and 4) **rug plots** that depict the marginal distributions (prior scores shown in blue and current scores in red).  
+
+Ceiling or floor effects may be indicated by dark shaded SGP values in the extreme top-right or bottom-left corners of the plots.  This suggests that staying at the extremes is common, which may lead to odd growth estimates for these high/low achieving students.  
+
+
+##  RICAS Content Areas
+
+We see very few issues in all content areas and grades in the 2017 and 2018 Rhode Island grade-level RICAS data.  Where minor ceilings appear in either years' data, the opposite year score distributions for these students are well distributed, lessening the concern for a growth ceiling effect.  In past years analyses, some students attaining the HOSS in consecutive years had slightly lower SGPs than 99 (very minor ceiling issues).
+
+```{r, cache=FALSE, results="asis", echo=FALSE}
+	Literasee:::pageBreak()
+```
+
+
+```{r, echo=FALSE, include=FALSE, cache=TRUE, condDist_EOG, fig.height=2.5, fig.width=3}
+	condDistPlot(ca="ELA", g=4)
+	condDistPlot(ca="ELA", g=5)
+	condDistPlot(ca="ELA", g=6)
+	condDistPlot(ca="ELA", g=7)
+	condDistPlot(ca="ELA", g=8)
+
+	condDistPlot(ca="MATHEMATICS", g=4)
+	condDistPlot(ca="MATHEMATICS", g=5)
+	condDistPlot(ca="MATHEMATICS", g=6)
+	condDistPlot(ca="MATHEMATICS", g=7)
+	condDistPlot(ca="MATHEMATICS", g=8)
+```
+
+
+```{r, results="asis", echo=FALSE, ELA_Cond_Dists1}
+		placeFigure(
+			files = c("../img/Appendices/Appendix_C_2018/condDist_EOG-1.png", "../img/Appendices/Appendix_C_2018/condDist_EOG-2.png",
+								"../img/Appendices/Appendix_C_2018/condDist_EOG-3.png", "../img/Appendices/Appendix_C_2018/condDist_EOG-4.png",
+								"../img/Appendices/Appendix_C_2018/condDist_EOG-5.png"),
+			rows = 3, columns = 2, page.break= TRUE, pdf.width = 0.5,
+			caption = "Conditional distributions of current and prior scale scores: ELA.")
+```
+
+
+```{r, results="asis", echo=FALSE, Math_Cond_Dists}
+		placeFigure(
+			files = c("../img/Appendices/Appendix_C_2018/condDist_EOG-6.png", "../img/Appendices/Appendix_C_2018/condDist_EOG-7.png",
+								"../img/Appendices/Appendix_C_2018/condDist_EOG-8.png", "../img/Appendices/Appendix_C_2018/condDist_EOG-9.png",   
+								"../img/Appendices/Appendix_C_2018/condDist_EOG-10.png"),
+			rows = 3, columns = 2, page.break= TRUE, pdf.width = 0.5,
+			caption = "Conditional distributions of current and prior scale scores: Mathematics.")
+```
+	
+
+##  PSAT/SAT Subjects
+
+The conditional density plots for the PSAT/SAT subjects are displayed below.  The most recent prior is used in each plot to provide insight on the specific academic peer group on which each analysis is based.  Some of these atypical norm group analyses present a handful of concerning estimates that require closer examination.
+
+These analyses can have problems due to sparsity of data points in the high achievement regions, which leads the SGP model to struggle to produce adequate and sensible growth estimates.
+
+
+
+
+
+```{r, echo=FALSE, include=FALSE, cache=TRUE, condDist_EOC, fig.height=2.5, fig.width=3}
+# table(long.data[YEAR==current.year & CONTENT_AREA=="ELA_PSAT_10" & !is.na(SGP), Most_Recent_Prior])
+
+	condDistPlot(ca="ELA_PSAT_10", g="EOCT", prior.ca="2016_2017/ELA_9")
+
+	condDistPlot(ca="ELA_SAT", g="EOCT", prior.ca="2016_2017/ELA_PSAT_10_EOCT")
+
+	condDistPlot(ca="MATHEMATICS_PSAT_10", g="EOCT", prior.ca="2016_2017/ALGEBRA_I_EOCT")
+	condDistPlot(ca="MATHEMATICS_PSAT_10", g="EOCT", prior.ca="2016_2017/GEOMETRY_EOCT")
+
+	condDistPlot(ca="MATHEMATICS_SAT", g="EOCT", prior.ca="2016_2017/MATHEMATICS_PSAT_10_EOCT")
+```
+
+```{r, results="asis", echo=FALSE, ELA_PSAT10_Cond_Dists}
+		placeFigure(
+			files = "../img/Appendices/Appendix_C_2018/condDist_EOC-1.png",
+			caption = "Conditional distributions of current and prior scale scores: ELA PSAT 10.")
+```
+
+```{r, results="asis", echo=FALSE, ELA_SAT_Cond_Dists}
+		placeFigure(
+			files = "../img/Appendices/Appendix_C_2018/condDist_EOC-2.png", page.break= TRUE,
+			caption = "Conditional distributions of current and prior scale scores: ELA SAT.")
+```
+
+```{r, results="asis", echo=FALSE, Math_PSAT10_Cond_Dists}
+		placeFigure(
+			files = c("../img/Appendices/Appendix_C_2018/condDist_EOC-3.png", "../img/Appendices/Appendix_C_2018/condDist_EOC-4.png"),
+			rows = 2, columns = 1, pdf.width = 1.25,
+			caption = "Conditional distributions of current and prior scale scores: Mathematics PSAT 10.")
+```
+
+
+```{r, results="asis", echo=FALSE, Math_SAT_Cond_Dists}
+		placeFigure(
+			files = "../img/Appendices/Appendix_C_2018/condDist_EOC-5.png", page.break= TRUE,
+			caption = "Conditional distributions of current and prior scale scores: Mathematics SAT.")
+```
+
+
+# SGP Ranges for the Highest- and Lowest-Achieving Students
+
+In order to isolate the impact of assessment ceilings/floors on student growth percentile (SGP) calculations, the following section provides box plots of the distribution of SGPs for the highest and lowest achieving students.  We are specifically interested in the growth percentiles for students scoring at the highest/lowest obtainable scale score (HOSS/LOSS - i.e. the test ceiling/floor) on the current year test.  However, in order to assure that an adequate number of students are included, the first set of plots uses, at a *minimum*, the highest/lowest 25 scores.  These plots are provided as a starting point since this roughly corresponds to the number of students in the top and bottom rows of the table included in the SGP model "Goodness of Fit" plots.  All students with a score in these students' range of scores are included.  Consequently, the number of students in each box plot may be greater than 25 (the exact number is shown at the margins in red text).
+
+The second set of box plots isolate ***only*** those students scoring the HOSS/LOSS.  These plots may then incorporate a varying number of students depending on the prevalence of a ceiling/floor in the current year assessments.
+
+The box plots provide several descriptive statistics.  The dark line within the box marks the *median* SGP, while the ends ("hinges") of the boxes correspond to the first and third quartiles (the 25<sup>th</sup> and 75<sup>th</sup> percentiles).  The upper whisker extends from the hinge to the highest value that is within 1.5 $\times$ IQR of the hinge, where IQR is the inter-quartile range, or distance between the first and third quartiles. The lower whisker extends from the hinge to the lowest value within 1.5 $\times$ IQR of the hinge. Data beyond the end of the whiskers are outliers and plotted as individual points.  Evidence of a *lack* of either a ceiling or floor effect would be to have all high achieving students with SGPs near 99 and all low achieving students with SGPs near 1.  That is, the desired visual evidence is a solid line at SGP = 99/1.
+
+
+```{r, echo=FALSE, include=FALSE, cache=TRUE, HOSS_Box_EOG, fig.height=4, fig.width=7}
+	min.ceiling<-min(max.data[CONTENT_AREA %in% GL_subjects]$SGP)-5
+	boxPlot(tmp.data=max.data[CONTENT_AREA %in% GL_subjects], min.ceiling, facet="Grade")
+	boxPlot(tmp.data=max.data[CONTENT_AREA %in% GL_subjects & SCALE_SCORE==HOSS_1], min.ceiling, facet="Grade")
+```
+
+```{r, echo=FALSE, include=FALSE, cache=TRUE, LOSS_Box_EOG, fig.height=4, fig.width=7}
+	max.floor <- max(min.data[CONTENT_AREA %in% GL_subjects]$SGP)
+	boxPlot(tmp.data=min.data[CONTENT_AREA %in% GL_subjects], max.floor+4, LOSS=TRUE, facet="Grade")
+	boxPlot(tmp.data=min.data[CONTENT_AREA %in% GL_subjects & SCALE_SCORE==LOSS_1], max.floor, LOSS=TRUE, facet="Grade")
+```
+
+## RICAS Content Areas
+
+The scatter plots in the previous section showed that, although uncommon, students do score the HOSS on both ELA and Mathematics assessments.  However, out of the tens of thousands of students, only a handful appear to be concerning.  There is one student in Grade 6 ELA who has scored the HOSS and has an estimated SGP of 37, and another in Grade 8 Mathematics with a SGP estimate of 54.  However, a majority of these students have SGPs in the 90s.  Similarly, the students scoring the LOSS have a few SGP estimates with minor floor effects indicated, particularly in Grade 8 ELA.
+
+
+```{r, results="asis", echo=FALSE, EOG_HOSS1}
+		placeFigure(
+			files = c("../img/Appendices/Appendix_C_2018/HOSS_Box_EOG-1.png", "../img/Appendices/Appendix_C_2018/LOSS_Box_EOG-1.png"),
+			rows = 2, columns = 1, page.break= TRUE,
+			caption = "Grade Level SGP distributions for highest and lowest 25+ scale scores by content area and grade.")
+```
+
+
+```{r, results="asis", echo=FALSE, EOG_HOSS2}
+		placeFigure(
+			files = c("../img/Appendices/Appendix_C_2018/HOSS_Box_EOG-2.png", "../img/Appendices/Appendix_C_2018/LOSS_Box_EOG-2.png"),
+			rows = 2, columns = 1, page.break= TRUE,
+			caption = "Grade Level SGP distributions for the HOSS and LOSS scores by content area and grade.")
+```
+
+
+## PSAT/SAT Subjects
+
+The PSAT/SAT subject results are shown here *only for students scoring exactly the HOSS and LOSS* respectively.  Small ceiling effects are evident in the Mathematics SAT analysis.
+
+
+```{r, echo=FALSE, include=FALSE, cache=TRUE, HOSS_Box_EOC, fig.height=4, fig.width=7}
+	min.ceiling<-min(max.data[CONTENT_AREA %in% EOCT_subjects]$SGP)
+	# boxPlot(tmp.data=max.data[CONTENT_AREA %in% EOCT_subjects], min.ceiling)
+	boxPlot(tmp.data=max.data[CONTENT_AREA %in% EOCT_subjects & SCALE_SCORE==HOSS_1], min.ceiling)
+	
+	# boxPlot(tmp.data=max.data[CONTENT_AREA %in% "ELA_PSAT_10" & SCALE_SCORE==HOSS_1], min.ceiling, facet="Most_Recent_Prior")
+	boxPlot(tmp.data=max.data[CONTENT_AREA %in% "MATHEMATICS_PSAT_10" & SCALE_SCORE==HOSS_1], min.ceiling, facet="Most_Recent_Prior")
+```
+```{r, echo=FALSE, include=FALSE, cache=TRUE, LOSS_Box_EOC, fig.height=4, fig.width=7}
+	max.floor <- max(min.data[CONTENT_AREA %in% EOCT_subjects]$SGP)
+
+	boxPlot(tmp.data=min.data[CONTENT_AREA %in% EOCT_subjects & SCALE_SCORE==LOSS_1], max.floor, LOSS=TRUE)
+	
+	boxPlot(tmp.data=min.data[CONTENT_AREA %in% "MATHEMATICS_PSAT_10" & SCALE_SCORE==LOSS_1], max.floor, LOSS=TRUE, facet="Most_Recent_Prior")
+```
+
+```{r, results="asis", echo=FALSE, EOC_HOSS}
+		placeFigure(
+			files = c("../img/Appendices/Appendix_C_2018/HOSS_Box_EOC-1.png", "../img/Appendices/Appendix_C_2018/LOSS_Box_EOC-1.png"),
+			rows = 2, columns = 1, page.break= TRUE, pdf.width = 0.90,
+			caption = "PSAT/SAT SGP distributions for the HOSS and LOSS scores by content area.")
+```
+
+
+The following box plots disaggregates the Mathematics PSAT 10 analyses by the most recent prior to reflect their constituent norm groups more closely.
+
+```{r, results="asis", echo=FALSE, MathPSAT10_HOSS}
+		placeFigure(
+			files = c("../img/Appendices/Appendix_C_2018/HOSS_Box_EOC-2.png", "../img/Appendices/Appendix_C_2018/LOSS_Box_EOC-2.png"),
+			rows = 2, columns = 1, page.break= TRUE, pdf.width = 0.95,
+			caption = "PSAT/SAT SGP distributions for the HOSS and LOSS scores by norm group: Mathematics PSAT 10.")
+```
+
+
+#  Discussion
+
+Overall there is little evidence of floor or ceiling effects in the 2017-2018 Rhode Island RICAS/SAT SGP analyses.  When ceiling or floor effects are encountered, there are several ways in which they can be "corrected" manually or analytically.  These include (but not limited to):
+
+1. Convert all students scoring at the HOSS (LOSS) to 99 (1).
+2. Run SGP analyses with more granular scores.  For example, many tests that use Item Response Theory (IRT) to analyse test results provide scaled scores that enforce an artificial ceiling (floor), but also have more granular achievement scores available (IRT $\theta$ estimates).
+3. Leave the results without a correction.
+

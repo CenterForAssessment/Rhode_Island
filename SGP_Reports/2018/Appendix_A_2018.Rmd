@@ -1,0 +1,185 @@
+---
+title: "Appendix A to the 2018 Rhode Island Growth Model Report:"
+subtitle: "Growth Model Fit Plots"
+date: October 2018
+---
+
+<!--SGPreport-->
+
+<!-- Appendix A - Model Fit Plots -->
+
+```{r, echo=FALSE, include=FALSE}
+  # require(Gmisc)
+	require(data.table)
+	require(Gmisc)
+
+  knitr::opts_chunk$set(cache.path = "_cache/Appendix_A_2018")
+
+  ##  Set Table, Figure and Equation Counters
+  options(table_counter=FALSE)
+  options(table_number=0)
+  options(table_counter_str = "<strong>Table A.%s:</strong> ")
+  options("fig_caption_no"=0)
+  options(fig_caption_no_sprintf = "**Fig. A.%s:**  %s")
+	options("fig_caption_no_roman"=FALSE)
+	options("equation_counter" = 0)
+	
+```
+
+# Student Growth Percentile Fit Plots
+
+A goodness of fit plot is produced for each unique analysis run in 2018.  All fit plots will contain at least four panels.  Each panel is a different depiction of the distribution of the Student Growth Percentiles (SGPs) calculated in that analysis relative to the students' prior or current achievement (i.e. the test scores used as the independent and dependent variables in the model).
+
+The top panel is a mosaic plot that shows the percentage of students that fall into each prior proficiency level, and the location of the 10<sup>th</sup> through 90<sup>th</sup> quantiles of the SGP distribution represented as dashed white lines (with the exception of the solid white line for the median/50<sup>th</sup> percentile).  Ideally the median SGP will be at or near 50 for all prior achievement level groups.  The top panel is excluded when students' prior achievement level data is unavailable.
+
+The "Ceiling/Floor Effects Test" panel helps identify problems in SGP estimation at the Highest and Lowest Obtainable/Observed Scale Scores (HOSS and LOSS).  Appendix C provides a more detailed description of ceiling and floor effects and their causes.  The table of values shows whether the current year scores at both extremes yield expected SGP values.  The expectation is that the majority of SGPs for students scoring at or near the LOSS will be low (preferably less than 5 and not higher than 20), and that SGPs for students scoring at or near the HOSS will be high (preferably higher than 95 and not less than 80).  Because few students may score *exactly* at the HOSS/LOSS, the top/bottom 50 students are selected and any student scoring within their range of scores are selected for inclusion in these tables. Consequently, there may be a range of scores at the HOSS/LOSS rather than a single score, and there may be more than 50 students included in the HOSS/LOSS row if the 50 students at the extremes only contain the single HOSS/LOSS score.
+
+The "Student Growth Percentile Range" panel at bottom left shows the empirical distribution of SGPs given prior scale score deciles in the form of a 10 by 10 cell grid.  Percentages of student growth percentiles between the 10<sup>th</sup>, 20<sup>th</sup>, 30<sup>th</sup>, 40<sup>th</sup>, 50<sup>th</sup>, 60<sup>th</sup>, 70<sup>th</sup>, 80<sup>th</sup>, and 90<sup>th</sup> percentiles were calculated based upon the empirical decile of the cohort's prior year scaled score distribution^[The total students in each analysis varies depending on grade and subject, and prior score deciles are based only on scores for students used in the SGP calculations.]. Deviations from perfect fit are indicated by red and blue shading. The further above 10 the darker the red, and the further below 10 the darker the blue. A more detailed discussion about the reasons for and implications of model misfit can be found in the "Goodness of Fit" section of the 2018 Rhode Island Student Growth Model report.
+
+The bottom right panel of each plot is a [Q-Q plot](https://en.wikipedia.org/wiki/Q%E2%80%93Q_plot) which compares the observed distribution of SGPs with the theoretical (uniform) distribution.  An ideal plot here will show black step function lines that do not deviate from the ideal, red line which traces the 45 degree angle of perfect fit.
+
+```{r, cache=FALSE, results="asis", echo=FALSE}
+	Literasee:::pageBreak()
+```
+
+
+# End-of-Grade Analyses
+
+## ELA
+
+```{r, comment=NA, results='asis', highlight=NA, echo=FALSE, goFit_ELA}
+tmp.files <- unique(gsub(".png|.pdf", "", list.files("../img/Appendices/Goodness_of_Fit/ELA.2017_2018")))
+tmp.files <- tmp.files[order(tmp.files)]
+
+for (gof in tmp.files) {
+	tmp.seq <- strsplit(gof, ";")[[1]]
+	tmp.grd <- gsub("2017_2018_ELA_", "", tmp.seq[1])
+	
+	if ((length(tmp.seq)-1) == 1) {tmp.priors <- "One"; tmp.mult <- NULL}
+	if ((length(tmp.seq)-1) == 2) {tmp.priors <- "Two"; tmp.mult <- "s"}
+	
+	if (gof == tmp.files[1]) tmp.width <- 0.9 else tmp.width <- 1.0
+
+	placeFigure(files = paste0("../img/Appendices/Goodness_of_Fit/ELA.2017_2018/", gof, ".png"), page.break= TRUE, pdf.width = tmp.width,
+							caption = paste0("Goodness of Fit Plot for 2018 Grade ", tmp.grd, " ELA ", tmp.priors, " Prior", tmp.mult, "."))
+
+# cat('<!-- HTML_Start -->
+# <!-- LaTeX_Start 
+# \\clearpage 
+# LaTeX_End -->')
+}
+```
+
+
+## Mathematics
+
+```{r, comment=NA, results='asis', highlight=NA, echo=FALSE, goFit_Math}
+tmp.files <- unique(gsub(".png|.pdf", "", list.files("../img/Appendices/Goodness_of_Fit/MATHEMATICS.2017_2018")))
+tmp.files <- tmp.files[order(tmp.files)]
+
+for (gof in tmp.files) {
+	tmp.seq <- strsplit(gof, ";")[[1]]
+	tmp.grd <- gsub("2017_2018_MATH_", "", tmp.seq[1])
+	
+	if ((length(tmp.seq)-1) == 1) {tmp.priors <- "One"; tmp.mult <- NULL}
+	if ((length(tmp.seq)-1) == 2) {tmp.priors <- "Two"; tmp.mult <- "s"}
+	
+	if (gof == tmp.files[1]) tmp.width <- 0.9 else tmp.width <- 1.0
+
+	placeFigure(files = paste0("../img/Appendices/Goodness_of_Fit/MATHEMATICS.2017_2018/", gof, ".png"), page.break= TRUE, pdf.width = tmp.width,
+							caption = paste0("Goodness of Fit Plot for 2018 Grade ", tmp.grd, " Mathematics ", tmp.priors, " Prior", tmp.mult, "."))
+}
+```
+
+
+# PSAT/SAT Analyses (by Course Progression)
+
+##  ELA PSAT 10
+
+```{r, comment=NA, results='asis', highlight=NA, echo=FALSE, goFit_ELAPSAT10}
+tmp.files <- unique(gsub(".png|.pdf", "", list.files("../img/Appendices/Goodness_of_Fit/ELA_PSAT_10.2017_2018")))
+tmp.files <- tmp.files[order(tmp.files)]
+
+for (gof in tmp.files) {
+	tmp.priors <- paste(sapply(strsplit(gof, ";")[[1]][-1], function(f) capwords(f, special.words =c("ELA", "EOCT", "PSAT", "SAT"))), collapse=", ")
+	
+	tmp.priors <- gsub(" EOCT", "", tmp.priors)
+	tmp.priors <- gsub(" 9", " Grade 9", tmp.priors)
+	tmp.priors <- gsub(" 8", " Grade 8", tmp.priors)
+	tmp.priors <- gsub("2016 2017", "2016-2017", tmp.priors)
+	tmp.priors <- gsub("2015 2016", "2015-2016", tmp.priors)
+	
+	if (gof == tmp.files[1]) tmp.width <- 0.9 else tmp.width <- 1.0
+
+	placeFigure(files = paste0("../img/Appendices/Goodness_of_Fit/ELA_PSAT_10.2017_2018/", gof, ".png"), page.break= TRUE, pdf.width = tmp.width,
+							caption = paste0("Goodness of Fit Plot for 2018 ELA PSAT 10 (Priors ", tmp.priors, ")."))
+}
+```
+
+
+##  ELA SAT
+
+```{r, comment=NA, results='asis', highlight=NA, echo=FALSE, goFit_ELA_SAT}
+tmp.files <- unique(gsub(".png|.pdf", "", list.files("../img/Appendices/Goodness_of_Fit/ELA_SAT.2017_2018")))
+tmp.files <- tmp.files[order(tmp.files)]
+
+for (gof in tmp.files) { # re-order to put repeaters last
+	tmp.priors <- paste(sapply(strsplit(gof, ";")[[1]][-1], function(f) capwords(f, special.words =c("ELA", "EOCT", "PSAT", "SAT"))), collapse=", ")
+	
+	tmp.priors <- gsub(" EOCT", "", tmp.priors)
+	tmp.priors <- gsub(" 9", " Grade 9", tmp.priors)
+	tmp.priors <- gsub(" 8", " Grade 8", tmp.priors)
+	tmp.priors <- gsub("2016 2017", "2016-2017", tmp.priors)
+	tmp.priors <- gsub("2015 2016", "2015-2016", tmp.priors)
+	
+	if (gof == tmp.files[1]) tmp.width <- 0.9 else tmp.width <- 1.0
+
+	placeFigure(files = paste0("../img/Appendices/Goodness_of_Fit/ELA_SAT.2017_2018/", gof, ".png"), page.break= TRUE, pdf.width = tmp.width,
+							caption = paste0("Goodness of Fit Plot for 2018 ELA SAT (Priors ", tmp.priors, ")."))
+}
+```
+
+##  Mathematics PSAT 10
+
+```{r, comment=NA, results='asis', highlight=NA, echo=FALSE, goFit_MathPSAT10}
+tmp.files <- unique(gsub(".png|.pdf", "", list.files("../img/Appendices/Goodness_of_Fit/MATHEMATICS_PSAT_10.2017_2018")))
+tmp.files <- tmp.files[order(tmp.files)]
+
+for (gof in tmp.files) {
+	tmp.priors <- paste(sapply(strsplit(gof, ";")[[1]][-1], function(f) capwords(f, special.words =c("ELA", "EOCT", "PSAT", "SAT"))), collapse=", ")
+	
+	tmp.priors <- gsub(" EOCT", "", tmp.priors)
+	tmp.priors <- gsub(" 9", " Grade 9", tmp.priors)
+	tmp.priors <- gsub(" 8", " Grade 8", tmp.priors)
+	tmp.priors <- gsub("2016 2017", "2016-2017", tmp.priors)
+	tmp.priors <- gsub("2015 2016", "2015-2016", tmp.priors)
+	
+	if (gof == tmp.files[1]) tmp.width <- 0.9 else tmp.width <- 1.0
+
+	placeFigure(files = paste0("../img/Appendices/Goodness_of_Fit/MATHEMATICS_PSAT_10.2017_2018/", gof, ".png"), page.break= TRUE, pdf.width = tmp.width,
+							caption = paste0("Goodness of Fit Plot for 2018 Mathematics PSAT 10 (Priors ", tmp.priors, ")."))
+}
+```
+
+
+##  Mathematics SAT
+
+```{r, comment=NA, results='asis', highlight=NA, echo=FALSE, goFit_Math_SAT}
+tmp.files <- unique(gsub(".png|.pdf", "", list.files("../img/Appendices/Goodness_of_Fit/MATHEMATICS_SAT.2017_2018")))
+tmp.files <- tmp.files[order(tmp.files)]
+
+for (gof in tmp.files) { # re-order to put repeaters last
+	tmp.priors <- paste(sapply(strsplit(gof, ";")[[1]][-1], function(f) capwords(f, special.words =c("ELA", "EOCT", "PSAT", "SAT"))), collapse=", ")
+	
+	tmp.priors <- gsub(" EOCT", "", tmp.priors)
+	tmp.priors <- gsub(" 9", " Grade 9", tmp.priors)
+	tmp.priors <- gsub(" 8", " Grade 8", tmp.priors)
+	tmp.priors <- gsub("2016 2017", "2016-2017", tmp.priors)
+	tmp.priors <- gsub("2015 2016", "2015-2016", tmp.priors)
+	
+	if (gof == tmp.files[1]) tmp.width <- 0.9 else tmp.width <- 1.0
+
+	placeFigure(files = paste0("../img/Appendices/Goodness_of_Fit/MATHEMATICS_SAT.2017_2018/", gof, ".png"), page.break= TRUE, pdf.width = tmp.width,
+							caption = paste0("Goodness of Fit Plot for 2018 Mathematics SAT (Priors ", tmp.priors, ")."))
+}
+```
