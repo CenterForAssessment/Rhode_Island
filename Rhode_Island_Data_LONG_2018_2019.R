@@ -4,9 +4,11 @@
 ###                                                              ###
 ####################################################################
 
+##########################################################
 ####
 ##    PSAT/SAT Long Data
 ####
+##########################################################
 
 ###   Load required packages
 require(data.table)
@@ -134,11 +136,10 @@ setkey(Rhode_Island_Data_LONG_SAT_2018_2019, VALID_CASE, CONTENT_AREA, YEAR, ID)
 
 
 ##########################################################
-###   Clean up 2017-2018 RICAS data
+####
+##    RICAS Long Data
+####
 ##########################################################
-
-###   Load required packages
-#require(data.table)
 
 ###   Load data
 Rhode_Island_Data_LONG_RICAS_2018_2019 <- NULL
