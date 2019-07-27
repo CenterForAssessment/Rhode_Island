@@ -13,13 +13,23 @@
 ###   Load required packages
 require(data.table)
 
-###   Load data
+###   Load data & CSEMS
 Rhode_Island_Data_PSAT_2019 <- fread("Data/Base_Files/PSAT-7-18-2019-10-12_REVIEWED.csv", stringsAsFactors=FALSE)
 setnames(Rhode_Island_Data_PSAT_2019, gsub(" ", "_", names(Rhode_Island_Data_PSAT_2019)))
 
 Rhode_Island_Data_SAT_2019 <- fread("Data/Base_Files/SAT-07-18-2019_REVIEWED.csv", stringsAsFactors=FALSE)
 setnames(Rhode_Island_Data_SAT_2019, gsub(" ", "_", names(Rhode_Island_Data_SAT_2019)))
 setnames(Rhode_Island_Data_SAT_2019, "STUDENT_LAST_OR_SURNAME", "STUDENT_LAST")
+
+Rhode_Island_CSEM_PSAT_FORM_1 <- fread("Data/Base_Files/RIDE_CSEMs_June2019_PSAT_FORM_1.csv")
+Rhode_Island_CSEM_SAT_FORM_1 <- fread("Data/Base_Files/RIDE_CSEMs_June2019_SAT_FORM_1.csv")
+Rhode_Island_CSEM_SAT_FORM_2 <- fread("Data/Base_Files/RIDE_CSEMs_June2019_SAT_FORM_1.csv")
+Rhode_Island_CSEM_SAT_FORM_3 <- fread("Data/Base_Files/RIDE_CSEMs_June2019_SAT_FORM_3.csv")
+
+Rhode_Island_CSEM_PSAT_FORM_1_NUMBERS <- fread("Data/Base_Files/RIDE_FORM_1_June2019_PSAT.csv")
+Rhode_Island_CSEM_SAT_FORM_1_NUMBERS <- fread("Data/Base_Files/RIDE_FORM_1_June2019_SAT.csv")
+Rhode_Island_CSEM_SAT_FORM_2_NUMBERS <- fread("Data/Base_Files/RIDE_FORM_2_June2019_SAT.csv")
+Rhode_Island_CSEM_SAT_FORM_3_NUMBERS <- fread("Data/Base_Files/RIDE_FORM_3_June2019_SAT.csv")
 
 ##   Establish Valid 'Participants' - adapted from SPSS code sent by Rachel P. 8/16/18
 #    PSAT
@@ -39,14 +49,14 @@ Rhode_Island_Data_SAT_2019[attempt_math == "N" | RIDE_invalidation_math == "Y", 
 
 variables.to.keep <- c("SECONDARY_SCHOOL_STUDENT_ID", "STUDENT_FIRST_NAME", "STUDENT_LAST", "SEX", "DERIVED_AGGREGATE_RACE_ETHNICITY", "ACCOMMODATIONS_USED",
         "TOTAL_SCORE", "EVIDENCE_BASED_READING_AND_WRITING_SECTION_SCORE", "MATH_SECTION_SCORE", "COHORT_YEAR", "INVALIDATED_SCORE", "STUDENT_PARTICIPATED_INDICATOR",
-        "DISTRICT_CODE", "DISTRICT_NAME", "STATE_ORGANIZATION_CODE", "RESPONSIBLE_ATTENDING_INSTITUTION_NAME", "participant_ela", "participant_math")
+        "DISTRICT_CODE", "DISTRICT_NAME", "STATE_ORGANIZATION_CODE", "RESPONSIBLE_ATTENDING_INSTITUTION_NAME", "FORM_CODE", "participant_ela", "participant_math")
 
 Rhode_Island_Data_PSAT_2019<- Rhode_Island_Data_PSAT_2019[, variables.to.keep, with=FALSE]
 Rhode_Island_Data_SAT_2019 <- Rhode_Island_Data_SAT_2019[, variables.to.keep, with=FALSE]
 
 variable.names.new <- c("ID", "FIRST_NAME", "LAST_NAME", "GENDER", "ETHNICITY", "IEP_STATUS",
         "PSAT_TOTAL", "ELA_PSAT_10", "MATHEMATICS_PSAT_10", "COHORT_YEAR", "INVALIDATED_SCORE", "STUDENT_PARTICIPATED_INDICATOR",
-        "DISTRICT_NUMBER", "DISTRICT_NAME", "SCHOOL_NUMBER", "SCHOOL_NAME", "participant_ela", "participant_math")
+        "DISTRICT_NUMBER", "DISTRICT_NAME", "SCHOOL_NUMBER", "SCHOOL_NAME", "FORM_CODE", "participant_ela", "participant_math")
 
 setnames(Rhode_Island_Data_PSAT_2019, variable.names.new)
 setnames(Rhode_Island_Data_SAT_2019, gsub("PSAT|PSAT_10", "SAT", variable.names.new))
@@ -82,7 +92,7 @@ levels(Rhode_Island_Data_PSAT_SAT$IEP_STATUS) <- c("Students without Disabilitie
 
 ###  Combine content areas into single LONG file
 
-final.vars.to.keep <- c("ID", "YEAR", "GRADE", "FIRST_NAME", "LAST_NAME", "GENDER", "ETHNICITY", "SCALE_SCORE", "participant_ela", "participant_math")
+final.vars.to.keep <- c("ID", "YEAR", "GRADE", "FIRST_NAME", "LAST_NAME", "GENDER", "ETHNICITY", "SCALE_SCORE", "FORM_CODE", "participant_ela", "participant_math")
 
 Rhode_Island_Data_LONG_SAT_2018_2019 <- rbindlist(list(
       Rhode_Island_Data_PSAT_SAT[, SCALE_SCORE := MATHEMATICS_PSAT_10][!is.na(SCALE_SCORE), final.vars.to.keep, with = FALSE][, CONTENT_AREA := "MATHEMATICS_PSAT_10"],
@@ -103,6 +113,75 @@ table(Rhode_Island_Data_LONG_SAT_2018_2019[, VALID_CASE, CONTENT_AREA], exclude=
 Rhode_Island_Data_LONG_SAT_2018_2019[VALID_CASE == "INVALID_CASE", as.list(summary(SCALE_SCORE)), keyby="CONTENT_AREA"] # All LOSS scores
 
 Rhode_Island_Data_LONG_SAT_2018_2019[, c("participant_ela", "participant_math") := NULL]
+
+
+### Change class of some variables
+
+Rhode_Island_Data_LONG_SAT_2018_2019[,ID:=as.character(ID)]
+
+
+### Prepare PSAT/SAT CSEMs and merge into LONG data
+
+# FORM 1 SAT
+tmp.list <- list()
+CSEM_SAT_FORM_1 <- data.table(YEAR="2018_2019",
+                              CONTENT_AREA=c(rep("MATHEMATICS_SAT", dim(Rhode_Island_CSEM_SAT_FORM_1)[1]), rep("ELA_SAT", dim(Rhode_Island_CSEM_SAT_FORM_1)[1])),
+                              SCALE_SCORE=rep(Rhode_Island_CSEM_SAT_FORM_1[[1]], 2),
+                              SCALE_SCORE_CSEM=c(Rhode_Island_CSEM_SAT_FORM_1[[2]], Rhode_Island_CSEM_SAT_FORM_1[[3]]))
+
+for (iter in Rhode_Island_CSEM_SAT_FORM_1_NUMBERS[[1]]) {
+    CSEM_SAT_FORM_1$FORM_CODE <- as.character(iter)
+    tmp.list[[as.character(iter)]] <- CSEM_SAT_FORM_1
+}
+
+CSEM_SAT_FORM_1 <- rbindlist(tmp.list)[!is.na(SCALE_SCORE)]
+
+# FORM 2 SAT
+tmp.list <- list()
+CSEM_SAT_FORM_2 <- data.table(YEAR="2018_2019",
+                              CONTENT_AREA=c(rep("MATHEMATICS_SAT", dim(Rhode_Island_CSEM_SAT_FORM_2)[1]), rep("ELA_SAT", dim(Rhode_Island_CSEM_SAT_FORM_2)[1])),
+                              SCALE_SCORE=rep(Rhode_Island_CSEM_SAT_FORM_2[[1]], 2),
+                              SCALE_SCORE_CSEM=c(Rhode_Island_CSEM_SAT_FORM_2[[2]], Rhode_Island_CSEM_SAT_FORM_2[[3]]))
+
+for (iter in Rhode_Island_CSEM_SAT_FORM_2_NUMBERS[[1]]) {
+    CSEM_SAT_FORM_2$FORM_CODE <- as.character(iter)
+    tmp.list[[as.character(iter)]] <- CSEM_SAT_FORM_2
+}
+
+CSEM_SAT_FORM_2 <- rbindlist(tmp.list)[!is.na(SCALE_SCORE)]
+
+# FORM 3 SAT
+tmp.list <- list()
+CSEM_SAT_FORM_3 <- data.table(YEAR="2018_2019",
+                              CONTENT_AREA=c(rep("MATHEMATICS_SAT", dim(Rhode_Island_CSEM_SAT_FORM_3)[1]), rep("ELA_SAT", dim(Rhode_Island_CSEM_SAT_FORM_3)[1])),
+                              SCALE_SCORE=rep(Rhode_Island_CSEM_SAT_FORM_3[[1]], 2),
+                              SCALE_SCORE_CSEM=c(Rhode_Island_CSEM_SAT_FORM_3[[2]], Rhode_Island_CSEM_SAT_FORM_3[[3]]))
+
+for (iter in Rhode_Island_CSEM_SAT_FORM_3_NUMBERS[[1]]) {
+    CSEM_SAT_FORM_3$FORM_CODE <- as.character(iter)
+    tmp.list[[as.character(iter)]] <- CSEM_SAT_FORM_3
+}
+
+CSEM_SAT_FORM_3 <- rbindlist(tmp.list)[!is.na(SCALE_SCORE)]
+
+# FORM 1 PSAT
+tmp.list <- list()
+CSEM_PSAT_FORM_1 <- data.table(YEAR="2018_2019",
+                              CONTENT_AREA=c(rep("MATHEMATICS_PSAT_10", dim(Rhode_Island_CSEM_PSAT_FORM_1)[1]), rep("ELA_PSAT_10", dim(Rhode_Island_CSEM_PSAT_FORM_1)[1])),
+                              SCALE_SCORE=rep(Rhode_Island_CSEM_PSAT_FORM_1[[1]], 2),
+                              SCALE_SCORE_CSEM=c(Rhode_Island_CSEM_PSAT_FORM_1[[2]], Rhode_Island_CSEM_PSAT_FORM_1[[3]]))
+
+for (iter in Rhode_Island_CSEM_PSAT_FORM_1_NUMBERS[[1]]) {
+    CSEM_PSAT_FORM_1$FORM_CODE <- as.character(iter)
+    tmp.list[[as.character(iter)]] <- CSEM_PSAT_FORM_1
+}
+
+CSEM_PSAT_FORM_1 <- rbindlist(tmp.list)[!is.na(SCALE_SCORE)]
+
+#Merge all CSEM files together
+
+CSEM_PSAT_SAT <- rbindlist(list(CSEM_SAT_FORM_1, CSEM_SAT_FORM_2, CSEM_SAT_FORM_3, CSEM_PSAT_FORM_1))[,VALID_CASE:="VALID_CASE"]
+
 
 
 ###  Identify VALID_CASEs
@@ -128,6 +207,16 @@ setkey(Rhode_Island_Data_LONG_SAT_2018_2019, VALID_CASE, YEAR, CONTENT_AREA, GRA
 # setkeyv(dups, key(Rhode_Island_Data_LONG_SAT_2018_2019))
 Rhode_Island_Data_LONG_SAT_2018_2019[which(duplicated(Rhode_Island_Data_LONG_SAT_2018_2019, by=key(Rhode_Island_Data_LONG_SAT_2018_2019)))-1, VALID_CASE := "INVALID_CASE"]
 table(Rhode_Island_Data_LONG_SAT_2018_2019$VALID_CASE)
+
+### Merge in CSEMs
+
+Rhode_Island_Data_LONG_SAT_2018_2019[,FORM_CODE:=as.character(FORM_CODE)]
+setkey(CSEM_PSAT_SAT, VALID_CASE, CONTENT_AREA, YEAR, FORM_CODE, SCALE_SCORE)
+setkey(Rhode_Island_Data_LONG_SAT_2018_2019, VALID_CASE, CONTENT_AREA, YEAR, FORM_CODE, SCALE_SCORE)
+Rhode_Island_Data_LONG_SAT_2018_2019 <- CSEM_PSAT_SAT[Rhode_Island_Data_LONG_SAT_2018_2019]
+#Rhode_Island_Data_LONG_SAT_2018_2019[,FORM_CODE:=NULL]
+Rhode_Island_Data_LONG_SAT_2018_2019[,SCALE_SCORE:=as.numeric(SCALE_SCORE)]
+Rhode_Island_Data_LONG_SAT_2018_2019[,SCALE_SCORE_CSEM:=as.numeric(SCALE_SCORE_CSEM)]
 
 
 ### set key results
