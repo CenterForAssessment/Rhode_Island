@@ -43,7 +43,6 @@ Rhode_Island_SGP <- updateSGP(
 		save.intermediate.results=FALSE,
 		sgp.config=RI_CONFIG,
 		sgp.target.scale.scores=FALSE,
-		outputSGP.output.type="LONG_FINAL_YEAR_Data"
 	)
 
 
