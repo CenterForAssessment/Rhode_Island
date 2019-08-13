@@ -40,7 +40,7 @@ fwrite(Rhode_Island_SGP_LONG_Data_2018_2019_SAT_FORMATTED, file="Data/Rhode_Isla
 
 load("Data/Rhode_Island_SGP_WIDE_Data.Rdata")
 
-Rhode_Island_Data_RICAS_2019 <- fread("Data/Base_Files/RICAS Results 08-29-2018.csv", stringsAsFactors=FALSE)
+Rhode_Island_Data_RICAS_2019 <- fread("Data/Base_Files/RICAS2019-PRE-DISCREPANCY-MegaFile-2019-08-08.csv", stringsAsFactors=FALSE)
 Rhode_Island_Data_RICAS_2019[,sasid:=as.character(sasid)]
 Rhode_Island_Data_RICAS_2019[,e_sgp:=as.integer(e_sgp)]
 Rhode_Island_Data_RICAS_2019[,e_sgpSE:=as.numeric(e_sgpSE)]
