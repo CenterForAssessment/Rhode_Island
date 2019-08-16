@@ -46,7 +46,19 @@ Rhode_Island_Data_RICAS_2019[,e_sgp:=as.integer(e_sgp)]
 Rhode_Island_Data_RICAS_2019[,e_sgpSE:=as.numeric(e_sgpSE)]
 Rhode_Island_Data_RICAS_2019[,m_sgp:=as.integer(m_sgp)]
 Rhode_Island_Data_RICAS_2019[,m_sgpSE:=as.numeric(m_sgpSE)]
-tmp.dt.to.merge <- Rhode_Island_SGP_WIDE_Data[,c("ID", "SGP.2018_2019.ELA", "SGP_STANDARD_ERROR.2018_2019.ELA", "SGP.2018_2019.MATHEMATICS", "SGP_STANDARD_ERROR.2018_2019.MATHEMATICS"), with=FALSE]
+tmp.dt.to.merge <- Rhode_Island_SGP_WIDE_Data[,c("ID", "SGP.2018_2019.ELA", "SGP_STANDARD_ERROR.2018_2019.ELA", "SGP.2018_2019.MATHEMATICS", "SGP_STANDARD_ERROR.2018_2019.MATHEMATICS", "SCALE_SCORE_ACTUAL.2018_2019.ELA", "SCALE_SCORE_ACTUAL.2018_2019.MATHEMATICS"), with=FALSE]
+
+#################################################################
+##### Convert perfect scores (560) on RICAS to SGPs of 99
+#################################################################
+
+tmp.dt.to.merge[SCALE_SCORE_ACTUAL.2018_2019.ELA==560, SGP.2018_2019.ELA:=99]
+tmp.dt.to.merge[SCALE_SCORE_ACTUAL.2018_2019.MATHEMATICS==560, SGP.2018_2019.MATHEMATICS:=99]
+
+tmp.dt.to.merge[,c("SCALE_SCORE_ACTUAL.2018_2019.ELA", "SCALE_SCORE_ACTUAL.2018_2019.MATHEMATICS"):=NULL]
+
+#################################################################
+
 setnames(tmp.dt.to.merge, c("sasid", "e_sgp", "e_sgpSE", "m_sgp", "m_sgpSE"))
 tmp.dt.to.merge <- tmp.dt.to.merge[!is.na(e_sgp) | !is.na(m_sgp)]
 setkeyv(tmp.dt.to.merge, "sasid")
