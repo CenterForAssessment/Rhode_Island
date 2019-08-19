@@ -65,5 +65,5 @@ setkeyv(tmp.dt.to.merge, "sasid")
 setkeyv(Rhode_Island_Data_RICAS_2019, "sasid")
 Rhode_Island_Data_RICAS_2019[tmp.dt.to.merge$sasid, c("e_sgp", "e_sgpSE", "m_sgp", "m_sgpSE"):=tmp.dt.to.merge[,c("e_sgp", "e_sgpSE", "m_sgp", "m_sgpSE"), with=FALSE]]
 Rhode_Island_SGP_LONG_2018_2019_RICAS_FORMATTED <- Rhode_Island_Data_RICAS_2019
-#save(Rhode_Island_SGP_LONG_2018_2019_RICAS_FORMATTED, file="Data/Rhode_Island_SGP_LONG_2018_2019_RICAS_FORMATTED.Rdata")
-#fwrite(Rhode_Island_SGP_LONG_2018_2019_RICAS_FORMATTED, file="Data/Rhode_Island_SGP_LONG_2018_2019_RICAS_FORMATTED.txt", sep="|")
+save(Rhode_Island_SGP_LONG_2018_2019_RICAS_FORMATTED, file="Data/Rhode_Island_SGP_LONG_2018_2019_RICAS_FORMATTED.Rdata")
+fwrite(Rhode_Island_SGP_LONG_2018_2019_RICAS_FORMATTED, file="Data/Rhode_Island_SGP_LONG_2018_2019_RICAS_FORMATTED.txt", sep="|")
