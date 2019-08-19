@@ -52,8 +52,8 @@ tmp.dt.to.merge <- Rhode_Island_SGP_WIDE_Data[,c("ID", "SGP.2018_2019.ELA", "SGP
 ##### Convert perfect scores (560) on RICAS to SGPs of 99
 #################################################################
 
-tmp.dt.to.merge[SCALE_SCORE_ACTUAL.2018_2019.ELA==560, SGP.2018_2019.ELA:=99]
-tmp.dt.to.merge[SCALE_SCORE_ACTUAL.2018_2019.MATHEMATICS==560, SGP.2018_2019.MATHEMATICS:=99]
+tmp.dt.to.merge[SCALE_SCORE_ACTUAL.2018_2019.ELA==560 & !is.na(SGP.2018_2019.ELA), SGP.2018_2019.ELA:=99]
+tmp.dt.to.merge[SCALE_SCORE_ACTUAL.2018_2019.MATHEMATICS==560 & !is.na(SGP.2018_2019.MATHEMATICS), SGP.2018_2019.MATHEMATICS:=99]
 
 tmp.dt.to.merge[,c("SCALE_SCORE_ACTUAL.2018_2019.ELA", "SCALE_SCORE_ACTUAL.2018_2019.MATHEMATICS"):=NULL]
 
@@ -65,5 +65,5 @@ setkeyv(tmp.dt.to.merge, "sasid")
 setkeyv(Rhode_Island_Data_RICAS_2019, "sasid")
 Rhode_Island_Data_RICAS_2019[tmp.dt.to.merge$sasid, c("e_sgp", "e_sgpSE", "m_sgp", "m_sgpSE"):=tmp.dt.to.merge[,c("e_sgp", "e_sgpSE", "m_sgp", "m_sgpSE"), with=FALSE]]
 Rhode_Island_SGP_LONG_2018_2019_RICAS_FORMATTED <- Rhode_Island_Data_RICAS_2019
-save(Rhode_Island_SGP_LONG_2018_2019_RICAS_FORMATTED, file="Data/Rhode_Island_SGP_LONG_2018_2019_RICAS_FORMATTED.Rdata")
-fwrite(Rhode_Island_SGP_LONG_2018_2019_RICAS_FORMATTED, file="Data/Rhode_Island_SGP_LONG_2018_2019_RICAS_FORMATTED.txt", sep="|")
+#save(Rhode_Island_SGP_LONG_2018_2019_RICAS_FORMATTED, file="Data/Rhode_Island_SGP_LONG_2018_2019_RICAS_FORMATTED.Rdata")
+#fwrite(Rhode_Island_SGP_LONG_2018_2019_RICAS_FORMATTED, file="Data/Rhode_Island_SGP_LONG_2018_2019_RICAS_FORMATTED.txt", sep="|")
