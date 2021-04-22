@@ -123,7 +123,7 @@ Table `r tblNum(1)` shows the total number of valid PSAT/SAT student records ava
 ```
 ```{r, results='asis', echo=FALSE, N_tableEOC}
 	n_tbl_EOCT_B <- n_tbl_EOC[match(EOCT_subjects, row.names(n_tbl_EOC)) ,]
-	n_tbl_EOCT_B <- cbind('Content Area'=sapply(EOCT_subjects, capwords, special.words=c("ELA", "II", "US")), 'Valid Records' = n_tbl_EOCT_B)
+	n_tbl_EOCT_B <- cbind('Content Area'=sapply(EOCT_subjects, capwords, special.words=c("ELA", "PSAT", "SAT")), 'Valid Records' = n_tbl_EOCT_B)
 	n_tbl_EOCT_B <- prettyNum(n_tbl_EOCT_B, preserve.width = "individual",big.mark=',')
 	row.names(n_tbl_EOCT_B) <- NULL
 
@@ -155,7 +155,7 @@ The comma-separated values (CSV) files that RIDE provides were cleaned and proce
 
 The objective of the student growth percentile (SGP) analysis is to describe how (a)typical a student's growth is by examining his/her current achievement relative to students with a similar achievement history; i.e his/her *academic peers* (see [this presentation](https://github.com/CenterForAssessment/SGP_Resources/blob/master/presentations/Academic_Peer_Slides.pdf)). This norm-referenced growth quantity is estimated using quantile regression [@Koenker:2005] to model curvilinear functional relationships between student's prior and current scores.  One hundred such regression models are calculated for each separate analysis (defined as a unique ***year** by **content area** by **grade** by **prior order*** combination).  The end product of these 100 separate regression models is a single coefficient matrix, which serves as a look-up table to relate prior student achievement to current achievement for each percentile. This process ultimately leads to tens of thousands of model calculations during each of Rhode Island's annual batch of analyses.  For a more in-depth discussion of SGP calculation, see Betebenner [-@Betebenner:2009] and Appendix B of this report.
 
-The 2018 Rhode Island SGP analyses follow a work flow established in previous years that includes the following 4 steps:
+The 2018 Rhode Island SGP analyses follow a work flow that includes the following 4 steps:
 
 1. Update the Rhode Island assessment meta-data required for SGP calculations using the `SGP` package.
 2. Create annual SGP configurations for analyses.
@@ -164,7 +164,7 @@ The 2018 Rhode Island SGP analyses follow a work flow established in previous ye
 
 ### Update Rhode Island meta-data
 
-The use of higher-level functions included in the `SGP` package (e.g. `analyzeSGP`) requires the availability of state specific assessment information.  This meta-data is compiled in a `R` object named `SGPstateData` that is housed in the package.  Given the transition from the PARCC assessment program, significant updates to Rhode Island's metadata were required for the 2018 analyses.  The required updates for the 2018 analyses included the additions of both PARCC and RICAS knots and boundaries, proficiency level cutscores and other configuration metadata.
+The use of higher-level functions included in the `SGP` package (e.g. `analyzeSGP`) requires the availability of state specific assessment information.  This meta-data is compiled in a `R` object named `SGPstateData` that is housed in the package.  Given the transition from the PARCC assessment program, significant updates to Rhode Island's metadata were required for the 2018 analyses.  Information was required from both PARCC and CMAS assessments, including knot and boundary values, proficiency level cutscores and other assessment program information used to configure analyses and facilitate student- and group-level reporting.
 
 <div class='caption'>**Knots and boundaries**</div>
 Cubic B-spline basis functions are used in the calculation of SGPs to more adequately model the heteroscedasticity and non-linearity found in assessment data.^[It should be noted that the independent estimation of the regression functions can potentially result in the crossing of the quantile functions.  This occurs near the extremes of the distributions and is more likely to occur given the use of non-linear functions.  A potential result of allowing the quantile functions to cross would be *lower* percentile estimations of growth for *higher* observed scale scores at the extremes (give all else equal in prior scores) and vice versa.  In order to deal with these contradictory estimates, quantile regression results are isotonized to prevent quantile crossing following the methods derived by Chernozhukov, Fernandez-Val and Glichon [-@chernozhukov2010quantile].]  These functions require the selection of boundary and interior knots.  Boundary knots (i.e. "boundaries") are end-points outside of the scale score distribution that anchor the B-spline basis.  These are typically selected by extending the entire range of scale scores by 10%.  That is, they are defined as lying 10% below the lowest obtainable/observed scale score (LOSS) and 10% above the highest obtainable/observed scale score (HOSS).  The interior knots (i.e. "knots") are the *internal* breakpoints that define the spline.  The default choice in the `SGP` package is to select the 20<sup>th</sup>, 40<sup>th</sup>, 60<sup>th</sup> and 80<sup>th</sup> quantiles of the observed scale score distribution.
@@ -182,7 +182,7 @@ The calculation of SIMEX adjusted SGPs and SGP standard errors require the avail
 
 Unlike RICAS analyses, PSAT/SAT analyses are specialized enough so that it is necessary to specify the analyses to be performed via explicit configuration code.  Such configurations were used to conduct PSAT/SAT SGP analyses for Rhode Island.
 
-Configurations are `R` code scripts that are used as part of the larger SGP analysis to be discussed later.  They are broken up into separate R scripts based on content domain (ELA and Mathematics).  Each configuration code chunk specifies a set of parameters that defines the norm group of students to be examined.  Every potential norm group is defined by, at a minimum, the progressions of content area, academic year and grade-level.  Therefore, every configuration must contain the first three elements listed below.  The PSAT/SAT analyses also contain the fourth through seventh elements:
+Configurations are `R` code scripts that are used as part of the larger SGP analysis to be discussed later.  They are broken up into separate R scripts based on content domain (ELA and Mathematics).  Each configuration code chunk specifies a set of parameters that defines the norm group of students to be examined.  Every potential norm group is defined by, at a minimum, the progressions of content area, academic year and grade-level.  Therefore, every configuration must contain the first three elements listed below.  The PSAT/SAT analyses may also contain some or all of the fourth through seventh elements:
 
 - **`sgp.content.areas`:** The progression of content areas to be looked at and their order.
 - **`sgp.panel.years`:** The progression of the years associated with the content area progression (`sgp.content.areas`), potentially allowing for skipped or repeated years, etc.
@@ -192,7 +192,7 @@ Configurations are `R` code scripts that are used as part of the larger SGP anal
     * Progressions with the greatest number of prior scale scores.
     * Progressions in which a student has repeated a course.
     * Progressions that do not include a skipped year (i.e. a gap in the scale score history).
-- **`sgp.projection.grade.sequences`:** This element is used to identify the grade sequence that will be used to produce straight and/or lagged student growth projections.  It can either be left out or set explicitly to `NULL` to produce projections based on the values provided in the `sgp.content.areas` and `sgp.grade.sequences` elements.  Alternatively, when set to "`NO_PROJECTIONS`", no projections will be produced.  For PSAT/SAT analyses, only configurations that correspond to the canonical course progressions can produce student growth projections.  The canonical progressions are codified in the `SGP` package here: [`SGPstateData[["RI"]][["SGP_Configuration"]][["content_area.projection.sequence"]]`](https://github.com/CenterForAssessment/SGPstateData/blob/fda10b20d92f5c9dcba3fa6eaf98844bab5bb05b/SGPstateData.R#L7568).
+- **`sgp.projection.grade.sequences`:** This element is used to identify the grade sequence that will be used to produce straight and/or lagged student growth projections.  It can either be left out or set explicitly to `NULL` to produce projections based on the values provided in the `sgp.content.areas` and `sgp.grade.sequences` elements.  Alternatively, when set to "`NO_PROJECTIONS`", no projections will be produced. For PSAT/SAT analyses, only configurations that correspond to the canonical course progressions can produce student growth projections. Canonical progressions are codified in the `SGP` package here: [`SGPstateData[["RI"]][["SGP_Configuration"]][["content_area.projection.sequence"]]`](https://github.com/CenterForAssessment/SGPstateData/blob/fda10b20d92f5c9dcba3fa6eaf98844bab5bb05b/SGPstateData.R#L7568).
 - **`sgp.exclude.sequences`:** Lookup table containing the grade, subject, and year combinations of students that should be excluded from a cohort.  This element is used in progressions in which a year or similar time period is skipped (i.e. a gap in time exists).  For example, in a progression that goes from 8<sup>th</sup> grade Mathematics to PSAT 10 Mathematics with a skipped year in between one may want to exclude kids that repeated either 8<sup>th</sup> grade Mathematics or took another math related subject (e.g. Algebra I) in the skipped year.  Students with different course progressions may be inappropriate to include with the cohort of students who truly had no mathematics related course in the intervening year(s).  No "skipped year" analyses were included in the 2018 analyses, and so this element was not used in any of the configurations.
 
 As an example, here is one PSAT 10 Mathematics configuration used to define a 2018 SGP analysis:
@@ -200,13 +200,14 @@ As an example, here is one PSAT 10 Mathematics configuration used to define a 20
 ```R
 ...
 
-  MATHEMATICS_PSAT_10.2017_2018 = list(
-    sgp.content.areas=c('MATHEMATICS', 'ALGEBRA_I', 'MATHEMATICS_PSAT_10'),
-    sgp.panel.years=c('2015_2016', '2016_2017', '2017_2018'),
-    sgp.grade.sequences=list(c('8', 'EOCT', 'EOCT')),
-    sgp.exact.grade.progression=TRUE,
-    sgp.norm.group.preference=0,
-    sgp.projection.grade.sequences="NO_PROJECTIONS"),
+ MATHEMATICS_PSAT_10.2017_2018 = list(
+  sgp.content.areas=c("MATHEMATICS", "ALGEBRA_I", 
+                      "MATHEMATICS_PSAT_10"),
+  sgp.panel.years=c("2015_2016", "2016_2017", "2017_2018"),
+  sgp.grade.sequences=list(c("8", "EOCT", "EOCT")),
+  sgp.exact.grade.progression=TRUE,
+  sgp.norm.group.preference=0,
+  sgp.projection.grade.sequences=list("NO_PROJECTIONS")),
 ...
 
 ```
@@ -217,7 +218,7 @@ As an example, here is one PSAT 10 Mathematics configuration used to define a 20
 
 ### Conduct SGP analyses
 
-Due to differences in the time-frames in which the RICAS and PSAT/SAT were validated and made available, RICAS and PSAT/SAT SGPs were calculated at separate times.^[In addition to cohort-referenced (uncorrected) SGPs, SIMEX corrected SGPs were calculated and provided to RIDE for exploratory purposes.]  We first used the [`abcSGP`](https://www.rdocumentation.org/packages/SGP/versions/1.8-0.0/topics/abcSGP) function to ***a)*** do the final preparation of the 2018 PSAT/SAT data formatted data and create a new `SGP` class object in the ([`prepareSGP`](https://www.rdocumentation.org/packages/SGP/versions/1.8-0.0/topics/prepareSGP) step) and ***b)*** calculate SGP estimates ([`analyzeSGP`](https://www.rdocumentation.org/packages/SGP/versions/1.8-0.0/topics/analyzeSGP) step).  After the RICAS data was received, cleaned and formatted as needed, the [`updateSGP`](https://www.rdocumentation.org/packages/SGP/versions/1.8-0.0/topics/updateSGP) function was used to conduct the `prepareSGP`, `analyzeSGP`, [`combineSGP`](https://www.rdocumentation.org/packages/SGP/versions/1.8-0.0/topics/combineSGP), [`outputSGP`](https://www.rdocumentation.org/packages/SGP/versions/1.8-0.0/topics/outputSGP) and [`summarizeSGP`](https://www.rdocumentation.org/packages/SGP/versions/1.8-0.0/topics/summarizeSGP) steps).  
+Due to differences in the time-frames in which the RICAS and PSAT/SAT were validated and made available, RICAS and PSAT/SAT SGPs were calculated at separate times.^[In addition to cohort-referenced (uncorrected) SGPs, SIMEX corrected SGPs were calculated and provided to RIDE for exploratory purposes.]  We first used the [`abcSGP`](https://www.rdocumentation.org/packages/SGP/versions/1.8-0.0/topics/abcSGP) function to ***a)*** do the final preparation of the 2018 PSAT/SAT formatted data and create a new `SGP` class object in the ([`prepareSGP`](https://www.rdocumentation.org/packages/SGP/versions/1.8-0.0/topics/prepareSGP) step) and ***b)*** calculate SGP estimates in the ([`analyzeSGP`](https://www.rdocumentation.org/packages/SGP/versions/1.8-0.0/topics/analyzeSGP) step).  After the RICAS data was received, cleaned and formatted as needed, the [`updateSGP`](https://www.rdocumentation.org/packages/SGP/versions/1.8-0.0/topics/updateSGP) function was used to conduct the `prepareSGP`, `analyzeSGP`, [`combineSGP`](https://www.rdocumentation.org/packages/SGP/versions/1.8-0.0/topics/combineSGP), [`outputSGP`](https://www.rdocumentation.org/packages/SGP/versions/1.8-0.0/topics/outputSGP) and [`summarizeSGP`](https://www.rdocumentation.org/packages/SGP/versions/1.8-0.0/topics/summarizeSGP) steps).  
 
 The `combineSGP` step merges the results into the master longitudinal data set once all analyses are completed.  A pipe delimited version of the complete long data is saved in the `outputSGP` step.  The `summarizeSGP` function is used to produce many tables of descriptive statistics that are disaggregated at the state, district and school levels, as well as other factors of interest.  Finally, visualizations (such as bubble charts) are produced from the data and summary tables using the [`visualizeSGP`](https://www.rdocumentation.org/packages/SGP/versions/1.8-0.0/topics/visualizeSGP) function.
 
@@ -234,7 +235,7 @@ Examination of the Rhode Island Student Growth Model goodness-of-fit was conduct
 
 ## Model Fit Plots
 
-Using all available RICAS and PSAT/SAT scores as the variables, estimation of student growth percentiles was conducted for each possible student (those with a current score and at least one prior score).  Each analysis is defined by the grade and content area for the grade-level analyses and exact content area (and grade when relevant) sequences for the PSAT/SAT subjects.  A goodness of fit plot is produced for each unique analysis run in 2018 and are all provided in Appendix A to this report.
+Using all available PARCC, RICAS and PSAT/SAT scores as the variables, estimation of student growth percentiles was conducted for each possible student (those with a current score and at least one prior score).  Each analysis is defined by the grade and content area for the grade-level analyses and exact content area (and grade when relevant) sequences for the PSAT/SAT subjects.  A goodness of fit plot is produced for each unique analysis run in 2018 and are all provided in Appendix A to this report.
 
 As an example, Figure `r getCounter("figure")+1` shows the results for 5<sup>th</sup> grade ELA as an example of good model fit.  Figure `r getCounter("figure")+2` is an example of minor model misfit from the PSAT 10 Mathematics analysis that uses Geometry as the most recent prior.
 
@@ -263,11 +264,11 @@ The bottom right panel of each plot is a Q-Q plot which compares the observed di
 
   dat <- Rhode_Island_SGP@Data[grepl("2016_2017/ELA_4; 2017_2018/ELA_5", SGP_NORM_GROUP), #SGP_NORM_GROUP %in% "2015_2016/ELA_6; ", 
   				 c("VALID_CASE", "CONTENT_AREA", "GRADE", "YEAR", "ID", "SGP", "SCALE_SCORE", "SCALE_SCORE_PRIOR", "SGP_NORM_GROUP"), with=FALSE]
-	gofSGP(dat, state="GA", years='2017_2018', content_areas="ELA", use.sgp="SGP", output.format="PNG")
+	gofSGP(dat, state="RI", years='2017_2018', content_areas="ELA", use.sgp="SGP", output.format="PNG")
 
   dat <- Rhode_Island_SGP@Data[ grepl("2016_2017/GEOMETRY_EOCT; 2017_2018/MATHEMATICS_PSAT_10_EOCT", SGP_NORM_GROUP),
   				 c("VALID_CASE", "CONTENT_AREA", "GRADE", "YEAR", "ID", "SGP", "SCALE_SCORE", "SCALE_SCORE_PRIOR", "SGP_NORM_GROUP"), with=FALSE]
-	gofSGP(dat, state="GA", years='2017_2018', content_areas='MATHEMATICS_PSAT_10', use.sgp="SGP", output.format="PNG")
+	gofSGP(dat, state="RI", years='2017_2018', content_areas='MATHEMATICS_PSAT_10', use.sgp="SGP", output.format="PNG")
 
 	setwd("../2018")
 ```
@@ -279,7 +280,7 @@ We provide two examples here of cohort-referenced model fit.  Overall the 2018 R
 
 Figure `r getCounter("figure")+1` shows the results for 5<sup>th</sup> grade ELA as an example of good model fit. 
 
-```{r, results="asis", echo=FALSE, G8_ELA_GoF_Cohort}
+```{r, results="asis", echo=FALSE, G5_ELA_GoF_Cohort}
 		placeFigure(page.break= TRUE,
 			files = "../img/Goodness_of_Fit/ELA.2017_2018/gofSGP_Grade_5.png",
 			caption = "Goodness of Fit Plot for 2018 5<sup>th</sup> Grade ELA:  Example of good model fit.")
@@ -287,7 +288,7 @@ Figure `r getCounter("figure")+1` shows the results for 5<sup>th</sup> grade ELA
 
 Minor misfit in the PSAT 10 Mathematics model is likely due to the relatively small cohort size (2,000+ kids).  This cohort is a relatively homogenous cohort of high academic achievers compared to others (90% at Level 3 or above in Geometry).  The indication of a potential ceiling effect in this plot is probably overstated given the range of scores included in the HOSS (bottom) row.  That is, the low SGPs are likely attributed to students scoring just below the HOSS, and therefore less concerning.  This situation is investigated in greater detail in Appendix C of this report.
 
-```{r, results="asis", echo=FALSE, Geom_GoF_Cohort}
+```{r, results="asis", echo=FALSE, PSAT10M_GoF_Cohort}
 		placeFigure(page.break= TRUE,
 			files = "../img/Goodness_of_Fit/MATHEMATICS_PSAT_10.2017_2018/2017_2018_MATH_PSAT_10_EOCT;2016_2017_GEOMETRY_EOCT.png",
 			caption = "Goodness of Fit Plot for a 2018 Geometry Progression: Example of slight model mis-fit.")
@@ -342,7 +343,7 @@ PSAT/SAT test subjects may be analyzed using more than one sequence of prior sub
 	eoct_tmp_tbl <- eoct_tmp_tbl[][order(match(eoct_tmp_tbl$CONTENT_AREA, EOCT_subjects))]
 	eoct_tmp_tbl$CONTENT_AREA <- sapply(eoct_tmp_tbl$CONTENT_AREA, capwords, USE.NAMES=FALSE)
 
-	tmp.cap <- "PSAT/SAT Student Level Correlations between Prior Standardized Scale Score and 1) Current Scale Scoreand 2) SGP - Disaggregated by Norm Group."
+	tmp.cap <- "PSAT/SAT Student Level Correlations between Prior Standardized Scale Score and 1) Current Scale Score and 2) SGP - Disaggregated by Norm Group."
 
 	eoct_tmp_tbl[, Most_Recent_Prior := sapply(gsub("/", " ", Most_Recent_Prior), capwords)]
 	eoct_tmp_tbl[, Most_Recent_Prior := gsub(" Eoct", "", Most_Recent_Prior)]
@@ -398,7 +399,7 @@ To demonstrate the norm-referenced nature of the growth percentiles viewed at th
 		caption='2018 PSAT/SAT Median and Mean Student Growth Percentile by Content Area.'))
 ```
 
-Based upon perfect model fit to the data, the median of all state growth percentiles in each grade by year by subject combination should be 50.  That is, in the conditional distributions, 50 percent of growth percentiles should be less than 50 and 50 percent should be greater than 50.  Deviations from 50 indicate imperfect model fit to the data.  Imperfect model fit can occur for a number of reasons, some due to issues with the data (e.g., floor and ceiling effects leading to a "bunching" up of the data) as well as issues due to the way that the SGP function fits the data.  PSAT/SAT results are further complicated by the aggregation across multiple analyses (prior course patterns).  The results in Tables `r tblNum(-1)` and  `r tblNum(0)` are close to perfect, with almost all values equal to 50.
+Based upon perfect model fit to the data, the median of all state growth percentiles in each grade by year by subject combination should be 50.  That is, in the conditional distributions, 50 percent of growth percentiles should be less than 50 and 50 percent should be greater than 50.  Deviations from 50 indicate imperfect model fit to the data.  Imperfect model fit can occur for a number of reasons, including issues with the data (e.g., floor and ceiling effects leading to a "bunching" up of the data) or how the SGP function fits the data.  PSAT/SAT results are further complicated by the aggregation across multiple analyses (prior course patterns).  The results in Tables `r tblNum(-1)` and  `r tblNum(0)` are close to perfect, with almost all values equal to 50.
 
 The results are coarse in that they are aggregated across tens of thousands of students.  More refined fit analyses were presented in the Goodness-of-Fit section.  Depending upon feedback from RIDE, it may be desirable to tweak some operational parameters and attempt to improve fit even further.  The impact upon the operational results based on better fit is expected to be extremely minor.
 
@@ -478,7 +479,6 @@ The relationship between average prior student achievement and median SGP observ
 	sch.cor <- sch.msgp[, list(
 			MEDIAN_SGP = round(cor(MEDIAN_SGP, MEAN_SCALE_SCORE_PRIOR_STANDARDIZED), 2),
 			MEAN_SGP=round(cor(MEAN_SGP, MEAN_SCALE_SCORE_PRIOR_STANDARDIZED), 2)), keyby = 'YEAR']
-	setkey(sch.cor, YEAR)
 
 	##  Multiple year - School_EOG_Correlations, School_EOCT_Cor
 	sch.cor.subj <- sch.msgp.subj[, list(

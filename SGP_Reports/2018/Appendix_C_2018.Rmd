@@ -5,7 +5,7 @@ author:
   - name: Adam R. VanIwaarden
   - name: Damian W. Betebenner
   - name: <em>National Center for the Improvement<br></br> of Educational Assessment (NCIEA)</em>
-date: September 2018
+date: October 2018
 abstract: "DRAFT REPORT - DO NOT CITE!"
 ---
 
@@ -93,7 +93,7 @@ abstract: "DRAFT REPORT - DO NOT CITE!"
 			y.lab <- paste(gsub("_", "-", current.year), "Grade", g, capwords(ca))
 			if (is.null(prior.ca)) prior.ca <- ca
 			x.lab <- paste(gsub("_", "-", prior.year), "Grade", g-1, capwords(prior.ca))
-			tmp.knots<- SGPstateData[[state]][["Achievement"]][["Knots_Boundaries"]][[ca]][[paste0("knots_", g-1)]]
+			tmp.knots <- SGPstateData[[state]][["Achievement"]][["Knots_Boundaries"]][[ca]][[paste0("knots_", g-1)]]
 			tmp.bnds <- SGPstateData[[state]][["Achievement"]][["Knots_Boundaries"]][[ca]][[paste0("boundaries_", g-1)]]
 		}
 
@@ -106,7 +106,8 @@ abstract: "DRAFT REPORT - DO NOT CITE!"
 		
 		tmp.x.scale <- extendrange(tmp.data$SCALE_SCORE_PRIOR, f=0.05)
 		tmp.y.scale <- extendrange(tmp.data$SCALE_SCORE, f=0.05) # 0.1 if using 1st and 99th percentiles in geom_quantile
-		
+		if (tmp.y.scale[1] >= 0) y.n.scale <- 1.1 else y.n.scale <- 0.9
+
 		ggplot(NULL, aes(x=SCALE_SCORE_PRIOR, y=SCALE_SCORE, label=SGP)) + # NULL data to use different data sets below ## , fill=SGP_NORM_GROUP
 			# geom_text(data=tmp.pnts, aes(colour=SGP_NORM_GROUP), size=2.5, position=position_jitter(width = 10, height = 10)) + scale_colour_grey() + theme_bw() + #
 			theme_bw() + xlim(tmp.x.scale) + ylim(tmp.y.scale) +
@@ -121,7 +122,7 @@ abstract: "DRAFT REPORT - DO NOT CITE!"
 			geom_hline(data=tmp.pnts, aes(yintercept=LOSS_25), colour="red", linetype="dotted") +
 			geom_hline(data=tmp.pnts, aes(yintercept=HOSS_25), colour="red", linetype="dotted") +
 			annotate("text", label = paste0("N = ", prettyNum(nrow(tmp.data), preserve.width = "individual", big.mark=",")), 
-							 x = tmp.x.scale[2]*0.9, y = tmp.y.scale[1]*1.1, size = 3.5, colour = "red") +
+							 x = tmp.x.scale[2]*0.9, y = tmp.y.scale[1]*y.n.scale, size = 3.5, colour = "red") +
 			labs(y = y.lab, x = x.lab) + theme(axis.title=element_text(size=10, face="bold"), legend.position="none")
 	}
 
@@ -180,7 +181,7 @@ In the 2017-2018 academic year Rhode Island transitioned from the [Partnership f
 
 With perfect data and model fit, the expectation is that the majority of SGPs for students scoring at or near the lowest obtainable scale score (LOSS) will be low (preferably less than 5 and not higher than 20), and that SGPs for students with the highest obtainable scale score (HOSS) will be high (higher than 95 and not less than 80).  Ceiling effects in growth measures are somewhat more problematic than floor effects because students that consistently receive the highest scores are given lower than expected growth percentiles and are therefore negatively impacted.  Conversely, the consistently lowest achieving students have higher estimated SGPs than expected.  This could possibly conceal unacceptably low growth that might otherwise be identified and addressed.
 
-In general these problems are caused by the way in which a "percentile" is most typically defined to begin with, and the inability of the assessments (and therefore the SGP model) to make granular distinctions between kids who score at the extremes of the test year after year.  As an example, if a group of students were given a relatively easy test and 20% of them received a perfect score, these students would be defined as being in the 80<sup>th</sup> percentile of achievement because they scored higher than 80% of their peers.  This is somewhat misleading however, because their score was *equal to* or greater than *all* of their peers and so could be also described as achieving at the 99<sup>th</sup> percentile under other equally valid definitions.
+In part, these problems are caused by the way in which a "percentile" is most typically defined to begin with, and the inability of the assessments (and therefore the SGP model) to make granular distinctions between kids who score at the extremes of the test year after year.  As an example, if a group of students were given a relatively easy test and 20% of them received a perfect score, these students would be defined as being in the 80<sup>th</sup> percentile of achievement because they scored higher than 80% of their peers.  This is somewhat misleading however, because their score was *equal to* or greater than *all* of their peers and so could be also described as achieving at the 99.9<sup>th</sup> percentile under other equally valid definitions.
 
 To extend this heuristic from achievement to growth, if 50% of those top students also scored perfectly on the next test, we might estimate that they had 50<sup>th</sup> percentile growth.  Although there is nothing *technically* incorrect about this estimate since their growth is fairly typical for their academic peer group, it is an inadequate or unsatisfactory assessment of their growth because they have consistently attained the highest levels.  Furthermore, if it is typical for their peers to maintain perfect scores then even small deviations from a perfect score could produce *low growth* SGP estimates.
 
@@ -198,7 +199,7 @@ Typically only a few students are impacted by ceiling and floor effects, making 
 # Prior- and Current-Year Score Distributions
 The marginal and conditional distributions of test scores can serve as a preliminary indicator of potential ceiling or floor effects in the calculation of student growth percentiles.  Some minor problems could occur if these characteristics are present in either the prior- or current-year scores, and are particularly likely when present in both.  
 
-The plots below depict distributions for the current year and the most recent prior year used in the SGP calculations for each content area and grade level.  These plots start with a basic scatter plot of each student's scores to show their conditional (joint) score distributions, and each point is depicted as the estimated SGP value based on their scores^[Note that many SGPs are estimated using more than one prior score, and therefore plots may show SGP results from multiple analyses and/or varying SGPs for identical score combinations.].  On top of this is layered 1) **green contour lines** to provide a better sense of the score distribution density, 2) three **non-linear magenta lines** identifying the bivariate relationship between prior and current scores at the 5<sup>th</sup>, 50<sup>th</sup> and 95<sup>th</sup> percentiles^[Produced using quantile regression similar to, but not the same as, that used in calculation of the SGPs.], 3) **red** dotted lines that represent the cutoff for the highest and lowest 25+ current scale scores (corresponding with the first and last rows of the fit plot table), and 4) **rug plots** that depict the marginal distributions (prior scores shown in blue and current scores in red).  
+The plots in the following sections depict distributions for the current year and the most recent prior year used in the SGP calculations for each content area and grade level.  These plots start with a basic scatter plot of each student's scores to show their conditional (joint) score distributions, and each point is depicted as the estimated SGP value based on their scores^[Note that many SGPs are estimated using more than one prior score, and therefore plots may show SGP results from multiple analyses and/or varying SGPs for identical score combinations.].  On top of this is layered 1) **green contour lines** to provide a better sense of the score distribution density, 2) three **non-linear magenta lines** identifying the bivariate relationship between prior and current scores at the 5<sup>th</sup>, 50<sup>th</sup> and 95<sup>th</sup> percentiles^[Produced using quantile regression similar to, but not the same as, that used in calculation of the SGPs.], 3) **red** dotted lines that represent the cutoff for the highest and lowest 25+ current scale scores (corresponding with the first and last rows of the fit plot table), and 4) **rug plots** that depict the marginal distributions (prior scores shown in blue and current scores in red).  
 
 Ceiling or floor effects may be indicated by dark shaded SGP values in the extreme top-right or bottom-left corners of the plots.  This suggests that staying at the extremes is common, which may lead to odd growth estimates for these high/low achieving students.  
 
@@ -299,11 +300,11 @@ These analyses can have problems due to sparsity of data points in the high achi
 
 # SGP Ranges for the Highest- and Lowest-Achieving Students
 
-In order to isolate the impact of assessment ceilings/floors on student growth percentile (SGP) calculations, the following section provides box plots of the distribution of SGPs for the highest and lowest achieving students.  We are specifically interested in the growth percentiles for students scoring at the highest/lowest obtainable scale score (HOSS/LOSS - i.e. the test ceiling/floor) on the current year test.  However, in order to assure that an adequate number of students are included, the first set of plots uses, at a *minimum*, the highest/lowest 25 scores.  These plots are provided as a starting point since this roughly corresponds to the number of students in the top and bottom rows of the table included in the SGP model "Goodness of Fit" plots.  All students with a score in these students' range of scores are included.  Consequently, the number of students in each box plot may be greater than 25 (the exact number is shown at the margins in red text).
+In order to isolate the impact of assessment ceilings/floors on student growth percentile (SGP) calculations, the following section provides box plots of SGP distributions for the highest and lowest achieving students.  We are specifically interested in the growth percentiles for students scoring at the highest/lowest obtainable scale score (HOSS/LOSS - i.e. the test ceiling/floor) on the current year test.  However, in order to assure that an adequate number of students are included, the first set of plots uses, at a *minimum*, the highest/lowest 25 scores.  These plots are provided as a starting point since this roughly corresponds to the number of students in the top and bottom rows of the table included in the SGP model "Goodness of Fit" plots.  All students with a score in these students' range of scores are included.  Consequently, the number of students in each box plot may be greater than 25 (the exact number is shown at the margins in red text).
 
 The second set of box plots isolate ***only*** those students scoring the HOSS/LOSS.  These plots may then incorporate a varying number of students depending on the prevalence of a ceiling/floor in the current year assessments.
 
-The box plots provide several descriptive statistics.  The dark line within the box marks the *median* SGP, while the ends ("hinges") of the boxes correspond to the first and third quartiles (the 25<sup>th</sup> and 75<sup>th</sup> percentiles).  The upper whisker extends from the hinge to the highest value that is within 1.5 $\times$ IQR of the hinge, where IQR is the inter-quartile range, or distance between the first and third quartiles. The lower whisker extends from the hinge to the lowest value within 1.5 $\times$ IQR of the hinge. Data beyond the end of the whiskers are outliers and plotted as individual points.  Evidence of a *lack* of either a ceiling or floor effect would be to have all high achieving students with SGPs near 99 and all low achieving students with SGPs near 1.  That is, the desired visual evidence is a solid line at SGP = 99/1.
+The box plots provide several descriptive statistics.  The dark line within the box marks the *median* SGP, while the ends ("hinges") of the boxes correspond to the first and third quartiles (the 25<sup>th</sup> and 75<sup>th</sup> percentiles).  The upper whisker extends from the hinge to the highest value that is within 1.5 $\times$ IQR of the hinge, where IQR is the interquartile range, or distance between the first and third quartiles. The lower whisker extends from the hinge to the lowest value within 1.5 $\times$ IQR of the hinge. Data beyond the end of the whiskers are outliers and plotted as individual points.  Evidence of a *lack* of either a ceiling or floor effect would be to have all high achieving students with SGPs near 99 and all low achieving students with SGPs near 1.  That is, the desired visual evidence is a solid line at SGP = 99/1.
 
 
 ```{r, echo=FALSE, include=FALSE, cache=TRUE, HOSS_Box_EOG, fig.height=4, fig.width=7}
@@ -380,7 +381,7 @@ The following box plots disaggregates the Mathematics PSAT 10 analyses by the mo
 
 #  Discussion
 
-Overall there is little evidence of floor or ceiling effects in the 2017-2018 Rhode Island RICAS/SAT SGP analyses.  When ceiling or floor effects are encountered, there are several ways in which they can be "corrected" manually or analytically.  These include (but not limited to):
+Overall there is little evidence of floor or ceiling effects in the 2017-2018 Rhode Island RICAS/SAT SGP analyses.  When ceiling or floor effects are encountered, there are several ways in which they can be "corrected" manually or analytically.  These include (but are not limited to):
 
 1. Convert all students scoring at the HOSS (LOSS) to 99 (1).
 2. Run SGP analyses with more granular scores.  For example, many tests that use Item Response Theory (IRT) to analyse test results provide scaled scores that enforce an artificial ceiling (floor), but also have more granular achievement scores available (IRT $\theta$ estimates).

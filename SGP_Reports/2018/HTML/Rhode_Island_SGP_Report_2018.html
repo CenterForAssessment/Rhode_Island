@@ -308,7 +308,7 @@ Valid Records
 <tbody>
 <tr>
 <td style="text-align: right;">
-ELA Psat 10
+ELA PSAT 10
 </td>
 <td style="text-align: right;">
 10,326
@@ -316,7 +316,7 @@ ELA Psat 10
 </tr>
 <tr>
 <td style="text-align: right;">
-ELA Sat
+ELA SAT
 </td>
 <td style="text-align: right;">
 9,733
@@ -324,7 +324,7 @@ ELA Sat
 </tr>
 <tr>
 <td style="text-align: right;">
-Mathematics Psat 10
+Mathematics PSAT 10
 </td>
 <td style="text-align: right;">
 10,348
@@ -332,7 +332,7 @@ Mathematics Psat 10
 </tr>
 <tr>
 <td style="border-bottom: 2px solid grey; text-align: right;">
-Mathematics Sat
+Mathematics SAT
 </td>
 <td style="border-bottom: 2px solid grey; text-align: right;">
 9,721
@@ -349,10 +349,10 @@ Mathematics Sat
 \hline\hline
 \multicolumn{1}{c}{Content Area}&\multicolumn{1}{c}{Valid Records}\tabularnewline
 \hline
-ELA Psat 10&10,326\tabularnewline
-ELA Sat&9,733\tabularnewline
-Mathematics Psat 10&10,348\tabularnewline
-Mathematics Sat&9,721\tabularnewline
+ELA PSAT 10&10,326\tabularnewline
+ELA SAT&9,733\tabularnewline
+Mathematics PSAT 10&10,348\tabularnewline
+Mathematics SAT&9,721\tabularnewline
 \hline
 \end{tabular}\end{center}
 \end{table}
@@ -385,7 +385,7 @@ LaTeX_End -->
 <div id="data-analysis" class="section level2">
 <h2><span class="header-section-number">3.2</span> 2018 Data Analysis</h2>
 <p>The objective of the student growth percentile (SGP) analysis is to describe how (a)typical a student’s growth is by examining his/her current achievement relative to students with a similar achievement history; i.e his/her <em>academic peers</em> (see <a href="https://github.com/CenterForAssessment/SGP_Resources/blob/master/presentations/Academic_Peer_Slides.pdf">this presentation</a>). This norm-referenced growth quantity is estimated using quantile regression <span class="citation">(Koenker, 2005)</span> to model curvilinear functional relationships between student’s prior and current scores. One hundred such regression models are calculated for each separate analysis (defined as a unique <em><strong>year</strong> by <strong>content area</strong> by <strong>grade</strong> by <strong>prior order</strong></em> combination). The end product of these 100 separate regression models is a single coefficient matrix, which serves as a look-up table to relate prior student achievement to current achievement for each percentile. This process ultimately leads to tens of thousands of model calculations during each of Rhode Island’s annual batch of analyses. For a more in-depth discussion of SGP calculation, see Betebenner <span class="citation">(2009)</span> and Appendix B of this report.</p>
-<p>The 2018 Rhode Island SGP analyses follow a work flow established in previous years that includes the following 4 steps:</p>
+<p>The 2018 Rhode Island SGP analyses follow a work flow that includes the following 4 steps:</p>
 <ol style="list-style-type: decimal">
 <li>Update the Rhode Island assessment meta-data required for SGP calculations using the <code>SGP</code> package.</li>
 <li>Create annual SGP configurations for analyses.</li>
@@ -394,7 +394,7 @@ LaTeX_End -->
 </ol>
 <div id="update-rhode-island-meta-data" class="section level3">
 <h3><span class="header-section-number">3.2.1</span> Update Rhode Island meta-data</h3>
-<p>The use of higher-level functions included in the <code>SGP</code> package (e.g. <code>analyzeSGP</code>) requires the availability of state specific assessment information. This meta-data is compiled in a <code>R</code> object named <code>SGPstateData</code> that is housed in the package. Given the transition from the PARCC assessment program, significant updates to Rhode Island’s metadata were required for the 2018 analyses. The required updates for the 2018 analyses included the additions of both PARCC and RICAS knots and boundaries, proficiency level cutscores and other configuration metadata.</p>
+<p>The use of higher-level functions included in the <code>SGP</code> package (e.g. <code>analyzeSGP</code>) requires the availability of state specific assessment information. This meta-data is compiled in a <code>R</code> object named <code>SGPstateData</code> that is housed in the package. Given the transition from the PARCC assessment program, significant updates to Rhode Island’s metadata were required for the 2018 analyses. Information was required from both PARCC and CMAS assessments, including knot and boundary values, proficiency level cutscores and other assessment program information used to configure analyses and facilitate student- and group-level reporting.</p>
 <div class="caption">
 <strong>Knots and boundaries</strong>
 </div>
@@ -412,7 +412,7 @@ LaTeX_End -->
 <div id="create-sgp-configurations" class="section level3">
 <h3><span class="header-section-number">3.2.2</span> Create SGP configurations</h3>
 <p>Unlike RICAS analyses, PSAT/SAT analyses are specialized enough so that it is necessary to specify the analyses to be performed via explicit configuration code. Such configurations were used to conduct PSAT/SAT SGP analyses for Rhode Island.</p>
-<p>Configurations are <code>R</code> code scripts that are used as part of the larger SGP analysis to be discussed later. They are broken up into separate R scripts based on content domain (ELA and Mathematics). Each configuration code chunk specifies a set of parameters that defines the norm group of students to be examined. Every potential norm group is defined by, at a minimum, the progressions of content area, academic year and grade-level. Therefore, every configuration must contain the first three elements listed below. The PSAT/SAT analyses also contain the fourth through seventh elements:</p>
+<p>Configurations are <code>R</code> code scripts that are used as part of the larger SGP analysis to be discussed later. They are broken up into separate R scripts based on content domain (ELA and Mathematics). Each configuration code chunk specifies a set of parameters that defines the norm group of students to be examined. Every potential norm group is defined by, at a minimum, the progressions of content area, academic year and grade-level. Therefore, every configuration must contain the first three elements listed below. The PSAT/SAT analyses may also contain some or all of the fourth through seventh elements:</p>
 <ul>
 <li><strong><code>sgp.content.areas</code>:</strong> The progression of content areas to be looked at and their order.</li>
 <li><strong><code>sgp.panel.years</code>:</strong> The progression of the years associated with the content area progression (<code>sgp.content.areas</code>), potentially allowing for skipped or repeated years, etc.</li>
@@ -424,19 +424,20 @@ LaTeX_End -->
 <li>Progressions in which a student has repeated a course.</li>
 <li>Progressions that do not include a skipped year (i.e. a gap in the scale score history).</li>
 </ul></li>
-<li><strong><code>sgp.projection.grade.sequences</code>:</strong> This element is used to identify the grade sequence that will be used to produce straight and/or lagged student growth projections. It can either be left out or set explicitly to <code>NULL</code> to produce projections based on the values provided in the <code>sgp.content.areas</code> and <code>sgp.grade.sequences</code> elements. Alternatively, when set to “<code>NO_PROJECTIONS</code>”, no projections will be produced. For PSAT/SAT analyses, only configurations that correspond to the canonical course progressions can produce student growth projections. The canonical progressions are codified in the <code>SGP</code> package here: <a href="https://github.com/CenterForAssessment/SGPstateData/blob/fda10b20d92f5c9dcba3fa6eaf98844bab5bb05b/SGPstateData.R#L7568"><code>SGPstateData[[&quot;RI&quot;]][[&quot;SGP_Configuration&quot;]][[&quot;content_area.projection.sequence&quot;]]</code></a>.</li>
+<li><strong><code>sgp.projection.grade.sequences</code>:</strong> This element is used to identify the grade sequence that will be used to produce straight and/or lagged student growth projections. It can either be left out or set explicitly to <code>NULL</code> to produce projections based on the values provided in the <code>sgp.content.areas</code> and <code>sgp.grade.sequences</code> elements. Alternatively, when set to “<code>NO_PROJECTIONS</code>”, no projections will be produced. For PSAT/SAT analyses, only configurations that correspond to the canonical course progressions can produce student growth projections. Canonical progressions are codified in the <code>SGP</code> package here: <a href="https://github.com/CenterForAssessment/SGPstateData/blob/fda10b20d92f5c9dcba3fa6eaf98844bab5bb05b/SGPstateData.R#L7568"><code>SGPstateData[[&quot;RI&quot;]][[&quot;SGP_Configuration&quot;]][[&quot;content_area.projection.sequence&quot;]]</code></a>.</li>
 <li><strong><code>sgp.exclude.sequences</code>:</strong> Lookup table containing the grade, subject, and year combinations of students that should be excluded from a cohort. This element is used in progressions in which a year or similar time period is skipped (i.e. a gap in time exists). For example, in a progression that goes from 8<sup>th</sup> grade Mathematics to PSAT 10 Mathematics with a skipped year in between one may want to exclude kids that repeated either 8<sup>th</sup> grade Mathematics or took another math related subject (e.g. Algebra I) in the skipped year. Students with different course progressions may be inappropriate to include with the cohort of students who truly had no mathematics related course in the intervening year(s). No “skipped year” analyses were included in the 2018 analyses, and so this element was not used in any of the configurations.</li>
 </ul>
 <p>As an example, here is one PSAT 10 Mathematics configuration used to define a 2018 SGP analysis:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">...
 
-  MATHEMATICS_PSAT_<span class="fl">10.</span>2017_<span class="dv">2018</span> =<span class="st"> </span><span class="kw">list</span>(
-    <span class="dt">sgp.content.areas=</span><span class="kw">c</span>(<span class="st">'MATHEMATICS'</span>, <span class="st">'ALGEBRA_I'</span>, <span class="st">'MATHEMATICS_PSAT_10'</span>),
-    <span class="dt">sgp.panel.years=</span><span class="kw">c</span>(<span class="st">'2015_2016'</span>, <span class="st">'2016_2017'</span>, <span class="st">'2017_2018'</span>),
-    <span class="dt">sgp.grade.sequences=</span><span class="kw">list</span>(<span class="kw">c</span>(<span class="st">'8'</span>, <span class="st">'EOCT'</span>, <span class="st">'EOCT'</span>)),
-    <span class="dt">sgp.exact.grade.progression=</span><span class="ot">TRUE</span>,
-    <span class="dt">sgp.norm.group.preference=</span><span class="dv">0</span>,
-    <span class="dt">sgp.projection.grade.sequences=</span><span class="st">&quot;NO_PROJECTIONS&quot;</span>),
+ MATHEMATICS_PSAT_<span class="fl">10.</span>2017_<span class="dv">2018</span> =<span class="st"> </span><span class="kw">list</span>(
+  <span class="dt">sgp.content.areas=</span><span class="kw">c</span>(<span class="st">&quot;MATHEMATICS&quot;</span>, <span class="st">&quot;ALGEBRA_I&quot;</span>, 
+                      <span class="st">&quot;MATHEMATICS_PSAT_10&quot;</span>),
+  <span class="dt">sgp.panel.years=</span><span class="kw">c</span>(<span class="st">&quot;2015_2016&quot;</span>, <span class="st">&quot;2016_2017&quot;</span>, <span class="st">&quot;2017_2018&quot;</span>),
+  <span class="dt">sgp.grade.sequences=</span><span class="kw">list</span>(<span class="kw">c</span>(<span class="st">&quot;8&quot;</span>, <span class="st">&quot;EOCT&quot;</span>, <span class="st">&quot;EOCT&quot;</span>)),
+  <span class="dt">sgp.exact.grade.progression=</span><span class="ot">TRUE</span>,
+  <span class="dt">sgp.norm.group.preference=</span><span class="dv">0</span>,
+  <span class="dt">sgp.projection.grade.sequences=</span><span class="kw">list</span>(<span class="st">&quot;NO_PROJECTIONS&quot;</span>)),
 ...</code></pre></div>
 <!-- HTML_Start -->
 <div class="breakboth">
@@ -448,7 +449,7 @@ LaTeX_End -->
 </div>
 <div id="conduct-sgp-analyses" class="section level3">
 <h3><span class="header-section-number">3.2.3</span> Conduct SGP analyses</h3>
-<p>Due to differences in the time-frames in which the RICAS and PSAT/SAT were validated and made available, RICAS and PSAT/SAT SGPs were calculated at separate times.<a href="#fn4" class="footnoteRef" id="fnref4"><sup>4</sup></a> We first used the <a href="https://www.rdocumentation.org/packages/SGP/versions/1.8-0.0/topics/abcSGP"><code>abcSGP</code></a> function to <strong><em>a)</em></strong> do the final preparation of the 2018 PSAT/SAT data formatted data and create a new <code>SGP</code> class object in the (<a href="https://www.rdocumentation.org/packages/SGP/versions/1.8-0.0/topics/prepareSGP"><code>prepareSGP</code></a> step) and <strong><em>b)</em></strong> calculate SGP estimates (<a href="https://www.rdocumentation.org/packages/SGP/versions/1.8-0.0/topics/analyzeSGP"><code>analyzeSGP</code></a> step). After the RICAS data was received, cleaned and formatted as needed, the <a href="https://www.rdocumentation.org/packages/SGP/versions/1.8-0.0/topics/updateSGP"><code>updateSGP</code></a> function was used to conduct the <code>prepareSGP</code>, <code>analyzeSGP</code>, <a href="https://www.rdocumentation.org/packages/SGP/versions/1.8-0.0/topics/combineSGP"><code>combineSGP</code></a>, <a href="https://www.rdocumentation.org/packages/SGP/versions/1.8-0.0/topics/outputSGP"><code>outputSGP</code></a> and <a href="https://www.rdocumentation.org/packages/SGP/versions/1.8-0.0/topics/summarizeSGP"><code>summarizeSGP</code></a> steps).</p>
+<p>Due to differences in the time-frames in which the RICAS and PSAT/SAT were validated and made available, RICAS and PSAT/SAT SGPs were calculated at separate times.<a href="#fn4" class="footnoteRef" id="fnref4"><sup>4</sup></a> We first used the <a href="https://www.rdocumentation.org/packages/SGP/versions/1.8-0.0/topics/abcSGP"><code>abcSGP</code></a> function to <strong><em>a)</em></strong> do the final preparation of the 2018 PSAT/SAT formatted data and create a new <code>SGP</code> class object in the (<a href="https://www.rdocumentation.org/packages/SGP/versions/1.8-0.0/topics/prepareSGP"><code>prepareSGP</code></a> step) and <strong><em>b)</em></strong> calculate SGP estimates in the (<a href="https://www.rdocumentation.org/packages/SGP/versions/1.8-0.0/topics/analyzeSGP"><code>analyzeSGP</code></a> step). After the RICAS data was received, cleaned and formatted as needed, the <a href="https://www.rdocumentation.org/packages/SGP/versions/1.8-0.0/topics/updateSGP"><code>updateSGP</code></a> function was used to conduct the <code>prepareSGP</code>, <code>analyzeSGP</code>, <a href="https://www.rdocumentation.org/packages/SGP/versions/1.8-0.0/topics/combineSGP"><code>combineSGP</code></a>, <a href="https://www.rdocumentation.org/packages/SGP/versions/1.8-0.0/topics/outputSGP"><code>outputSGP</code></a> and <a href="https://www.rdocumentation.org/packages/SGP/versions/1.8-0.0/topics/summarizeSGP"><code>summarizeSGP</code></a> steps).</p>
 <p>The <code>combineSGP</code> step merges the results into the master longitudinal data set once all analyses are completed. A pipe delimited version of the complete long data is saved in the <code>outputSGP</code> step. The <code>summarizeSGP</code> function is used to produce many tables of descriptive statistics that are disaggregated at the state, district and school levels, as well as other factors of interest. Finally, visualizations (such as bubble charts) are produced from the data and summary tables using the <a href="https://www.rdocumentation.org/packages/SGP/versions/1.8-0.0/topics/visualizeSGP"><code>visualizeSGP</code></a> function.</p>
 <!-- HTML_Start -->
 <div class="breakboth">
@@ -466,7 +467,7 @@ LaTeX_End -->
 <p>Examination of the Rhode Island Student Growth Model goodness-of-fit was conducted by first inspecting model fit plots the <code>SGP</code> software package produced for each analysis, and subsequently inspecting student level correlations between growth and achievement. Discussion of the model fit plots in general and examples of them are provided below, as are tables of the correlation results. The complete portfolio of model fit plots is provided in Appendix A.</p>
 <div id="model-fit-plots" class="section level2">
 <h2><span class="header-section-number">4.1</span> Model Fit Plots</h2>
-<p>Using all available RICAS and PSAT/SAT scores as the variables, estimation of student growth percentiles was conducted for each possible student (those with a current score and at least one prior score). Each analysis is defined by the grade and content area for the grade-level analyses and exact content area (and grade when relevant) sequences for the PSAT/SAT subjects. A goodness of fit plot is produced for each unique analysis run in 2018 and are all provided in Appendix A to this report.</p>
+<p>Using all available PARCC, RICAS and PSAT/SAT scores as the variables, estimation of student growth percentiles was conducted for each possible student (those with a current score and at least one prior score). Each analysis is defined by the grade and content area for the grade-level analyses and exact content area (and grade when relevant) sequences for the PSAT/SAT subjects. A goodness of fit plot is produced for each unique analysis run in 2018 and are all provided in Appendix A to this report.</p>
 <p>As an example, Figure 1 shows the results for 5<sup>th</sup> grade ELA as an example of good model fit. Figure 2 is an example of minor model misfit from the PSAT 10 Mathematics analysis that uses Geometry as the most recent prior.</p>
 <p>The “Ceiling/Floor Effects Test” panel is intended to help identify potential problems in SGP estimation at the Highest and Lowest Obtainable (or Observed) Scale Scores (HOSS and LOSS). Most often these effects are caused when it is relatively typical for extremely high (low) achieving students to consistently score at or near the HOSS (LOSS) each year leading to the SGPs for these students to be unexpectedly low (high). That is, for example, if a sufficient number of students maintain performance at the HOSS over time, this performance will be estimated as typical, and therefore SGP estimates will reflect typical growth (e.g. 50th percentile). In some cases small deviations from these extreme score values might even yield low growth estimates. Although these score patterns can legitimately be estimated as a typical or low percentile, it is potentially an unfair description of actual student growth (and by proxy teacher or school, etc. performance metrics that use them). Ultimately this is usually an artifact of the assessments’ inability to adequately measure student performance at extreme ability levels.</p>
 <p>The table of values here shows whether the current year scale scores at both extremes yield the expected SGPs<a href="#fn6" class="footnoteRef" id="fnref6"><sup>6</sup></a>. The expectation is that the majority of SGPs for students scoring at or near the LOSS will be low (preferably less than 5 and not higher than 10), and that SGPs for students scoring at or near the HOSS will be high (preferably higher than 95 and not less than 90). Because few students may score <em>exactly</em> at the HOSS/LOSS, the top/bottom 50 students are selected and any student scoring within their range of scores are selected for inclusion in these tables. Consequently, there may be a range of scores at the HOSS/LOSS rather than a single score, and there may be more than 50 students included in the HOSS/LOSS row if the 50 students at the extremes only contain the single HOSS/LOSS score.</p>
@@ -770,7 +771,7 @@ LaTeX_End -->
 <thead>
 <tr>
 <td colspan="5" style="text-align: left;">
-<strong>Table 4:</strong> PSAT/SAT Student Level Correlations between Prior Standardized Scale Score and 1) Current Scale Scoreand 2) SGP - Disaggregated by Norm Group.
+<strong>Table 4:</strong> PSAT/SAT Student Level Correlations between Prior Standardized Scale Score and 1) Current Scale Score and 2) SGP - Disaggregated by Norm Group.
 </td>
 </tr>
 <tr>
@@ -885,7 +886,7 @@ Mathematics SAT
 <!-- LaTeX_Start
 %latex.default(my_tbl, file = "", where = where, col.just = tex.align,     caption = tmp_caption, ...)%
 \begin{table}[H]
-\caption{**Table 4:** PSAT/SAT Student Level Correlations between Prior Standardized Scale Score and 1) Current Scale Scoreand 2) SGP - Disaggregated by Norm Group.\label{my}} 
+\caption{**Table 4:** PSAT/SAT Student Level Correlations between Prior Standardized Scale Score and 1) Current Scale Score and 2) SGP - Disaggregated by Norm Group.\label{my}} 
 \begin{center}
 \begin{tabular}{rrrrr}
 \hline\hline
@@ -1111,7 +1112,7 @@ Mathematics SAT&52&51.4\tabularnewline
 \end{table}
 
 LaTeX_End -->
-<p>Based upon perfect model fit to the data, the median of all state growth percentiles in each grade by year by subject combination should be 50. That is, in the conditional distributions, 50 percent of growth percentiles should be less than 50 and 50 percent should be greater than 50. Deviations from 50 indicate imperfect model fit to the data. Imperfect model fit can occur for a number of reasons, some due to issues with the data (e.g., floor and ceiling effects leading to a “bunching” up of the data) as well as issues due to the way that the SGP function fits the data. PSAT/SAT results are further complicated by the aggregation across multiple analyses (prior course patterns). The results in Tables 5 and 6 are close to perfect, with almost all values equal to 50.</p>
+<p>Based upon perfect model fit to the data, the median of all state growth percentiles in each grade by year by subject combination should be 50. That is, in the conditional distributions, 50 percent of growth percentiles should be less than 50 and 50 percent should be greater than 50. Deviations from 50 indicate imperfect model fit to the data. Imperfect model fit can occur for a number of reasons, including issues with the data (e.g., floor and ceiling effects leading to a “bunching” up of the data) or how the SGP function fits the data. PSAT/SAT results are further complicated by the aggregation across multiple analyses (prior course patterns). The results in Tables 5 and 6 are close to perfect, with almost all values equal to 50.</p>
 <p>The results are coarse in that they are aggregated across tens of thousands of students. More refined fit analyses were presented in the Goodness-of-Fit section. Depending upon feedback from RIDE, it may be desirable to tweak some operational parameters and attempt to improve fit even further. The impact upon the operational results based on better fit is expected to be extremely minor.</p>
 <p>It is important to note how, at the entire state level, the <em>norm-referenced</em> growth information returns little information on annual trends due to its norm-reference nature. What the results indicate is that a typical (or average) student in the state demonstrates 50<sup>th</sup> percentile growth. That is, “typical students” demonstrate “typical growth”. One benefit of the norm-referenced results follows when subgroups are examined (e.g., schools, district, demographic groups, etc.) Examining subgroups in terms of the mean or median of their student growth percentiles, it is then possible to investigate why some subgroups display lower/higher student growth than others. Moreover, because the subgroup summary statistic (i.e., the median) is composed of many individual student growth percentiles, one can break out the result and further examine the distribution of individual results.</p>
 <div id="group-level-results" class="section level2">

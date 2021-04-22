@@ -18,7 +18,8 @@ date: October 2018
   knitr::opts_chunk$set(cache.path = "_cache/Appendix_B_2018")
 
   ##  Set Table, Figure and Equation Counters
-  options(table_number=0)
+	options(table_counter=FALSE)
+	options(table_number=0)
   options(table_counter_str = "<strong>Table B.%s:</strong> ")
   options("fig_caption_no"=0)
   options(fig_caption_no_sprintf = "**Fig. B.%s:** %s")
@@ -100,7 +101,7 @@ Figure B.`r getOption("fig_caption_no")+1` also serves to illustrate the relatio
 
 In situations where a vertical scale exists, the increase/decrease in scale score points can be calculated and the growth percentile can be understood alongside this change.  For example, were the scales presented in Figure B.`r getOption("fig_caption_no")` vertical, then one can calculate that the student grew 40 points (from 460 to 500) between 2011 and 2012.  This 40 points represents the absolute magnitude of change.  Quantifying the magnitude of change is scale dependent.  For example, different vertical achievement scales in 2011 and 2012 would yield different annual scale score increases: A scale score increase of 40 could be changed to a scale score increase of 10 using a simple transformation of the vertical scale on which all the students are measured.  However, relative to other students, their growth has not changed - their growth percentile is invariant to scale transformations common in educational assessment.  Student growth percentiles norm-referencedly situate achievement change bypassing questions associated with the magnitude of change, and directing attention toward relative standing which, we would assert, is what stakeholders are most interested in.  
 
-To fully understand how many states intend to use growth percentiles to make determinations about whether a student's growth is sufficient, the next section details specifics of how student growth percentiles are calculated.  These calculations are subsequently used to calculate percentile growth projections/trajectories that are used to establish how much growth it will take for each student to reach his/her achievement targets.  
+To fully understand how many states intend to use growth percentiles to make determinations about whether a student's growth is sufficient, the next section details specifics of how student growth percentiles are calculated.  These calculations are subsequently used to calculate percentile growth projections/trajectories that are used to establish how much growth it will take for each student to reach his/her achievement targets.
 
 ```{r, cache=FALSE, results="asis", echo=FALSE}
 	Literasee:::pageBreak()

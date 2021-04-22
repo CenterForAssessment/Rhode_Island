@@ -70,6 +70,7 @@ Rhode_Island_SGP@Data[, Most_Recent_Prior := sapply(strsplit(as.character(Rhode_
 
 ###
 
+setwd("/Users/avi/Dropbox (SGP)/Github_Repos/Documentation/Rhode_Island/SGP_Reports/2018")
 require(Literasee)
 
 renderMultiDocument(rmd_input = "Rhode_Island_SGP_Report_2018.Rmd",
@@ -83,6 +84,10 @@ renderMultiDocument(rmd_input = "Appendix_A_2018.Rmd",
 										report_format = c("HTML", "PDF"),
 										cover_img="../img/cover.jpg",
 										add_cover_title=TRUE)
+
+renderMultiDocument(rmd_input = "Appendix_B_2018.Rmd",
+										report_format = c("HTML", "PDF"),
+										pandoc_args = "--webtex")
 
 renderMultiDocument(rmd_input = "Appendix_C_2018.Rmd",
 										report_format = c("HTML", "PDF"),
