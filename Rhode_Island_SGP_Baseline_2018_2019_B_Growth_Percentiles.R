@@ -12,7 +12,7 @@ require(SGPmatrices)
 load("Data/Rhode_Island_SGP_LONG_Data.Rdata")
 
 ###   Add single-cohort baseline matrices to SGPstateData
-SGPstateData <- addBaselineMatrices("RI", "2021")
+SGPstateData <- addBaselineMatrices("RI", "2020_2021")
 
 ### NULL out assessment transition in 2019 (since already dealth with)
 SGPstateData[["RI"]][["Assessment_Program_Information"]][["Assessment_Transition"]] <- NULL

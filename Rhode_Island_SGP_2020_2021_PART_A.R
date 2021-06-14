@@ -13,7 +13,7 @@ load("Data/Rhode_Island_SGP.Rdata"))
 load("Data/Rhode_Island_Data_LONG_2021.Rdata")
 
 ###   Add Baseline matrices to SGPstateData
-SGPstateData <- addBaselineMatrices("RI", "2021")
+SGPstateData <- addBaselineMatrices("RI", "2020_2021")
 
 ###   Read in SGP Configuration Scripts and Combine
 source("SGP_CONFIG/2020_2021/PART_A/ELA.R")
