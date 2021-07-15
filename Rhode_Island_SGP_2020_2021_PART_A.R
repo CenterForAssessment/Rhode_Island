@@ -30,7 +30,7 @@ parallel.config <- list(BACKEND="PARALLEL", WORKERS=list(PERCENTILES=4, BASELINE
 ###   Run updateSGP analysis
 #####
 
-Rhode_Island_COVID_SGP <- updateSGP(
+Rhode_Island_SGP <- updateSGP(
         what_sgp_object = Rhode_Island_SGP,
         with_sgp_data_LONG = Rhode_Island_Data_LONG_2021,
         steps = c("prepareSGP", "analyzeSGP", "combineSGP"),
