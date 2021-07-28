@@ -7,21 +7,26 @@
 ###   Load packages
 require(SGP)
 require(SGPmatrices)
+#debug(SGP:::getAchievementLevel)
+#debug(SGP:::gofSGP)
 
 ###   Load data
-load("Data/Rhode_Island_SGP.Rdata"))
-load("Data/Rhode_Island_Data_LONG_2021.Rdata")
+load("Data/Rhode_Island_SGP.Rdata")
+#load("Data/Rhode_Island_Data_LONG_2021.Rdata")
+load("Data/Rhode_Island_Data_LONG_RICAS_2020_2021.Rdata")
+Rhode_Island_Data_LONG_2020_2021 <- Rhode_Island_Data_LONG_RICAS_2020_2021
 
 ###   Add Baseline matrices to SGPstateData
 SGPstateData <- addBaselineMatrices("RI", "2020_2021")
 
 ###   Read in SGP Configuration Scripts and Combine
 source("SGP_CONFIG/2020_2021/PART_A/ELA.R")
-source("SGP_CONFIG/2020_2021/PART_A/ELA_PSAT_10.R")
+#source("SGP_CONFIG/2020_2021/PART_A/ELA_PSAT_10.R")
 source("SGP_CONFIG/2020_2021/PART_A/MATHEMATICS.R")
-source("SGP_CONFIG/2020_2021/PART_A/MATHEMATICS_PSAT_10.R")
+#source("SGP_CONFIG/2020_2021/PART_A/MATHEMATICS_PSAT_10.R")
 
-RI_CONFIG <- c(ELA_2020_2021.config, ELA_PSAT_10_2020_2021.config, MATHEMATICS_2020_2021.config, MATHEMATICS_PSAT_10_2020_2021.config)
+#RI_CONFIG <- c(ELA_2020_2021.config, ELA_PSAT_10_2020_2021.config, MATHEMATICS_2020_2021.config, MATHEMATICS_PSAT_10_2020_2021.config)
+RI_CONFIG <- c(ELA_2020_2021.config, MATHEMATICS_2020_2021.config)
 
 ### Parameters
 parallel.config <- list(BACKEND="PARALLEL", WORKERS=list(PERCENTILES=4, BASELINE_PERCENTILES=4, PROJECTIONS=4, LAGGED_PROJECTIONS=4, SGP_SCALE_SCORE_TARGETS=4))
@@ -32,9 +37,9 @@ parallel.config <- list(BACKEND="PARALLEL", WORKERS=list(PERCENTILES=4, BASELINE
 
 Rhode_Island_SGP <- updateSGP(
         what_sgp_object = Rhode_Island_SGP,
-        with_sgp_data_LONG = Rhode_Island_Data_LONG_2021,
+        with_sgp_data_LONG = Rhode_Island_Data_LONG_2020_2021,
         steps = c("prepareSGP", "analyzeSGP", "combineSGP"),
-        sgp.config = MA_CONFIG,
+        sgp.config = RI_CONFIG,
         sgp.percentiles = TRUE,
         sgp.projections = FALSE,
         sgp.projections.lagged = FALSE,
@@ -46,4 +51,4 @@ Rhode_Island_SGP <- updateSGP(
 )
 
 ###   Save results
-save(Rhode_Island_SGP, file="Rhode_Island_SGP.Rdata"))
+save(Rhode_Island_SGP, file="Data/Rhode_Island_SGP.Rdata")
