@@ -7,8 +7,7 @@
 ###   Load packages
 require(SGP)
 require(SGPmatrices)
-#debug(SGP:::getAchievementLevel)
-#debug(SGP:::gofSGP)
+require(data.table)
 
 ###   Load data
 load("Data/Rhode_Island_SGP.Rdata")
@@ -49,6 +48,10 @@ Rhode_Island_SGP <- updateSGP(
         save.intermediate.results = FALSE,
         parallel.config = parallel.config
 )
+
+### Copy SCALE_SCORE_PRIOR and SCALE_SCORE_PRIOR_STANDARDIZED to BASELINE counter parts
+Rhode_Island_SGP@Data[YEAR=="2020_2021", SCALE_SCORE_PRIOR_BASELINE:=SCALE_SCORE_PRIOR]
+Rhode_Island_SGP@Data[YEAR=="2020_2021", SCALE_SCORE_PRIOR_STANDARDIZED_BASELINE:=SCALE_SCORE_PRIOR_STANDARDIZED]
 
 ###   Save results
 save(Rhode_Island_SGP, file="Data/Rhode_Island_SGP.Rdata")
