@@ -110,9 +110,9 @@ Rhode_Island_Data_LONG_RICAS_2020_2021[SCHOOL_NUMBER == "88888", SCHOOL_ENROLLME
 ### Resolve duplicates
 setkey(Rhode_Island_Data_LONG_RICAS_2020_2021, VALID_CASE, CONTENT_AREA, YEAR, ID, GRADE, SCALE_SCORE)
 setkey(Rhode_Island_Data_LONG_RICAS_2020_2021, VALID_CASE, CONTENT_AREA, YEAR, ID)
-# dups <- Rhode_Island_Data_LONG_RICAS_2020_2021[VALID_CASE=="VALID_CASE"][c(which(duplicated(Rhode_Island_Data_LONG_RICAS_2020_2021[VALID_CASE=="VALID_CASE"], by=key(Rhode_Island_Data_LONG_RICAS_2020_2021)))-1, which(duplicated(Rhode_Island_Data_LONG_RICAS_2020_2021[VALID_CASE=="VALID_CASE"], by=key(Rhode_Island_Data_LONG_RICAS_2020_2021)))),]
-# setkeyv(dups, key(Rhode_Island_Data_LONG_RICAS_2020_2021))  #  0 duplicate cases RICAS data 8/8/19
-# Rhode_Island_Data_LONG_RICAS_2020_2021[which(duplicated(Rhode_Island_Data_LONG_RICAS_2020_2021, by=key(Rhode_Island_Data_LONG_RICAS_2020_2021)))-1, VALID_CASE:="INVALID_CASE"]
+#dups <- Rhode_Island_Data_LONG_RICAS_2020_2021[VALID_CASE=="VALID_CASE"][c(which(duplicated(Rhode_Island_Data_LONG_RICAS_2020_2021[VALID_CASE=="VALID_CASE"], by=key(Rhode_Island_Data_LONG_RICAS_2020_2021)))-1, which(duplicated(Rhode_Island_Data_LONG_RICAS_2020_2021[VALID_CASE=="VALID_CASE"], by=key(Rhode_Island_Data_LONG_RICAS_2020_2021)))),]
+#setkeyv(dups, key(Rhode_Island_Data_LONG_RICAS_2020_2021))  #  0 duplicate cases RICAS data 8/11/21
+#Rhode_Island_Data_LONG_RICAS_2020_2021[which(duplicated(Rhode_Island_Data_LONG_RICAS_2020_2021, by=key(Rhode_Island_Data_LONG_RICAS_2020_2021)))-1, VALID_CASE:="INVALID_CASE"]
 
 
 ### Save results
