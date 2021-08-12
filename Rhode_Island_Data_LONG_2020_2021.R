@@ -14,7 +14,8 @@
 require(data.table)
 
 ###   Load Data
-Rhode_Island_Data_LONG_RICAS_2020_2021 <- fread("Data/Base_Files/RICAS2021_prediscrepancy.csv", stringsAsFactors=FALSE)
+#Rhode_Island_Data_LONG_RICAS_2020_2021 <- fread("Data/Base_Files/RICAS2021_prediscrepancy.csv", stringsAsFactors=FALSE)
+Rhode_Island_Data_LONG_RICAS_2020_2021 <- fread("Data/Base_Files/RICAS2021.csv", stringsAsFactors=FALSE)
 
 ### Cleanup data
 variables.to.keep <- c( # paste(unlist(names(Rhode_Island_Data_LONG_RICAS_2020_2021)[c(1:62)]), collapse="', '")
