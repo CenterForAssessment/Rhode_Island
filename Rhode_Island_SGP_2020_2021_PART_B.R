@@ -7,9 +7,12 @@
 ###   Load packages
 require(SGP)
 require(SGPmatrices)
+#debug(SGP:::getSGPConfig)
+#debug(analyzeSGP)
+#debug(SGP:::getsplineMatrices)
 
 ###   Load data
-load("Data/Rhode_Island_SGP.Rdata"))
+load("Data/Rhode_Island_SGP.Rdata")
 
 ###   Load configurations
 source("SGP_CONFIG/2020_2021/PART_B/ELA.R")
@@ -45,12 +48,29 @@ SGPstateData[["RI"]][["SGP_Configuration"]][["content_area.projection.sequence"]
     ELA_GRADE_6=c(rep("ELA", 6),  "ELA_PSAT_10", "ELA_SAT"),
     ELA_GRADE_7=c(rep("ELA", 6),  "ELA_PSAT_10", "ELA_SAT"),
     ELA_GRADE_8=c(rep("ELA", 6),  "ELA_PSAT_10", "ELA_SAT"),
+    ELA_PSAT_GRADE_EOCT=c(rep("ELA", 6),  "ELA_PSAT_10", "ELA_SAT"),
     MATHEMATICS_GRADE_3=c(rep("MATHEMATICS", 6), "MATHEMATICS_PSAT_10", "MATHEMATICS_SAT"),
     MATHEMATICS_GRADE_4=c(rep("MATHEMATICS", 6), "MATHEMATICS_PSAT_10", "MATHEMATICS_SAT"),
     MATHEMATICS_GRADE_5=c(rep("MATHEMATICS", 6), "MATHEMATICS_PSAT_10", "MATHEMATICS_SAT"),
     MATHEMATICS_GRADE_6=c(rep("MATHEMATICS", 6), "MATHEMATICS_PSAT_10", "MATHEMATICS_SAT"),
     MATHEMATICS_GRADE_7=c(rep("MATHEMATICS", 6), "MATHEMATICS_PSAT_10", "MATHEMATICS_SAT"),
-    MATHEMATICS_GRADE_8=c(rep("MATHEMATICS", 6), "MATHEMATICS_PSAT_10", "MATHEMATICS_SAT"))
+    MATHEMATICS_GRADE_8=c(rep("MATHEMATICS", 6), "MATHEMATICS_PSAT_10", "MATHEMATICS_SAT"),
+    MATHEMATICS_PSAT_GRADE_EOCT=c(rep("MATHEMATICS", 6), "MATHEMATICS_PSAT_10", "MATHEMATICS_SAT"))
+SGPstateData[["RI"]][["SGP_Configuration"]][["year_lags.projection.sequence"]] <- list(
+    ELA_GRADE_3=c(1, 1, 1, 1, 1, 2, 1),
+    ELA_GRADE_4=c(1, 1, 1, 1, 1, 2, 1),
+    ELA_GRADE_5=c(1, 1, 1, 1, 1, 2, 1),
+    ELA_GRADE_6=c(1, 1, 1, 1, 1, 2, 1),
+    ELA_GRADE_7=c(1, 1, 1, 1, 1, 2, 1),
+    ELA_GRADE_8=c(1, 1, 1, 1, 1, 2, 1),
+    ELA_PSAT_GRADE_EOCT=c(1, 1, 1, 1, 1, 2, 1),
+    MATHEMATICS_GRADE_3=c(1, 1, 1, 1, 1, 2, 1),
+    MATHEMATICS_GRADE_4=c(1, 1, 1, 1, 1, 2, 1),
+    MATHEMATICS_GRADE_5=c(1, 1, 1, 1, 1, 2, 1),
+    MATHEMATICS_GRADE_6=c(1, 1, 1, 1, 1, 2, 1),
+    MATHEMATICS_GRADE_7=c(1, 1, 1, 1, 1, 2, 1),
+    MATHEMATICS_GRADE_8=c(1, 1, 1, 1, 1, 2, 1),
+    MATHEMATICS_PSAT_GRADE_EOCT=c(1, 1, 1, 1, 1, 2, 1))
 SGPstateData[["RI"]][["SGP_Configuration"]][["max.forward.projection.sequence"]] <- list(
     ELA_GRADE_3=3,
     ELA_GRADE_4=3,
@@ -58,12 +78,14 @@ SGPstateData[["RI"]][["SGP_Configuration"]][["max.forward.projection.sequence"]]
     ELA_GRADE_6=3,
     ELA_GRADE_7=3,
     ELA_GRADE_8=3,
+    ELA_PSAT_GRADE_EOCT=3,
     MATHEMATICS_GRADE_3=3,
     MATHEMATICS_GRADE_4=3,
     MATHEMATICS_GRADE_5=3,
     MATHEMATICS_GRADE_6=3,
     MATHEMATICS_GRADE_7=3,
-    MATHEMATICS_GRADE_8=3)
+    MATHEMATICS_GRADE_8=3,
+    MATHEMATICS_PSAT_GRADE_EOCT=3)
 
 ###   Run analysis
 
@@ -79,9 +101,8 @@ Rhode_Island_SGP <- abcSGP(
         sgp.projections.baseline=TRUE,
         sgp.projections.lagged.baseline=FALSE,
         sgp.target.scale.scores=TRUE,
-        outputSGP.directory=output.directory,
         parallel.config=parallel.config
 )
 
 ###   Save results
-save(Rhode_Island_SGP, file="Data/Rhode_Island_SGP.Rdata")
+#save(Rhode_Island_SGP, file="Data/Rhode_Island_SGP.Rdata")
