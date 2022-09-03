@@ -14,87 +14,89 @@ require(readxl)
 #######################################################################
 
 ###   Load Data
-#Rhode_Island_Data_LONG_RICAS_2021_2022 <- fread("Data/Base_Files/RICAS2021_prediscrepancy.csv", stringsAsFactors=FALSE)
-#Rhode_Island_Data_LONG_RICAS_2021_2022 <- fread("Data/Base_Files/RICAS2021.csv", stringsAsFactors=FALSE)
-#Rhode_Island_Data_LONG_RICAS_2021_2022 <- as.data.table(read.spss("Data/Base_Files/2021RICASwDemo.sav", to.data.frame=TRUE, trim.factor.names=TRUE))
+Rhode_Island_Data_LONG_RICAS_2021_2022 <- fread("Data/Base_Files/RICAS2022.csv", stringsAsFactors=FALSE)
+
+### Preliminary cleanup of ethnicity data 
+Rhode_Island_Data_LONG_RICAS_2021_2022[asian=="Y", RACE7:="AS7"]
+Rhode_Island_Data_LONG_RICAS_2021_2022[AIAN=="Y", RACE7:="AM7"]
+Rhode_Island_Data_LONG_RICAS_2021_2022[BAA=="Y", RACE7:="BL7"]
+Rhode_Island_Data_LONG_RICAS_2021_2022[hispanic=="Y", RACE7:="HI7"]
+Rhode_Island_Data_LONG_RICAS_2021_2022[NHOPI=="Y", RACE7:="PI7"]
+Rhode_Island_Data_LONG_RICAS_2021_2022[white=="Y", RACE7:="WH7"]
 
 ### Cleanup data
-# variables.to.keep_RICAS <- c(
-#       "sasid", "lastname", "firstname", "grade", "stugrade",
-#       "resp_discode", "resp_schcode", "resp_disname", "resp_schname", "resp_schlevel",
-#       "escaleds", "eperflev", "e_ssSEM", "e_theta", "e_thetaSEM", "emode",
-#       "mscaleds", "mperflev", "m_ssSEM", "m_theta", "m_thetaSEM", "mmode",
-#       "RACE7", "gender", "ecodis", "ELL", "IEP", "plan504", "enonacc", "ELAParticipation", "MathParticipation")
+variables.to.keep_RICAS <- c(
+      "sasid", "lastname", "firstname", "grade", "stugrade",
+      "resp_discode", "resp_schcode", "resp_disname", "resp_schname", "resp_schlevel",
+      "escaleds", "eperflev", "e_ssSEM", "e_theta", "e_thetaSEM", "emode",
+      "mscaleds", "mperflev", "m_ssSEM", "m_theta", "m_thetaSEM", "mmode",
+      "RACE7", "gender", "ecodis", "ELL", "IEP", "plan504", "enonacc")
 
-# variable.names.new_RICAS <- c(
-#       "ID", "LAST_NAME", "FIRST_NAME", "GRADE", "GRADE_ENROLLED",
-#       "DISTRICT_NUMBER", "SCHOOL_NUMBER", "DISTRICT_NAME", "SCHOOL_NAME", "EMH_LEVEL",
-#       "SCALE_SCORE_ACTUAL", "ACHIEVEMENT_LEVEL", "SCALE_SCORE_ACTUAL_CSEM", "SCALE_SCORE", "SCALE_SCORE_CSEM", "TEST_FORMAT",
-#       "ETHNICITY", "GENDER", "FREE_REDUCED_LUNCH_STATUS", "ELL_STATUS", "IEP_STATUS", "enonacc",
-#       "PARTICIPATION", "CONTENT_AREA")
+variable.names.new_RICAS <- c(
+      "ID", "LAST_NAME", "FIRST_NAME", "GRADE", "GRADE_ENROLLED",
+      "DISTRICT_NUMBER", "SCHOOL_NUMBER", "DISTRICT_NAME", "SCHOOL_NAME", "EMH_LEVEL",
+      "SCALE_SCORE_ACTUAL", "ACHIEVEMENT_LEVEL", "SCALE_SCORE_ACTUAL_CSEM", "SCALE_SCORE", "SCALE_SCORE_CSEM", "TEST_FORMAT",
+      "ETHNICITY", "GENDER", "FREE_REDUCED_LUNCH_STATUS", "ELL_STATUS", "IEP_STATUS", "enonacc",
+      "CONTENT_AREA")
 
-# Rhode_Island_Data_LONG_RICAS_2021_2022 <- Rhode_Island_Data_LONG_RICAS_2021_2022[, variables.to.keep_RICAS, with=FALSE]
+Rhode_Island_Data_LONG_RICAS_2021_2022 <- Rhode_Island_Data_LONG_RICAS_2021_2022[, variables.to.keep_RICAS, with=FALSE]
 
-# factor.vars <- c("gender", "ecodis", "ELL", "IEP", "lastname", "firstname", "resp_schlevel", "emode", "mmode", "eperflev", "mperflev")
-# for(v in factor.vars) Rhode_Island_Data_LONG_RICAS_2021_2022[, (v) := factor(eval(parse(text=v)))]
+factor.vars <- c("gender", "ecodis", "ELL", "IEP", "lastname", "firstname", "resp_schlevel", "emode", "mmode", "eperflev", "mperflev")
+for(v in factor.vars) Rhode_Island_Data_LONG_RICAS_2021_2022[, (v) := factor(eval(parse(text=v)))]
 
 ### Tidy up RICAS data
-# setattr(Rhode_Island_Data_LONG_RICAS_2021_2022$lastname, "levels", as.character(sapply(levels(Rhode_Island_Data_LONG_RICAS_2021_2022$lastname), SGP:::capwords)))
-# setattr(Rhode_Island_Data_LONG_RICAS_2021_2022$firstname, "levels", as.character(sapply(levels(Rhode_Island_Data_LONG_RICAS_2021_2022$firstname), SGP:::capwords)))
-# Rhode_Island_Data_LONG_RICAS_2021_2022[, grade := as.character(as.numeric(grade))]
-# Rhode_Island_Data_LONG_RICAS_2021_2022[, stugrade := as.character(as.numeric(stugrade))]
-# Rhode_Island_Data_LONG_RICAS_2021_2022[, resp_discode:=as.character(sapply(Rhode_Island_Data_LONG_RICAS_2021_2022$resp_discode, SGP:::capwords))]
-# Rhode_Island_Data_LONG_RICAS_2021_2022[, resp_schcode:=as.character(sapply(Rhode_Island_Data_LONG_RICAS_2021_2022$resp_schcode, SGP:::capwords))]
-# Rhode_Island_Data_LONG_RICAS_2021_2022[, resp_disname:=as.character(sapply(Rhode_Island_Data_LONG_RICAS_2021_2022$resp_disname, SGP:::capwords))]
-# Rhode_Island_Data_LONG_RICAS_2021_2022[, resp_schname:=as.character(sapply(Rhode_Island_Data_LONG_RICAS_2021_2022$resp_schname, SGP:::capwords))]
-# setattr(Rhode_Island_Data_LONG_RICAS_2021_2022$resp_schlevel, "levels", as.character(sapply(levels(Rhode_Island_Data_LONG_RICAS_2021_2022$resp_schlevel), SGP:::capwords)))
-# setattr(Rhode_Island_Data_LONG_RICAS_2021_2022$eperflev, "levels", c("Not Meeting Expectations", "Partially Meeting Expectations", "Meeting Expectations", "Exceeding Expectations"))
-# setattr(Rhode_Island_Data_LONG_RICAS_2021_2022$mperflev, "levels", c("Not Meeting Expectations", "Partially Meeting Expectations", "Meeting Expectations", "Exceeding Expectations"))
-# Rhode_Island_Data_LONG_RICAS_2021_2022[,RACE7:=as.factor(RACE7)]
-# setattr(Rhode_Island_Data_LONG_RICAS_2021_2022$RACE7, "levels", c("American Indian or Alaskan Native", "Asian", "Black or African American", "Hispanic or Latino", "Multiple Ethnicities Reported", "Native Hawaiian or Pacific Islander", "White"))
-# setattr(Rhode_Island_Data_LONG_RICAS_2021_2022$gender, "levels", c("Female", "Male", "Other"))
+setattr(Rhode_Island_Data_LONG_RICAS_2021_2022$lastname, "levels", as.character(sapply(levels(Rhode_Island_Data_LONG_RICAS_2021_2022$lastname), SGP:::capwords)))
+setattr(Rhode_Island_Data_LONG_RICAS_2021_2022$firstname, "levels", as.character(sapply(levels(Rhode_Island_Data_LONG_RICAS_2021_2022$firstname), SGP:::capwords)))
+Rhode_Island_Data_LONG_RICAS_2021_2022[, grade := as.character(as.numeric(grade))]
+Rhode_Island_Data_LONG_RICAS_2021_2022[, stugrade := as.character(as.numeric(stugrade))]
+Rhode_Island_Data_LONG_RICAS_2021_2022[, resp_discode:=as.character(sapply(Rhode_Island_Data_LONG_RICAS_2021_2022$resp_discode, SGP:::capwords))]
+Rhode_Island_Data_LONG_RICAS_2021_2022[, resp_schcode:=as.character(sapply(Rhode_Island_Data_LONG_RICAS_2021_2022$resp_schcode, SGP:::capwords))]
+Rhode_Island_Data_LONG_RICAS_2021_2022[, resp_disname:=as.character(sapply(Rhode_Island_Data_LONG_RICAS_2021_2022$resp_disname, SGP:::capwords))]
+Rhode_Island_Data_LONG_RICAS_2021_2022[, resp_schname:=as.character(sapply(Rhode_Island_Data_LONG_RICAS_2021_2022$resp_schname, SGP:::capwords))]
+setattr(Rhode_Island_Data_LONG_RICAS_2021_2022$resp_schlevel, "levels", as.character(sapply(levels(Rhode_Island_Data_LONG_RICAS_2021_2022$resp_schlevel), SGP:::capwords)))
+setattr(Rhode_Island_Data_LONG_RICAS_2021_2022$eperflev, "levels", c("Not Meeting Expectations", "Partially Meeting Expectations", "Meeting Expectations", "Exceeding Expectations"))
+setattr(Rhode_Island_Data_LONG_RICAS_2021_2022$mperflev, "levels", c("Not Meeting Expectations", "Partially Meeting Expectations", "Meeting Expectations", "Exceeding Expectations"))
+Rhode_Island_Data_LONG_RICAS_2021_2022[,RACE7:=as.factor(RACE7)]
+setattr(Rhode_Island_Data_LONG_RICAS_2021_2022$RACE7, "levels", c("American Indian or Alaskan Native", "Asian", "Black or African American", "Hispanic or Latino", "Multiple Ethnicities Reported", "Native Hawaiian or Pacific Islander", "White"))
+setattr(Rhode_Island_Data_LONG_RICAS_2021_2022$gender, "levels", c("Female", "Male", "Other"))
 
 ###   Other Demographic Variables
-# Rhode_Island_Data_LONG_RICAS_2021_2022[plan504 == "Y", IEP := "Students with 504 Plan"]
-# Rhode_Island_Data_LONG_RICAS_2021_2022[,plan504:=NULL]
-# levels(Rhode_Island_Data_LONG_RICAS_2021_2022$IEP) <- c("Students without Disabilities (Non-IEP)", "Students with Disabilities (IEP)", "Students with 504 Plan")
+Rhode_Island_Data_LONG_RICAS_2021_2022[plan504 == "Y", IEP := "Students with 504 Plan"]
+Rhode_Island_Data_LONG_RICAS_2021_2022[,plan504:=NULL]
+levels(Rhode_Island_Data_LONG_RICAS_2021_2022$IEP) <- c("Students without Disabilities (Non-IEP)", "Students with Disabilities (IEP)", "Students with 504 Plan")
 
-# levels(Rhode_Island_Data_LONG_RICAS_2021_2022$ecodis) <- c("Not Economically Disadvantaged", "Economically Disadvantaged")
-# levels(Rhode_Island_Data_LONG_RICAS_2021_2022$ELL) <- c("Non-English Language Learners (ELL)", "English Language Learners (ELL)")
+levels(Rhode_Island_Data_LONG_RICAS_2021_2022$ecodis) <- c("Not Economically Disadvantaged", "Economically Disadvantaged")
+levels(Rhode_Island_Data_LONG_RICAS_2021_2022$ELL) <- c("Non-English Language Learners (ELL)", "English Language Learners (ELL)")
 
 ###   Create LONG file - remove other set of content area scores and establish CONTENT_AREA variable
-# ela <- copy(Rhode_Island_Data_LONG_RICAS_2021_2022)[, c("mscaleds", "mperflev", "m_ssSEM", "m_theta", "m_thetaSEM", "mmode", "MathParticipation") := NULL][, CONTENT_AREA := "ELA"]
-# mat <- copy(Rhode_Island_Data_LONG_RICAS_2021_2022)[, c("escaleds", "eperflev", "e_ssSEM", "e_theta", "e_thetaSEM", "emode", "ELAParticipation") := NULL][, CONTENT_AREA := "MATHEMATICS"]
+ela <- copy(Rhode_Island_Data_LONG_RICAS_2021_2022)[, c("mscaleds", "mperflev", "m_ssSEM", "m_theta", "m_thetaSEM", "mmode") := NULL][, CONTENT_AREA := "ELA"]
+mat <- copy(Rhode_Island_Data_LONG_RICAS_2021_2022)[, c("escaleds", "eperflev", "e_ssSEM", "e_theta", "e_thetaSEM", "emode") := NULL][, CONTENT_AREA := "MATHEMATICS"]
 
-# setnames(ela, variable.names.new_RICAS)
-# setnames(mat, variable.names.new_RICAS)
+setnames(ela, variable.names.new_RICAS)
+setnames(mat, variable.names.new_RICAS)
 
-# Rhode_Island_Data_LONG_RICAS_2021_2022 <- rbindlist(list(ela, mat))
+Rhode_Island_Data_LONG_RICAS_2021_2022 <- rbindlist(list(ela, mat))
 
 ###   Tidy Up data
-# Rhode_Island_Data_LONG_RICAS_2021_2022[, YEAR := "2021_2022"]
-# Rhode_Island_Data_LONG_RICAS_2021_2022[, VALID_CASE := "VALID_CASE"]
-# Rhode_Island_Data_LONG_RICAS_2021_2022[is.na(SCALE_SCORE), VALID_CASE:="INVALID_CASE"]
-# Rhode_Island_Data_LONG_RICAS_2021_2022[,enonacc := NULL]
-# levels(Rhode_Island_Data_LONG_RICAS_2021_2022$TEST_FORMAT) <- c("Accomodated", "Online", "Paper")
-# Rhode_Island_Data_LONG_RICAS_2021_2022[, TEST_FORMAT := as.character(TEST_FORMAT)]
-# levels(Rhode_Island_Data_LONG_RICAS_2021_2022$EMH_LEVEL) <- c(NA, "Elementary", "Elementary/Middle", "High", "Middle", "PK-12")
-# Rhode_Island_Data_LONG_RICAS_2021_2022[, EMH_LEVEL := as.character(EMH_LEVEL)]
+Rhode_Island_Data_LONG_RICAS_2021_2022[, YEAR := "2021_2022"]
+Rhode_Island_Data_LONG_RICAS_2021_2022[, VALID_CASE := "VALID_CASE"]
+Rhode_Island_Data_LONG_RICAS_2021_2022[is.na(SCALE_SCORE), VALID_CASE:="INVALID_CASE"]
+Rhode_Island_Data_LONG_RICAS_2021_2022[,enonacc := NULL]
+levels(Rhode_Island_Data_LONG_RICAS_2021_2022$TEST_FORMAT) <- c("Accomodated", "Online", "Paper")
+Rhode_Island_Data_LONG_RICAS_2021_2022[, TEST_FORMAT := as.character(TEST_FORMAT)]
+levels(Rhode_Island_Data_LONG_RICAS_2021_2022$EMH_LEVEL) <- c(NA, "Elementary", "Elementary/Middle", "High", "Middle", "PK-12")
+Rhode_Island_Data_LONG_RICAS_2021_2022[, EMH_LEVEL := as.character(EMH_LEVEL)]
 
 ###  Enrollment (FAY) Variables
-# Rhode_Island_Data_LONG_RICAS_2021_2022[,STATE_ENROLLMENT_STATUS := factor(2, levels=1:2, labels=c("Enrolled State: No", "Enrolled State: Yes"))]
-# Rhode_Island_Data_LONG_RICAS_2021_2022[,DISTRICT_ENROLLMENT_STATUS := factor(2, levels=1:2, labels=c("Enrolled District: No", "Enrolled District: Yes"))]
-# Rhode_Island_Data_LONG_RICAS_2021_2022[,SCHOOL_ENROLLMENT_STATUS := factor(2, levels=1:2, labels=c("Enrolled School: No", "Enrolled School: Yes"))]
-
-# Rhode_Island_Data_LONG_RICAS_2021_2022[PARTICIPATION==0, STATE_ENROLLMENT_STATUS:="Enrolled State: No"]
-# Rhode_Island_Data_LONG_RICAS_2021_2022[PARTICIPATION==0, DISTRICT_ENROLLMENT_STATUS:="Enrolled District: No"]
-# Rhode_Island_Data_LONG_RICAS_2021_2022[PARTICIPATION==0, SCHOOL_ENROLLMENT_STATUS:="Enrolled School: No"]
+Rhode_Island_Data_LONG_RICAS_2021_2022[,STATE_ENROLLMENT_STATUS := factor(2, levels=1:2, labels=c("Enrolled State: No", "Enrolled State: Yes"))]
+Rhode_Island_Data_LONG_RICAS_2021_2022[,DISTRICT_ENROLLMENT_STATUS := factor(2, levels=1:2, labels=c("Enrolled District: No", "Enrolled District: Yes"))]
+Rhode_Island_Data_LONG_RICAS_2021_2022[,SCHOOL_ENROLLMENT_STATUS := factor(2, levels=1:2, labels=c("Enrolled School: No", "Enrolled School: Yes"))]
 
 ### Resolve duplicates
-# setkey(Rhode_Island_Data_LONG_RICAS_2021_2022, VALID_CASE, CONTENT_AREA, YEAR, ID, GRADE, SCALE_SCORE)
-# setkey(Rhode_Island_Data_LONG_RICAS_2021_2022, VALID_CASE, CONTENT_AREA, YEAR, ID)
-# dups <- Rhode_Island_Data_LONG_RICAS_2021_2022[VALID_CASE=="VALID_CASE"][c(which(duplicated(Rhode_Island_Data_LONG_RICAS_2021_2022[VALID_CASE=="VALID_CASE"], by=key(Rhode_Island_Data_LONG_RICAS_2021_2022)))-1, which(duplicated(Rhode_Island_Data_LONG_RICAS_2021_2022[VALID_CASE=="VALID_CASE"], by=key(Rhode_Island_Data_LONG_RICAS_2021_2022)))),]
-# setkeyv(dups, key(Rhode_Island_Data_LONG_RICAS_2021_2022))  #  0 duplicate cases RICAS data 8/11/21
+#setkey(Rhode_Island_Data_LONG_RICAS_2021_2022, VALID_CASE, CONTENT_AREA, YEAR, ID, GRADE, SCALE_SCORE)
+#setkey(Rhode_Island_Data_LONG_RICAS_2021_2022, VALID_CASE, CONTENT_AREA, YEAR, ID)
+#dups <- Rhode_Island_Data_LONG_RICAS_2021_2022[VALID_CASE=="VALID_CASE"][c(which(duplicated(Rhode_Island_Data_LONG_RICAS_2021_2022[VALID_CASE=="VALID_CASE"], by=key(Rhode_Island_Data_LONG_RICAS_2021_2022)))-1, which(duplicated(Rhode_Island_Data_LONG_RICAS_2021_2022[VALID_CASE=="VALID_CASE"], by=key(Rhode_Island_Data_LONG_RICAS_2021_2022)))),]
+# setkeyv(dups, key(Rhode_Island_Data_LONG_RICAS_2021_2022))  #  0 duplicate cases RICAS data 9/3/22
 #Rhode_Island_Data_LONG_RICAS_2021_2022[which(duplicated(Rhode_Island_Data_LONG_RICAS_2021_2022, by=key(Rhode_Island_Data_LONG_RICAS_2021_2022)))-1, VALID_CASE:="INVALID_CASE"]
 
 
@@ -364,19 +366,18 @@ Rhode_Island_Data_LONG_PSAT_SAT_2021_2022 <- CSEM_Data[Rhode_Island_Data_LONG_PS
 
 
 ### rbind RICAS and PSAT/SAT data
-Rhode_Island_Data_LONG_2021_2022 <- Rhode_Island_Data_LONG_PSAT_SAT_2021_2022 ### TEMPORARY UNTIL RICAS 
-# Rhode_Island_Data_LONG_2021_2022 <- rbindlist(list(Rhode_Island_Data_LONG_RICAS_2021_2022, Rhode_Island_Data_LONG_PSAT_SAT_2021_2022), fill=TRUE)
+Rhode_Island_Data_LONG_2021_2022 <- rbindlist(list(Rhode_Island_Data_LONG_RICAS_2021_2022, Rhode_Island_Data_LONG_PSAT_SAT_2021_2022), fill=TRUE)
+
+### Invalidate original case 
+Rhode_Island_Data_LONG_2021_2022[ORIGINAL_DATA==TRUE & ID=="1000277800", VALID_CASE:="INVALID_CASE"]
 
 ### Resolve duplicates
 #setkey(Rhode_Island_Data_LONG_2021_2022, VALID_CASE, CONTENT_AREA, YEAR, ID, GRADE, SCALE_SCORE)
 #setkey(Rhode_Island_Data_LONG_2021_2022, VALID_CASE, CONTENT_AREA, YEAR, ID)
 #dups <- Rhode_Island_Data_LONG_2021_2022[VALID_CASE=="VALID_CASE"][c(which(duplicated(Rhode_Island_Data_LONG_2021_2022[VALID_CASE=="VALID_CASE"], by=key(Rhode_Island_Data_LONG_2021_2022)))-1, which(duplicated(Rhode_Island_Data_LONG_2021_2022[VALID_CASE=="VALID_CASE"], by=key(Rhode_Island_Data_LONG_2021_2022)))),]
-#setkeyv(dups, key(Rhode_Island_Data_LONG_2021_2022))  #  0 duplicate cases RICAS/PSAT/SAT data 10/21/21
+#setkeyv(dups, key(Rhode_Island_Data_LONG_2021_2022))  #  0 duplicate cases RICAS/PSAT/SAT data 9/2/22
 #Rhode_Island_Data_LONG_2021_2022[which(duplicated(Rhode_Island_Data_LONG_2021_2022, by=key(Rhode_Island_Data_LONG_2021_2022)))-1, VALID_CASE:="INVALID_CASE"]
 
-### Invalidate original case 
-Rhode_Island_Data_LONG_2021_2022[ORIGINAL_DATA==TRUE & ID=="1000277800", VALID_CASE:="INVALID_CASE"]
-
-# ### Save results
+### Save results
 setkey(Rhode_Island_Data_LONG_2021_2022, VALID_CASE, CONTENT_AREA, YEAR, ID)
 save(Rhode_Island_Data_LONG_2021_2022, file="Data/Rhode_Island_Data_LONG_2021_2022.Rdata")
