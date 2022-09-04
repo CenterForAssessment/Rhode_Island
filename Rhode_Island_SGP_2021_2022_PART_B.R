@@ -24,6 +24,8 @@ SGPstateData$RI$Achievement$Knots_Boundaries$ELA_SAT$knots_EOCT <- c(360, 420, 4
 #quantile(Rhode_Island_Data_LONG_2021_2022[VALID_CASE=="VALID_CASE" & CONTENT_AREA=="MATHEMATICS_SAT"]$SCALE_SCORE, probs=c(0.2, 0.4, 0.6, 0.8)) c(370, 420, 480, 540)
 SGPstateData$RI$Achievement$Knots_Boundaries$MATHEMATICS_SAT$knots_EOCT <- c(350, 400, 460, 520)
 
+SGPstateData[["RI"]][["Growth"]][["System_Type"]] <- "Baseline Referenced"
+
 ###   Read in SGP Configuration Scripts and Combine
 source("SGP_CONFIG/2021_2022/PART_B/ELA_RICAS.R")
 source("SGP_CONFIG/2021_2022/PART_B/ELA_SAT.R")
@@ -31,10 +33,10 @@ source("SGP_CONFIG/2021_2022/PART_B/MATHEMATICS_RICAS.R")
 source("SGP_CONFIG/2021_2022/PART_B/MATHEMATICS_SAT.R")
 
 RI_Config_2021_2022 <- c(
-#  ELA_RICAS_2021_2022.config,
+  ELA_RICAS_2021_2022.config,
   ELA_SAT_2021_2022.config,
 
-#  MATHEMATICS_RICAS_2021_2022.config,
+  MATHEMATICS_RICAS_2021_2022.config,
   MATHEMATICS_SAT_2021_2022.config
 )
 
@@ -54,13 +56,13 @@ Rhode_Island_SGP <- updateSGP(
         sgp.projections = FALSE,
         sgp.projections.lagged = FALSE,
         sgp.percentiles.baseline = TRUE,
-        sgp.projections.baseline = FALSE,
-        sgp.projections.lagged.baseline = FALSE,
+        sgp.projections.baseline = TRUE,
+        sgp.projections.lagged.baseline = TRUE,
         save.intermediate.results = FALSE,
         parallel.config = parallel.config
 )
 
-print(Rhode_Island_SGP@Data[YEAR=="2021_2022", list(MEAN_SGP=mean(SGP, na.rm=TRUE), MEDIAN_SGP=median(SGP, na.rm=TRUE)), keyby="CONTENT_AREA"])
+print(Rhode_Island_SGP@Data[YEAR=="2021_2022", list(MEAN_SGP=mean(SGP, na.rm=TRUE), MEDIAN_SGP=median(SGP, na.rm=TRUE)), keyby=c("CONTENT_AREA", "GRADE")])
 
 ###   Save results
 save(Rhode_Island_SGP, file="Data/Rhode_Island_SGP.Rdata")
