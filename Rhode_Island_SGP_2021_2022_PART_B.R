@@ -40,19 +40,46 @@ RI_Config_2021_2022 <- c(
   MATHEMATICS_SAT_2021_2022.config
 )
 
+RI_Baseline_Config_2021_2022 <- c(
+  ELA_RICAS_Baseline_2021_2022.config,
+  ELA_SAT_2021_2022.config,
+
+  MATHEMATICS_RICAS_Baseline_2021_2022.config,
+  MATHEMATICS_SAT_2021_2022.config
+)
+
 ### Parameters
 parallel.config <- list(BACKEND="PARALLEL", WORKERS=list(PERCENTILES=4, BASELINE_PERCENTILES=4, PROJECTIONS=4, LAGGED_PROJECTIONS=4, SGP_SCALE_SCORE_TARGETS=4))
 
 #####
-###   Run updateSGP analysis
+###   Run updateSGP analysis for cohort referenced SGPs
 #####
 
 Rhode_Island_SGP <- updateSGP(
         what_sgp_object = Rhode_Island_SGP,
         with_sgp_data_LONG = Rhode_Island_Data_LONG_2021_2022,
-        steps = c("prepareSGP", "analyzeSGP", "combineSGP", "outputSGP"),
+        steps = c("prepareSGP", "analyzeSGP", "combineSGP"),
         sgp.config = RI_Config_2021_2022,
         sgp.percentiles = TRUE,
+        sgp.projections = FALSE,
+        sgp.projections.lagged = FALSE,
+        sgp.percentiles.baseline = FALSE,
+        sgp.projections.baseline = FALSE,
+        sgp.projections.lagged.baseline = FALSE,
+        save.intermediate.results = FALSE,
+        parallel.config = parallel.config
+)
+
+
+#####
+###   Run abcSGP analysis for baseline referenced SGPs
+#####
+
+Rhode_Island_SGP <- abcSGP(
+        sgp_object = Rhode_Island_SGP,
+        steps = c("prepareSGP", "analyzeSGP", "combineSGP", "outputSGP"),
+        sgp.config = RI_Baseline_Config_2021_2022,
+        sgp.percentiles = FALSE,
         sgp.projections = FALSE,
         sgp.projections.lagged = FALSE,
         sgp.percentiles.baseline = TRUE,
@@ -62,7 +89,8 @@ Rhode_Island_SGP <- updateSGP(
         parallel.config = parallel.config
 )
 
+### Test
 print(Rhode_Island_SGP@Data[YEAR=="2021_2022", list(MEAN_SGP=mean(SGP, na.rm=TRUE), MEDIAN_SGP=median(SGP, na.rm=TRUE)), keyby=c("CONTENT_AREA", "GRADE")])
 
 ###   Save results
-save(Rhode_Island_SGP, file="Data/Rhode_Island_SGP.Rdata")
+#save(Rhode_Island_SGP, file="Data/Rhode_Island_SGP.Rdata")
