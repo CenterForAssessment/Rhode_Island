@@ -15,14 +15,14 @@ load("Data/Rhode_Island_Data_LONG_2022_2023.Rdata")
 ###   Add Baseline matrices to SGPstateData
 SGPstateData <- addBaselineMatrices("RI", "2022_2023")
 SGPstateData[["RI"]][["SGP_Configuration"]][["print.other.gp"]] <- TRUE
-#quantile(Rhode_Island_Data_LONG_2022_2023[VALID_CASE=="VALID_CASE" & CONTENT_AREA=="ELA_PSAT_10"]$SCALE_SCORE, probs=c(0.2, 0.4, 0.6, 0.8)) c(370, 420, 480, 550)
-SGPstateData$RI$Achievement$Knots_Boundaries$ELA_PSAT_10$knots_EOCT <- c(340, 390, 450, 520)
+#quantile(Rhode_Island_Data_LONG_2022_2023[VALID_CASE=="VALID_CASE" & CONTENT_AREA=="ELA_PSAT_10"]$SCALE_SCORE, probs=c(0.2, 0.4, 0.6, 0.8)) c(360, 410, 470, 540)
+SGPstateData$RI$Achievement$Knots_Boundaries$ELA_PSAT_10$knots_EOCT <- c(400, 540, 580, 680)
 #quantile(Rhode_Island_Data_LONG_2022_2023[VALID_CASE=="VALID_CASE" & CONTENT_AREA=="MATHEMATICS_PSAT_10"]$SCALE_SCORE, probs=c(0.2, 0.4, 0.6, 0.8))  c(370, 410, 450, 500)
 SGPstateData$RI$Achievement$Knots_Boundaries$MATHEMATICS_PSAT_10$knots_EOCT <- c(320, 360, 600, 650)
-#quantile(Rhode_Island_Data_LONG_2022_2023[VALID_CASE=="VALID_CASE" & CONTENT_AREA=="ELA_SAT"]$SCALE_SCORE, probs=c(0.2, 0.4, 0.6, 0.8)) c(380, 440, 500, 570)
-SGPstateData$RI$Achievement$Knots_Boundaries$ELA_SAT$knots_EOCT <- c(360, 420, 480, 550)
+#quantile(Rhode_Island_Data_LONG_2022_2023[VALID_CASE=="VALID_CASE" & CONTENT_AREA=="ELA_SAT"]$SCALE_SCORE, probs=c(0.2, 0.4, 0.6, 0.8)) c(390, 440, 500, 580)
+SGPstateData$RI$Achievement$Knots_Boundaries$ELA_SAT$knots_EOCT <- c(390, 440, 500, 580)
 #quantile(Rhode_Island_Data_LONG_2022_2023[VALID_CASE=="VALID_CASE" & CONTENT_AREA=="MATHEMATICS_SAT"]$SCALE_SCORE, probs=c(0.2, 0.4, 0.6, 0.8)) c(370, 420, 480, 540)
-SGPstateData$RI$Achievement$Knots_Boundaries$MATHEMATICS_SAT$knots_EOCT <- c(350, 400, 460, 520)
+SGPstateData$RI$Achievement$Knots_Boundaries$MATHEMATICS_SAT$knots_EOCT <- c(370, 420, 480, 540)
 
 SGPstateData[["RI"]][["Growth"]][["System_Type"]] <- "Baseline Referenced"
 
@@ -77,7 +77,8 @@ Rhode_Island_SGP <- updateSGP(
 
 Rhode_Island_SGP <- abcSGP(
         sgp_object = Rhode_Island_SGP,
-        steps = c("prepareSGP", "analyzeSGP", "combineSGP", "outputSGP"),
+#        steps = c("prepareSGP", "analyzeSGP", "combineSGP", "outputSGP"),
+        steps = c("prepareSGP", "analyzeSGP", "combineSGP"),
         sgp.config = RI_Baseline_Config_2022_2023,
         sgp.percentiles = FALSE,
         sgp.projections = FALSE,
