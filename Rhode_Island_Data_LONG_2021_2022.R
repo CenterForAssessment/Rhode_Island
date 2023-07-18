@@ -23,6 +23,7 @@ Rhode_Island_Data_LONG_RICAS_2021_2022[BAA=="Y", RACE7:="BL7"]
 Rhode_Island_Data_LONG_RICAS_2021_2022[hispanic=="Y", RACE7:="HI7"]
 Rhode_Island_Data_LONG_RICAS_2021_2022[NHOPI=="Y", RACE7:="PI7"]
 Rhode_Island_Data_LONG_RICAS_2021_2022[white=="Y", RACE7:="WH7"]
+Rhode_Island_Data_LONG_RICAS_2021_2022[tworaces=="Y", RACE7:="M7"]
 
 ### Cleanup data
 variables.to.keep_RICAS <- c(
@@ -91,6 +92,9 @@ Rhode_Island_Data_LONG_RICAS_2021_2022[, EMH_LEVEL := as.character(EMH_LEVEL)]
 Rhode_Island_Data_LONG_RICAS_2021_2022[,STATE_ENROLLMENT_STATUS := factor(2, levels=1:2, labels=c("Enrolled State: No", "Enrolled State: Yes"))]
 Rhode_Island_Data_LONG_RICAS_2021_2022[,DISTRICT_ENROLLMENT_STATUS := factor(2, levels=1:2, labels=c("Enrolled District: No", "Enrolled District: Yes"))]
 Rhode_Island_Data_LONG_RICAS_2021_2022[,SCHOOL_ENROLLMENT_STATUS := factor(2, levels=1:2, labels=c("Enrolled School: No", "Enrolled School: Yes"))]
+
+### Copy SCALE_SCORE_ACTUAL to SCALE_SCORE_RICAS
+Rhode_Island_Data_LONG_RICAS_2021_2022[,SCALE_SCORE_RICAS:=SCALE_SCORE_ACTUAL]
 
 ### Resolve duplicates
 #setkey(Rhode_Island_Data_LONG_RICAS_2021_2022, VALID_CASE, CONTENT_AREA, YEAR, ID, GRADE, SCALE_SCORE)
@@ -168,7 +172,7 @@ setkey(Rhode_Island_Data_LONG_PSAT_SAT_2021_2022, SchoolCode)
 Rhode_Island_Data_LONG_PSAT_SAT_2021_2022 <- School_Names_2021[Rhode_Island_Data_LONG_PSAT_SAT_2021_2022]
 setnames(Rhode_Island_Data_LONG_PSAT_SAT_2021_2022, "FORM_CODE", 'FORM')
 
-factor.vars <- c("STUDENT_LAST", "STUDENT_FIRST_NAME", "ELA_PROFICIENCY", "MATH_PROFICIENCY")
+factor.vars <- c("STUDENT_LAST", "STUDENT_FIRST_NAME", "ELA_PROFICIENCY", "MATH_PROFICIENCY", "SEX")
 for(v in factor.vars) Rhode_Island_Data_LONG_PSAT_SAT_2021_2022[, (v) := factor(eval(parse(text=v)))]
 
 setattr(Rhode_Island_Data_LONG_PSAT_SAT_2021_2022$STUDENT_LAST, "levels", as.character(sapply(levels(Rhode_Island_Data_LONG_PSAT_SAT_2021_2022$STUDENT_LAST), SGP:::capwords)))
@@ -177,6 +181,7 @@ Rhode_Island_Data_LONG_PSAT_SAT_2021_2022[ELA_PROFICIENCY==44, ELA_PROFICIENCY:=
 Rhode_Island_Data_LONG_PSAT_SAT_2021_2022[,ELA_PROFICIENCY:=as.factor(as.character(ELA_PROFICIENCY))]
 setattr(Rhode_Island_Data_LONG_PSAT_SAT_2021_2022$ELA_PROFICIENCY, "levels", c("Not Meeting Expectations", "Partially Meeting Expectations", "Meeting Expectations", "Exceeding Expectations"))
 setattr(Rhode_Island_Data_LONG_PSAT_SAT_2021_2022$MATH_PROFICIENCY, "levels", c("Not Meeting Expectations", "Partially Meeting Expectations", "Meeting Expectations", "Exceeding Expectations"))
+setattr(Rhode_Island_Data_LONG_PSAT_SAT_2021_2022$SEX, "levels", c("Female", "Male", "Other"))
 
 ###   Create LONG file - remove other set of content area scores and establish CONTENT_AREA variable
 ela <- copy(Rhode_Island_Data_LONG_PSAT_SAT_2021_2022)[, c("MATH_SECTION_SCORE", "MATH_PROFICIENCY", "MATH_PARTICIPATED_INDICATOR") := NULL]
