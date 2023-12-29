@@ -14,7 +14,9 @@ require(openxlsx)
 #######################################################################
 
 # ###   Load Data
-Rhode_Island_Data_LONG_RICAS_2022_2023 <- fread("Data/Base_Files/RICAS2023.csv", stringsAsFactors=FALSE, encoding="UTF-8")
+#Rhode_Island_Data_LONG_RICAS_2022_2023 <- fread("Data/Base_Files/RICAS2023.csv", stringsAsFactors=FALSE, encoding="Latin-1")
+Rhode_Island_Data_LONG_RICAS_2022_2023 <- fread("Data/Base_Files/RICAS2023_092223_UPDATE.csv", stringsAsFactors=FALSE, encoding="Latin-1")
+MISSING_IDS <- fread("Data/Base_Files/RICAS2023_MissingS1.csv", stringsAsFactors=FALSE, encoding="UTF-8")
 
 # ### Preliminary cleanup of ethnicity data 
 Rhode_Island_Data_LONG_RICAS_2022_2023[asian=="Y", RACE7:="AS7"]
@@ -78,7 +80,7 @@ setnames(mat, variable.names.new_RICAS)
 
 Rhode_Island_Data_LONG_RICAS_2022_2023 <- rbindlist(list(ela, mat))
 
-# ###   Tidy Up data
+###   Tidy Up data
 Rhode_Island_Data_LONG_RICAS_2022_2023[, YEAR := "2022_2023"]
 Rhode_Island_Data_LONG_RICAS_2022_2023[, VALID_CASE := "VALID_CASE"]
 Rhode_Island_Data_LONG_RICAS_2022_2023[is.na(SCALE_SCORE), VALID_CASE:="INVALID_CASE"]
@@ -87,14 +89,28 @@ levels(Rhode_Island_Data_LONG_RICAS_2022_2023$TEST_FORMAT) <- c("Accomodated", "
 Rhode_Island_Data_LONG_RICAS_2022_2023[, TEST_FORMAT := as.character(TEST_FORMAT)]
 levels(Rhode_Island_Data_LONG_RICAS_2022_2023$EMH_LEVEL) <- c(NA, "Elementary", "Elementary/Middle", "High", "Middle", "PK-12")
 Rhode_Island_Data_LONG_RICAS_2022_2023[, EMH_LEVEL := as.character(EMH_LEVEL)]
+Rhode_Island_Data_LONG_RICAS_2022_2023[, ID:=as.character(ID)]
 
-# ###  Enrollment (FAY) Variables
+###  Enrollment (FAY) Variables
 Rhode_Island_Data_LONG_RICAS_2022_2023[,STATE_ENROLLMENT_STATUS := factor(2, levels=1:2, labels=c("Enrolled State: No", "Enrolled State: Yes"))]
 Rhode_Island_Data_LONG_RICAS_2022_2023[,DISTRICT_ENROLLMENT_STATUS := factor(2, levels=1:2, labels=c("Enrolled District: No", "Enrolled District: Yes"))]
 Rhode_Island_Data_LONG_RICAS_2022_2023[,SCHOOL_ENROLLMENT_STATUS := factor(2, levels=1:2, labels=c("Enrolled School: No", "Enrolled School: Yes"))]
 
-# ### Copy SCALE_SCORE_ACTUAL to SCALE_SCORE_RICAS
+### Copy SCALE_SCORE_ACTUAL to SCALE_SCORE_RICAS
 Rhode_Island_Data_LONG_RICAS_2022_2023[,SCALE_SCORE_RICAS:=SCALE_SCORE_ACTUAL]
+setkey(Rhode_Island_Data_LONG_RICAS_2022_2023, VALID_CASE, CONTENT_AREA, YEAR, ID)
+
+### ADD IN LABEL for MISSING SCORE
+
+MISSING_IDS <- MISSING_IDS[,c("SASID"), with=FALSE]
+setnames(MISSING_IDS, "SASID", "ID")
+MISSING_IDS[,CONTENT_AREA:="ELA"]
+MISSING_IDS[,YEAR:="2022_2023"]
+MISSING_IDS[,VALID_CASE:="VALID_CASE"]
+MISSING_IDS[,ID:=as.character(ID)]
+setkey(MISSING_IDS, VALID_CASE, CONTENT_AREA, YEAR, ID)
+
+Rhode_Island_Data_LONG_RICAS_2022_2023[MISSING_IDS, UPDATE_2023_FILE:=TRUE]
 
 # ### Resolve duplicates
 #setkey(Rhode_Island_Data_LONG_RICAS_2022_2023, VALID_CASE, CONTENT_AREA, YEAR, ID, GRADE, SCALE_SCORE)

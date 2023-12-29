@@ -72,6 +72,7 @@ Rhode_Island_SGP <- updateSGP(
         sgp.percentiles.baseline = FALSE,
         sgp.projections.baseline = FALSE,
         sgp.projections.lagged.baseline = FALSE,
+        sgp.use.my.coefficient.matrices=TRUE,
         save.intermediate.results = FALSE,
         parallel.config = parallel.config
 )
@@ -97,6 +98,7 @@ Rhode_Island_SGP <- abcSGP(
 
 ### Test
 print(Rhode_Island_SGP@Data[YEAR=="2022_2023", list(MEAN_SGP=mean(SGP, na.rm=TRUE), MEDIAN_SGP=median(SGP, na.rm=TRUE)), keyby=c("CONTENT_AREA", "GRADE")])
+print(Rhode_Island_SGP@Data[YEAR=="2022_2023", list(MEAN_SGP_BASELINE=mean(SGP_BASELINE, na.rm=TRUE), MEDIAN_SGP_BASELINE=median(SGP_BASELINE, na.rm=TRUE)), keyby=c("CONTENT_AREA", "GRADE")])
 
 ###   Save results
-save(Rhode_Island_SGP, file="Data/Rhode_Island_SGP.Rdata")
+#save(Rhode_Island_SGP, file="Data/Rhode_Island_SGP.Rdata")
