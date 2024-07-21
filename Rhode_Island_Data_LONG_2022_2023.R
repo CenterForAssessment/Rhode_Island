@@ -205,8 +205,8 @@ mat[GRADE=="11", CONTENT_AREA:="MATHEMATICS_SAT"]
 ### Fix up ETHNICITY 
 ela[,DERIVED_AGGREGATE_RACE_ETHNICITY:=as.factor(DERIVED_AGGREGATE_RACE_ETHNICITY)]
 mat[,DERIVED_AGGREGATE_RACE_ETHNICITY:=as.factor(DERIVED_AGGREGATE_RACE_ETHNICITY)]
-setattr(ela$DERIVED_AGGREGATE_RACE_ETHNICITY, "levels", c("No Primary Race/Ethnicity Reported", "American Indian or Alaska Native", "Asian", "Black or African American", "Hispanic or Latino", "Native Hawaiian or Pacific Islander", "White", "Other"))
-setattr(mat$DERIVED_AGGREGATE_RACE_ETHNICITY, "levels", c("No Primary Race/Ethnicity Reported", "American Indian or Alaska Native", "Asian", "Black or African American", "Hispanic or Latino", "Native Hawaiian or Pacific Islander", "White", "Other"))
+setattr(ela$DERIVED_AGGREGATE_RACE_ETHNICITY, "levels", c("No Primary Race/Ethnicity Reported", "American Indian or Alaska Native", "Asian", "Black or African American", "Native Hawaiian or Pacific Islander", "White"))
+setattr(mat$DERIVED_AGGREGATE_RACE_ETHNICITY, "levels", c("No Primary Race/Ethnicity Reported", "American Indian or Alaska Native", "Asian", "Black or African American", "Native Hawaiian or Pacific Islander", "White"))
 
 setnames(ela, variable.names.new_PSAT_SAT)
 setnames(mat, variable.names.new_PSAT_SAT)
