@@ -1,6 +1,6 @@
 ################################################################################
 ###                                                                          ###
-###                Rhode_Island SGP analyses for 2023                        ###
+###                Rhode_Island SGP analyses for 2024                        ###
 ###                                                                          ###
 ################################################################################
 
@@ -101,4 +101,4 @@ print(Rhode_Island_SGP@Data[YEAR=="2023_2024", list(MEAN_SGP=mean(SGP, na.rm=TRU
 print(Rhode_Island_SGP@Data[YEAR=="2023_2024", list(MEAN_SGP_BASELINE=mean(SGP_BASELINE, na.rm=TRUE), MEDIAN_SGP_BASELINE=median(SGP_BASELINE, na.rm=TRUE)), keyby=c("CONTENT_AREA", "GRADE")])
 
 ###   Save results
-#save(Rhode_Island_SGP, file="Data/Rhode_Island_SGP.Rdata")
+save(Rhode_Island_SGP, file="Data/Rhode_Island_SGP.Rdata")
