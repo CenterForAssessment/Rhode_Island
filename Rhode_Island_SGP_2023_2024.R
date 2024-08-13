@@ -30,27 +30,25 @@ SGPstateData$RI$Achievement$Knots_Boundaries$ELA_SAT$knots_EOCT <- c(390, 440, 5
 #quantile(Rhode_Island_Data_LONG_2023_2024[VALID_CASE=="VALID_CASE" & CONTENT_AREA=="MATHEMATICS_SAT"]$SCALE_SCORE, probs=c(0.2, 0.4, 0.6, 0.8)) c(370, 420, 480, 540)
 SGPstateData$RI$Achievement$Knots_Boundaries$MATHEMATICS_SAT$knots_EOCT <- c(370, 420, 480, 540)
 
-SGPstateData[["RI"]][["Growth"]][["System_Type"]] <- "Baseline Referenced"
-
 ###   Read in SGP Configuration Scripts and Combine
-#source("SGP_CONFIG/2023_2024/ELA_RICAS.R")
+source("SGP_CONFIG/2023_2024/ELA_RICAS.R")
 source("SGP_CONFIG/2023_2024/ELA_SAT.R")
-#source("SGP_CONFIG/2023_2024/MATHEMATICS_RICAS.R")
+source("SGP_CONFIG/2023_2024/MATHEMATICS_RICAS.R")
 source("SGP_CONFIG/2023_2024/MATHEMATICS_SAT.R")
 
 RI_Config_2023_2024 <- c(
-#  ELA_RICAS_2023_2024.config,
+  ELA_RICAS_2023_2024.config,
   ELA_SAT_2023_2024.config,
 
-#  MATHEMATICS_RICAS_2023_2024.config,
+  MATHEMATICS_RICAS_2023_2024.config,
   MATHEMATICS_SAT_2023_2024.config
 )
 
 RI_Baseline_Config_2023_2024 <- c(
-#  ELA_RICAS_Baseline_2023_2024.config,
+  ELA_RICAS_Baseline_2023_2024.config,
   ELA_SAT_2023_2024.config,
 
-#  MATHEMATICS_RICAS_Baseline_2023_2024.config,
+  MATHEMATICS_RICAS_Baseline_2023_2024.config,
   MATHEMATICS_SAT_2023_2024.config
 )
 
@@ -67,8 +65,8 @@ Rhode_Island_SGP <- updateSGP(
         steps = c("prepareSGP", "analyzeSGP", "combineSGP"),
         sgp.config = RI_Config_2023_2024,
         sgp.percentiles = TRUE,
-        sgp.projections = FALSE,
-        sgp.projections.lagged = FALSE,
+        sgp.projections = TRUE,
+        sgp.projections.lagged = TRUE,
         sgp.percentiles.baseline = FALSE,
         sgp.projections.baseline = FALSE,
         sgp.projections.lagged.baseline = FALSE,
@@ -76,7 +74,6 @@ Rhode_Island_SGP <- updateSGP(
         save.intermediate.results = FALSE,
         parallel.config = parallel.config
 )
-
 
 #####
 ###   Run abcSGP analysis for baseline referenced SGPs
