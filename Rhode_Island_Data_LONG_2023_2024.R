@@ -15,6 +15,11 @@ require(openxlsx)
 
 # ###   Load Data
 Rhode_Island_Data_LONG_RICAS_2023_2024 <- fread("Data/Base_Files/RICAS2024.csv", stringsAsFactors=FALSE, encoding="Latin-1")
+Rhode_Island_Data_LONG_RICAS_2023_2024_UPDATE <- fread("Data/Base_Files/RICAS2024_Missing_Students.csv", stringsAsFactors=FALSE, encoding="Latin-1")
+Rhode_Island_Data_LONG_RICAS_2023_2024_UPDATE[,UPDATE_FLAG:="Update 10/21/24"]
+Rhode_Island_Data_LONG_RICAS_2023_2024 <- Rhode_Island_Data_LONG_RICAS_2023_2024[!sasid %in% Rhode_Island_Data_LONG_RICAS_2023_2024_UPDATE$sasid]
+
+Rhode_Island_Data_LONG_RICAS_2023_2024 <- rbindlist(list(Rhode_Island_Data_LONG_RICAS_2023_2024, Rhode_Island_Data_LONG_RICAS_2023_2024_UPDATE), fill=TRUE)
 
 # ### Preliminary cleanup of ethnicity data 
 Rhode_Island_Data_LONG_RICAS_2023_2024[asian=="Y", RACE7:="AS7"]
@@ -31,14 +36,14 @@ variables.to.keep_RICAS <- c(
       "resp_discode", "resp_schcode", "resp_disname", "resp_schname", "resp_schlevel",
       "escaleds", "eperflev", "e_ssSEM", "e_theta", "e_thetaSEM", "emode",
       "mscaleds", "mperflev", "m_ssSEM", "m_theta", "m_thetaSEM", "mmode",
-      "RACE7", "gender", "ecodis", "ELL", "IEP", "plan504", "enonacc")
+      "RACE7", "gender", "ecodis", "ELL", "IEP", "plan504", "enonacc", "UPDATE_FLAG")
 
 variable.names.new_RICAS <- c(
       "ID", "LAST_NAME", "FIRST_NAME", "GRADE", "GRADE_ENROLLED",
       "DISTRICT_NUMBER", "SCHOOL_NUMBER", "DISTRICT_NAME", "SCHOOL_NAME", "EMH_LEVEL",
       "SCALE_SCORE_ACTUAL", "ACHIEVEMENT_LEVEL", "SCALE_SCORE_ACTUAL_CSEM", "SCALE_SCORE", "SCALE_SCORE_CSEM", "TEST_FORMAT",
       "ETHNICITY", "GENDER", "FREE_REDUCED_LUNCH_STATUS", "ELL_STATUS", "IEP_STATUS", "enonacc",
-      "CONTENT_AREA")
+      "UPDATE_FLAG", "CONTENT_AREA")
 
 Rhode_Island_Data_LONG_RICAS_2023_2024 <- Rhode_Island_Data_LONG_RICAS_2023_2024[, variables.to.keep_RICAS, with=FALSE]
 
@@ -157,8 +162,8 @@ Rhode_Island_Data_LONG_PSAT_SAT_2023_2024 <- rbindlist(list(Rhode_Island_Data_LO
 setnames(Rhode_Island_Data_LONG_PSAT_SAT_2023_2024, c("RESPONSIBLE_DISTCODE", "RESPONSIBLE_SCHCODE"), c("DistrictCode", "SchoolCode"))
 setnames(Rhode_Island_Data_LONG_PSAT_SAT_2023_2024, gsub(" ", "_", names(Rhode_Island_Data_LONG_PSAT_SAT_2023_2024))) 
 
-Rhode_Island_Data_LONG_PSAT_SAT_2023_2024[,DistrictCode:=strtail(paste0("0", DistrictCode), 2)]
-Rhode_Island_Data_LONG_PSAT_SAT_2023_2024[,SchoolCode:=strtail(paste0("0", SchoolCode), 5)]
+Rhode_Island_Data_LONG_PSAT_SAT_2023_2024[,DistrictCode:=strTail(paste0("0", DistrictCode), 2)]
+Rhode_Island_Data_LONG_PSAT_SAT_2023_2024[,SchoolCode:=strTail(paste0("0", SchoolCode), 5)]
 Rhode_Island_Data_LONG_PSAT_SAT_2023_2024[DistrictCode=="NA", DistrictCode:=as.character(NA)]
 District_Names_2021[,DistrictName:=as.character(sapply(DistrictName, SGP:::capwords))]
 School_Names_2021 <- School_Names_2021[,Sname:=as.character(sapply(Sname, SGP:::capwords))][,c("resp_schcode", "Sname"), with=FALSE]

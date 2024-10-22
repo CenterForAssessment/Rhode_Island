@@ -70,7 +70,7 @@ Rhode_Island_SGP <- updateSGP(
         sgp.percentiles.baseline = FALSE,
         sgp.projections.baseline = FALSE,
         sgp.projections.lagged.baseline = FALSE,
-        sgp.use.my.coefficient.matrices=FALSE,
+        sgp.use.my.coefficient.matrices=TRUE, ## (Added for missing 8 students)
         save.intermediate.results = FALSE,
         parallel.config = parallel.config
 )
