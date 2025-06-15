@@ -234,6 +234,10 @@ Rhode_Island_Data_LONG_2024_2025 <- Rhode_Island_Data_LONG_PSAT_SAT_2024_2025 ##
 #setkeyv(dups, key(Rhode_Island_Data_LONG_2024_2025))  #  0 duplicate cases RICAS/PSAT/SAT data 9/2/22
 #Rhode_Island_Data_LONG_2024_2025[which(duplicated(Rhode_Island_Data_LONG_2024_2025, by=key(Rhode_Island_Data_LONG_2024_2025)))-1, VALID_CASE:="INVALID_CASE"]
 
+### INVALIDATE CASES SPECIFIED by RIDE
+invalid.ids <- c("1000562230", "1000411808")
+Rhode_Island_Data_LONG_2024_2025[ID %in% invalid.ids, VALID_CASE:="INVALID_CASE"]
+
 ### Save results
 setkey(Rhode_Island_Data_LONG_2024_2025, VALID_CASE, CONTENT_AREA, YEAR, ID)
 save(Rhode_Island_Data_LONG_2024_2025, file="Data/Rhode_Island_Data_LONG_2024_2025.Rdata")
