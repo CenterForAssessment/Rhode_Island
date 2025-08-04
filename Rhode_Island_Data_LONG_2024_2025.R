@@ -14,12 +14,8 @@ require(openxlsx)
 #######################################################################
 
 ###   Load Data
-Rhode_Island_Data_LONG_RICAS_2024_2025 <- fread("Data/Base_Files/RICAS2025.csv", stringsAsFactors=FALSE, encoding="Latin-1")
-#Rhode_Island_Data_LONG_RICAS_2024_2025_UPDATE <- fread("Data/Base_Files/RICAS2024_Missing_Students.csv", stringsAsFactors=FALSE, encoding="Latin-1")
-#Rhode_Island_Data_LONG_RICAS_2024_2025_UPDATE[,UPDATE_FLAG:="Update 10/21/24"]
-#Rhode_Island_Data_LONG_RICAS_2024_2025 <- Rhode_Island_Data_LONG_RICAS_2024_2025[!sasid %in% Rhode_Island_Data_LONG_RICAS_2024_2025_UPDATE$sasid]
-
-#Rhode_Island_Data_LONG_RICAS_2024_2025 <- rbindlist(list(Rhode_Island_Data_LONG_RICAS_2024_2025, Rhode_Island_Data_LONG_RICAS_2024_2025_UPDATE), fill=TRUE)
+#Rhode_Island_Data_LONG_RICAS_2024_2025 <- fread("Data/Base_Files/RICAS2025.csv", stringsAsFactors=FALSE, encoding="Latin-1")
+Rhode_Island_Data_LONG_RICAS_2024_2025 <- fread("Data/Base_Files/RICAS2025_UPDATE_080425.csv", stringsAsFactors=FALSE, encoding="Latin-1")
 
 ### Preliminary cleanup of ethnicity data 
 Rhode_Island_Data_LONG_RICAS_2024_2025[asian=="Y", RACE7:="AS7"]
