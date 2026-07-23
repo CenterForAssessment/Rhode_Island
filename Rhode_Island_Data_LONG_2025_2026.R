@@ -216,8 +216,8 @@ Rhode_Island_Data_LONG_PSAT_SAT_2025_2026[PARTICIPATION=="N", SCHOOL_ENROLLMENT_
 Rhode_Island_Data_LONG_PSAT_SAT_2025_2026[PARTICIPATION=="N", VALID_CASE:="INVALID_CASE"]
 
 ### rbind RICAS and PSAT/SAT data
-Rhode_Island_Data_LONG_2025_2026 <- Rhode_Island_Data_LONG_PSAT_SAT_2025_2026 ### TEMPORARY UNTIL RICAS data arrives
-#Rhode_Island_Data_LONG_2025_2026 <- rbindlist(list(Rhode_Island_Data_LONG_RICAS_2025_2026, Rhode_Island_Data_LONG_PSAT_SAT_2025_2026), fill=TRUE)
+#Rhode_Island_Data_LONG_2025_2026 <- Rhode_Island_Data_LONG_PSAT_SAT_2025_2026 ### TEMPORARY UNTIL RICAS data arrives
+Rhode_Island_Data_LONG_2025_2026 <- rbindlist(list(Rhode_Island_Data_LONG_RICAS_2025_2026, Rhode_Island_Data_LONG_PSAT_SAT_2025_2026), fill=TRUE)
 
 ### Resolve duplicates
 #setkey(Rhode_Island_Data_LONG_2025_2026, VALID_CASE, CONTENT_AREA, YEAR, ID, GRADE, SCALE_SCORE)

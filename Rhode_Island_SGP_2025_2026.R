@@ -31,9 +31,9 @@ SGPstateData$RI$Achievement$Knots_Boundaries$ELA_SAT$knots_EOCT <- c(390, 440, 5
 SGPstateData$RI$Achievement$Knots_Boundaries$MATHEMATICS_SAT$knots_EOCT <- c(370, 420, 480, 540)
 
 ###   Read in SGP Configuration Scripts and Combine
-#source("SGP_CONFIG/2025_2026/ELA_RICAS.R")
+source("SGP_CONFIG/2025_2026/ELA_RICAS.R")
 source("SGP_CONFIG/2025_2026/ELA_SAT.R")
-#source("SGP_CONFIG/2025_2026/MATHEMATICS_RICAS.R")
+source("SGP_CONFIG/2025_2026/MATHEMATICS_RICAS.R")
 source("SGP_CONFIG/2025_2026/MATHEMATICS_SAT.R")
 
 RI_Config_2025_2026 <- c(
@@ -71,4 +71,4 @@ print(Rhode_Island_SGP@Data[YEAR=="2025_2026", list(MEAN_SGP=mean(SGP, na.rm=TRU
 print(Rhode_Island_SGP@Data[YEAR=="2025_2026", list(MEAN_SGP_BASELINE=mean(SGP_BASELINE, na.rm=TRUE), MEDIAN_SGP_BASELINE=median(SGP_BASELINE, na.rm=TRUE)), keyby=c("CONTENT_AREA", "GRADE")])
 
 ###   Save results
-#save(Rhode_Island_SGP, file="Data/Rhode_Island_SGP.Rdata")
+save(Rhode_Island_SGP, file="Data/Rhode_Island_SGP.Rdata")
