@@ -15,7 +15,8 @@ require(openxlsx)
 
 ###   Load Data
 #Rhode_Island_Data_LONG_RICAS_2025_2026 <- fread("Data/Base_Files/RICAS2026.csv", stringsAsFactors=FALSE, encoding="Latin-1")
-Rhode_Island_Data_LONG_RICAS_2025_2026 <- fread("Data/Base_Files/RICAS2026_UPDATE_080426.csv", stringsAsFactors=FALSE, encoding="Latin-1")
+#Rhode_Island_Data_LONG_RICAS_2025_2026 <- fread("Data/Base_Files/RICAS2026_UPDATE_080426.csv", stringsAsFactors=FALSE, encoding="Latin-1")
+Rhode_Island_Data_LONG_RICAS_2025_2026 <- fread("Data/Base_Files/RICAS2026_UPDATE_082526.csv", stringsAsFactors=FALSE, encoding="Latin-1")
 
 ### Preliminary cleanup of ethnicity data 
 Rhode_Island_Data_LONG_RICAS_2025_2026[asian=="Y", RACE7:="AS7"]
